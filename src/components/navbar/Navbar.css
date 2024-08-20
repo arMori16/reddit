@@ -1,0 +1,102 @@
+@font-face{
+    font-family: 'Aclonica';
+    src:url('./Aclonica-Regular.ttf');
+}
+:root{
+    --border-color:#B3DCC5;
+}
+.navbar-container{
+    background-color: #F7F3F7;
+    border-bottom: 2px solid #B3DCC5;
+    padding-bottom: 10px;
+}
+#logo-text{
+    display: flex;
+    align-items: center;
+}
+#logo-container{
+    width:200px;
+    height: 100px;
+    margin-left:100px;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+}
+#logo{
+    margin:20px 0px 0px 10px; 
+    padding: 0px;
+    font-size: 32px;
+    font-family: "Aclonica";
+    font-weight: 200;
+    font-style: normal;
+    align-items: start;
+}
+header {
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between; /* Размещает элементы по горизонтали */
+    align-items: flex-start; /* Выровняет элементы по верхнему краю */
+  }
+#text-align{
+    display:flex;
+    gap:20px;
+    margin:0;
+    padding:0;
+    list-style: none;
+}
+li{
+    display: inline-block;
+    /* padding: 1rem; */
+}
+.leaf{
+    margin-top: 10px;
+    width:40px;
+}
+#login{
+    display:block;
+    margin: 30px 40px 10px 0px;
+    padding: 10px 20px 10px 20px;
+    border: 2px solid var(--border-color);
+    border-radius: 40px;
+    font-size: 1rem;
+    font-weight: 700;
+    transition: background-color 0.8s ease;
+    /* box-shadow: 10px 10px 15px rgba(0,0,0,.5); */
+}
+#login:hover{
+    
+    background-color:var(--border-color);
+}
+
+#nav-element{
+    display: block;
+    margin: 30px 30px 10px 0px;
+    padding: 10px;
+    
+}
+.model-overlay{
+    position:fixed;
+    margin:0;
+    padding: 0;
+    width: 100%;
+    height:100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 500;
+    
+}
+.model-content{
+    background-color: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    height: 100%;
+    max-width: 530px;
+    max-height: 600px;
+    position: relative;
+    bottom:140px;
+    z-index: 600;
+}
