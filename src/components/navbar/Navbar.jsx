@@ -8,8 +8,20 @@ import axios from '../api/axios';
 
 
 const Navbar = () => {
-    const [showAuthWindow,setAuthWindow] = useState(false);
     useEffect(()=>{
+        if (typeof window !== "undefined") {
+            const storedToken = localStorage.getItem('token');
+            setToken(storedToken);
+            setLoading(false);
+            console.log('Token Stored');
+        }
+    },[])
+    const [loading, setLoading] = useState(true);
+    const [token, setToken] = useState(null);
+    
+    const [showAuthWindow,setAuthWindow] = useState(false);
+    const [user,setUser] = useState(null);
+    /* useEffect(()=>{
         const fetchAuth = async ()=>{
             try{
                 const res = await axios.get('/').then((res)=>{
@@ -21,7 +33,10 @@ const Navbar = () => {
         }
         fetchAuth();
     },[])
-
+ */
+    if(loading){
+        return null;
+    }
     return (
         <>
             <header className='navbar-container'>
@@ -34,11 +49,17 @@ const Navbar = () => {
                 <nav>
                     <ul id="text-align">
                         <li><a id="nav-element" href='/contact'>Contact</a></li>
-                        <li><button onClick={()=>{setAuthWindow(true)}} id="login">Log In</button></li>
+                {token ? (
+                    <li>
+                        XUI
+                    </li>
+                ):(
+                    <li><button onClick={()=>{setAuthWindow(true)}} id="login">Log In</button></li>
+                )}
                     </ul>
                 </nav>
             </header>
-            {showAuthWindow && (
+            {showAuthWindow ===true && (
             <div className='model-overlay' onClick={()=>{ setAuthWindow(false)}}>
                 <div className='model-content' onClick={(e)=>{ e.stopPropagation()}}>
                     {showAuthWindow && <AuthWindow/>}

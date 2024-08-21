@@ -1,3 +1,11 @@
+:root{
+    --border-radius: 20px 20px 20px 20px;
+}
+/* @font-face {
+    font-family: "Roboto";
+    src: url('./Roboto-Regular.ttf');
+} */
+
 .login-container{
     color: #B3DCC5;
     align-items: center;
@@ -16,12 +24,13 @@
     color: #B3DCC5;
 }
 .p-login{
+    font-size: 14px;
     margin-top: 10px;
 }
 .div-login-container{
-    position: relative;
     display: flex;
     flex-direction: column;
+    width: 368px;
     margin:40px 60px 0px 60px;
 }
 .label-container{
@@ -29,7 +38,9 @@
     align-items: center;
     justify-content: center;
     height:56px;
+    width:100%;
     position: relative;
+    margin-bottom: 20px;
     top:150px;
 }
 .input-label{
@@ -38,26 +49,20 @@
     height: 100%;
     background-color: #B3DCC5;
     border:2px solid #B3DCC5;
-    border-radius: 12px;
+    border-radius: var(--border-radius);
 }
 .input-label:focus{ 
     outline: none;
 }
-input::placeholder{
-    color:black;
-    font-weight: 450;
-}
+
 .btn-login-container{
     position: absolute;
-    top:470px;
-    bottom: 20px;
-    left:0;
-    right:0;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
+    top: 530px;
+    display: flex;
+    justify-items: center;
+    align-items: center; 
+    width: 368px;
     height: 48px;
-    border-radius: 20px;
     
 }
 .btn-login{
@@ -69,6 +74,7 @@ input::placeholder{
     align-items: center;
     justify-content: center;
     top:280px;
+    border-radius: 30px;
     transition: background-color 0.5s ease;
 }
 .btn-login:hover{
@@ -78,20 +84,29 @@ input::placeholder{
     background-color: #CCF5DF;
     transition: background-color 0.1s ease;
 }
-.password-label{
-    position: relative;
+input.input-label,
+input.password-label{
+    position: absolute;
+    display: flex;
     padding: 10px;
+    font-size: 16px;
     width: 100%;
     height: 100%;
     background-color: #B3DCC5;
     border:2px solid #B3DCC5;
-    border-radius: 12px;
-    top:20px;
+    border-radius: var(--border-radius);
     outline: none;
 }
 .sign-up-btn{
-    position: relative;
+    position: absolute;
     display: flex;
     color:#B3DCC5;
-    top:180px;
+    top:450px;
+}
+/* Errors */
+.input-error{
+    border-color: rgba(255, 7, 7, 0.74);
+}
+input::placeholder{
+    color: rgb(65, 63, 63);
 }
