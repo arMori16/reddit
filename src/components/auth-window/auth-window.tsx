@@ -11,8 +11,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from 'yup';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { on } from 'events';
+import { setupTokenRefresh } from '../api/setup-token';
 
-type FormData = {
+interface FormData{
     email: string;
     password: string;
     firstName?:string;
@@ -20,24 +21,30 @@ type FormData = {
 export default function AuthWindow(){ 
     const [email,setEmail] = useState<string>('');
     const backHandleLogin = async (action:string,data:any)=>{
-        /* console.log('Email:', email);
-        console.log('Password:', password);
-        console.log('First Name:', firstName);
-        console.log('Action:', action); */
+        console.log('Email:', data.email);
+        console.log('Password:', data.password);
+        console.log('First Name:', data.firstName);
+        console.log('Action:', action);
         console.log('BackHandleLogin vizvan');
         try{
+            console.log('xui');
+            
             const res = await axios.post('/',{
                 ...data,
                 action:action
 
-            })
+            },)
+            console.log('xui');
             console.log(res);
             
-            if(res.data.token){
-                localStorage.setItem('token',res.data.token)
+            if(res.data.tokens){
+                localStorage.setItem('accessToken',res.data.tokens.access_token)
+                localStorage.setItem('refreshToken',res.data.tokens.refresh_token)
                 alert('Login Successful!')
                 console.log('BackHandleLogin true');
+                setupTokenRefresh();
                 window.location.reload();
+                console.log('vizvan setupTokenRefresh');
                 return true;
             }
             console.log('BackHandleLogin false');
@@ -63,7 +70,7 @@ export default function AuthWindow(){
     }
 
     const handleSignup:SubmitHandler<FormData> = async (data:Partial<FormData>)=>{
-        const finalData = {email,...data}
+        const finalData:any = {email,...data}
             
         const isSuccess = await backHandleLogin(view === 'login'? 'login':'signup',finalData);
         console.log('Onsubmit checked');
@@ -92,7 +99,7 @@ export default function AuthWindow(){
                         <p className='p-login'>By continuing,you agree to our <a href='/user/agreement' className='a-login'>User Agreement</a> and 
                     acknowledge tha you understand the <a href="/policies/privacy-policy" className='a-login'>Privacy Policy</a></p>
                     </slot>
-                    <form onSubmit={handleSubmit(async (data)=> await backHandleLogin('login',data as FormData))}>
+                    <form onSubmit={handleSubmit(async (data)=> {const isSuccess = backHandleLogin('login',{email:data.email,password:data.password,firstName:'null'})})}>
                         <div className='label-container'>  
                             <input className={`input-label ${errors.email ? 'input-error':''}`}  placeholder='Enter your email' {...register('email')} /* value={email} onChange={(e)=>{setEmail(e.target.value)}} */ ></input>
                 
@@ -124,11 +131,10 @@ export default function AuthWindow(){
                         <form onSubmit={handleSubmit(handleEmailSubmit)}>
                             <div className='label-container'>
                                 <span><slot>
-                                    <input className='input-label' placeholder='Enter your email'  {...register('email')} required></input>
+                                    <input className={`input-label ${errors.email ? 'input-error':''}`} placeholder='Enter your email'  {...register('email')} required></input>
                                 </slot></span>
                             </div>
-                            {errors.email && <div className='error'>{errors.email.message}</div>}
-                            <button className='sign-up-btn' onClick={()=>{changeView('login')}}>Already have an account?</button>
+                            <button className='sign-up-btn-2' onClick={()=>{changeView('login')}}>Already have an account?</button>
 
                             {/* login */}
                             <div className='btn-login-container'>
@@ -146,19 +152,20 @@ export default function AuthWindow(){
                             <p className='p-login'>Reddit is anonymous, so your username is what you'll go by here. Choose wisely—because once you get a name, you can't change it.</p>
                         </slot>
                         <form onSubmit={handleSubmit(handleSignup)}>
-                            <div className='label-container'>
-                                <span><slot>
-                                    <input className='input-label' placeholder='Enter your username' {...register('firstName')}/* value={firstName} onChange={(e)=>{setFirstName(e.target.value)}} */ required></input>
-                                </slot></span>
-                            </div>
-                            <div className='label-container'>
-                                <span><slot>
-                                    <input className='input-label' placeholder='Password' {...register('password')}/* value={password} onChange={(e)=>{setPassword(e.target.value)}} */ required></input>
-                                </slot></span>
+                            <div className='input-container'>
+                                <div className='label-container'>
+                                    <span><slot>
+                                        <input className='input-label' placeholder='Enter your username' {...register('firstName')}/* value={firstName} onChange={(e)=>{setFirstName(e.target.value)}} */ required></input>
+                                    </slot></span>
+                                </div>
+                                <div className='label-container'>
+                                    <span><slot>
+                                        <input className='input-label' placeholder='Password' {...register('password')}/* value={password} onChange={(e)=>{setPassword(e.target.value)}} */ required></input>
+                                    </slot></span>
+                                </div>
+
                             </div>
                             {errors.password && <div className='error'>{errors.password.message}</div>}
-                            <button className='sign-up-btn'  onClick={()=>{changeView('login')}}>Already have an account?</button>
-
                             {/* login */}
                             <div className='btn-login-container'>
                                 <button className='btn-login' type='submit'/* onClick={()=>{backHandleLogin('signup')}} */>Continue</button>

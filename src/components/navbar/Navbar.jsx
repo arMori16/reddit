@@ -5,12 +5,13 @@ import AuthWindow from '../auth-window/auth-window';
 import "@/components/navbar/Navbar.css"
 import "@/components/auth-window/auth-window.css"
 import axios from '../api/axios';
+import Avatar from '../navbar-components/avatar/avatar';
 
 
 const Navbar = () => {
     useEffect(()=>{
         if (typeof window !== "undefined") {
-            const storedToken = localStorage.getItem('token');
+            const storedToken = localStorage.getItem('accessToken');
             setToken(storedToken);
             setLoading(false);
             console.log('Token Stored');
@@ -50,9 +51,8 @@ const Navbar = () => {
                     <ul id="text-align">
                         <li><a id="nav-element" href='/contact'>Contact</a></li>
                 {token ? (
-                    <li>
-                        XUI
-                    </li>
+                    <Avatar/>
+                    /* <img src=''></img> */
                 ):(
                     <li><button onClick={()=>{setAuthWindow(true)}} id="login">Log In</button></li>
                 )}

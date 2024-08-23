@@ -99,9 +99,13 @@ input.password-label{
 }
 .sign-up-btn{
     position: absolute;
-    display: flex;
     color:#B3DCC5;
-    top:450px;
+    top: 460px;
+}
+.sign-up-btn-2{
+    position: absolute;
+    color:#B3DCC5;
+    top: 380px;
 }
 /* Errors */
 .input-error{
@@ -109,4 +113,11 @@ input.password-label{
 }
 input::placeholder{
     color: rgb(65, 63, 63);
+}
+.input-container{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 368px;
+    top: 120px;
 }
