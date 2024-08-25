@@ -33,10 +33,25 @@ const Avatar = ()=> {
         <div className="avatar">
             <button onClick={handleAvatarClick} className='avatar-btn'>
                 <img className='avatar' src='./Sweety.jpg' width={50} height={50}/>
-                {profile===true && (
-                    <div className='profile-container' ref={divRef}>xui</div>
-                )}
             </button>
+            {profile===true && (
+                    <div className='profile-container' ref={divRef}>
+                        <a href='/'>
+                            <span className='profile-item'>
+                                <span className='span-img'> 
+                                    <img className='avatar' src='./Sweety.jpg'/>
+                                </span>
+                                <span className='view-profile-text'>
+                                    View Profile
+                                </span>
+                                <span>
+
+                                </span>
+                            </span>
+
+                        </a>
+                    </div>
+                )}
         </div>
     );
 

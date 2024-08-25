@@ -1,6 +1,6 @@
 "use client"
 import React from 'react';
-import { useEffect,useState } from 'react';
+import { useEffect,useState,useRef } from 'react';
 import AuthWindow from '../auth-window/auth-window';
 import "@/components/navbar/Navbar.css"
 import "@/components/auth-window/auth-window.css"
@@ -10,31 +10,32 @@ import Avatar from '../navbar-components/avatar/avatar';
 
 const Navbar = () => {
     useEffect(()=>{
-        if (typeof window !== "undefined") {
+        if (typeof window !== "undefined" && loading) {
             const storedToken = localStorage.getItem('accessToken');
             setToken(storedToken);
             setLoading(false);
             console.log('Token Stored');
         }
     },[])
-    const [loading, setLoading] = useState(true);
-    const [token, setToken] = useState(null);
     
+    const [loading, setLoading] = useState(true);
+    const [token, setToken] = useState<string | null>(null);
     const [showAuthWindow,setAuthWindow] = useState(false);
     const [user,setUser] = useState(null);
-    /* useEffect(()=>{
-        const fetchAuth = async ()=>{
-            try{
-                const res = await axios.get('/').then((res)=>{
-                    console.log(res);
-                })
-            }catch(err){
-                console.log(err);
-            }
-        }
-        fetchAuth();
-    },[])
- */
+
+    const handleClickOutside = (event:MouseEvent)=>{
+        if(ref.current && !ref.current.contains(event.target as Node)){
+        setAuthWindow(false);
+        console.log('xuiiiii');
+    
+        document.removeEventListener('mousedown',handleClickOutside);
+    }
+    }
+    const handleClick = ()=>{ 
+        setAuthWindow(true);
+        document.addEventListener('mousedown',handleClickOutside);
+    }
+    const ref = useRef<HTMLDivElement>(null);
     if(loading){
         return null;
     }
@@ -54,15 +55,15 @@ const Navbar = () => {
                     <Avatar/>
                     /* <img src=''></img> */
                 ):(
-                    <li><button onClick={()=>{setAuthWindow(true)}} id="login">Log In</button></li>
+                    <li><button onClick={handleClick} id="login">Log In</button></li>
                 )}
                     </ul>
                 </nav>
             </header>
             {showAuthWindow ===true && (
-            <div className='model-overlay' onClick={()=>{ setAuthWindow(false)}}>
-                <div className='model-content' onClick={(e)=>{ e.stopPropagation()}}>
-                    {showAuthWindow && <AuthWindow/>}
+            <div className='model-overlay'>
+                <div className='model-content' ref={ref}>
+                    {<AuthWindow />}
                 </div>
             </div> 
             )}

@@ -27,10 +27,11 @@ div.avatar{
 }
 .profile-container{
     position:absolute;
-    right:100px;
+    top:100px;
+    right:20px;
     width:256px;
     height:100px;
-    border: 1px solid #B3DCC5;
+    background-color: #F7F3F7;
     border-radius: 20px;
     /* box-shadow: 0px 1px 2px #2a2b2a; */
     margin: 10px 1px 0px 0px;
@@ -39,4 +40,20 @@ div.avatar{
     width: 100%;
     height: 100%;
     background-color: #B3DCC5;
+}
+.span-img{
+    display: flex;
+    width:48px;
+    height: 48px;
+}
+.profile-item{
+    position: absolute;
+    top:5px;
+    display: flex;
+    padding: 8px 16px;
+    width:256px;
+    height:64px;
+}
+.view-profile-text{
+    margin: 10px 5px;
 }
