@@ -102,3 +102,12 @@ li{
     bottom:140px;
     z-index: 600;
 }
+.loading-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    background-color: #ff4500; /* Цвет линии загрузки */
+    animation: width 0.3s ease;
+    z-index: 1000;
+  }

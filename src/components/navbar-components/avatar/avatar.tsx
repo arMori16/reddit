@@ -1,6 +1,7 @@
 "use client"
 import React, { useState,useEffect,useRef } from 'react';
 import '../avatar/avatar.css'
+import axios from '../../api/axios';;
 
 const Avatar = ()=> {
     const [profile,setProfile] = useState(false);
@@ -29,27 +30,50 @@ const Avatar = ()=> {
         setProfile(true);
         document.addEventListener('mousedown',handleClickOutside)
     }
+    const handleLogout = async()=>{
+        const atToken = localStorage.getItem('accessToken');
+        try{
+            await axios.post('/logout',{},{
+                headers:{
+                    'Authorization':`Bearer ${atToken}`
+                }
+            });
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            setProfile(false);
+            window.location.reload();
+        }catch(err){
+            console.log(err);
+            
+        }
+    }
     return (
         <div className="avatar">
             <button onClick={handleAvatarClick} className='avatar-btn'>
-                <img className='avatar' src='./Sweety.jpg' width={50} height={50}/>
+                <img className='avatar' src='/Sweety.jpg' width={50} height={50}/>
             </button>
             {profile===true && (
                     <div className='profile-container' ref={divRef}>
-                        <a href='/'>
+                        <a href='/users/:userId' className='profile'>
                             <span className='profile-item'>
                                 <span className='span-img'> 
-                                    <img className='avatar' src='./Sweety.jpg'/>
+                                    <img className='avatar' src='/Sweety.jpg'/>
                                 </span>
                                 <span className='view-profile-text'>
                                     View Profile
                                 </span>
-                                <span>
-
+                            </span>
+                        </a>
+                        <button onClick={handleLogout} className='profile-2'>
+                            <span className='profile-item'>
+                                <span className='span-img-2'>
+                                    <img src="/enter.png" />
+                                </span>
+                                <span className='view-profile-text-2'>
+                                    Log Out
                                 </span>
                             </span>
-
-                        </a>
+                        </button>
                     </div>
                 )}
         </div>

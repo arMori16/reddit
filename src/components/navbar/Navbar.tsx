@@ -6,20 +6,64 @@ import "@/components/navbar/Navbar.css"
 import "@/components/auth-window/auth-window.css"
 import axios from '../api/axios';
 import Avatar from '../navbar-components/avatar/avatar';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
+import  { setupTokenRefresh } from '@/components/api/setup-token'
+
 
 
 const Navbar = () => {
-    useEffect(()=>{
-        if (typeof window !== "undefined" && loading) {
-            const storedToken = localStorage.getItem('accessToken');
-            setToken(storedToken);
-            setLoading(false);
-            console.log('Token Stored');
-        }
-    },[])
-    
-    const [loading, setLoading] = useState(true);
+    NProgress.start();
     const [token, setToken] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    const [loggedIn,isLoggedIn] = useState(false);
+    useEffect(()=>{
+        const initialize = async () => {
+                const storedToken = localStorage.getItem('accessToken');
+                setToken(storedToken);
+                setupTokenRefresh();
+                if(token){
+                    setLoading(false);
+                }
+                console.log('Token Stored');
+            
+        };
+        initialize();
+    },[token])
+    useEffect(()=>{
+        
+        const fetchUserData= async()=>{
+            try{
+                console.log('Req');
+                await fetchUserId(); // Ждем выполнения запроса  // Используем результат запроса
+            }
+            catch(err){
+                console.log(err);
+                    
+            }
+        }
+        if(token){
+            fetchUserData();
+        }
+    },[token])
+    const fetchUserId = async () => {
+        try {
+            console.log(token);
+            const response = await axios.get('/getUserId',{
+                headers: {
+                    Authorization: `Bearer ${token}`, // Добавляем токен в заголовок
+                }
+            });
+            const userId = response.data;
+            console.log(userId);
+            return userId;
+            
+        } catch (error) {
+            console.error('Error fetching userId:', error);
+        }
+    }
+    const [progress,setProgress] = useState(0);
     const [showAuthWindow,setAuthWindow] = useState(false);
     const [user,setUser] = useState(null);
 
@@ -36,9 +80,10 @@ const Navbar = () => {
         document.addEventListener('mousedown',handleClickOutside);
     }
     const ref = useRef<HTMLDivElement>(null);
-    if(loading){
-        return null;
-    }
+    /* if(loading){
+        return <div className='loading-bar'></div>;
+    } */
+    NProgress.done();
     return (
         <>
             <header className='navbar-container'>
@@ -51,10 +96,10 @@ const Navbar = () => {
                 <nav>
                     <ul id="text-align">
                         <li><a id="nav-element" href='/contact'>Contact</a></li>
-                {token ? (
+                {!loading && (token ?
                     <Avatar/>
                     /* <img src=''></img> */
-                ):(
+                    :
                     <li><button onClick={handleClick} id="login">Log In</button></li>
                 )}
                     </ul>
@@ -71,5 +116,6 @@ const Navbar = () => {
         </>
     );
 };
+
 
 export default Navbar;

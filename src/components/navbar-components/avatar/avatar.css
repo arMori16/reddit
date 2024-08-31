@@ -30,7 +30,7 @@ div.avatar{
     top:100px;
     right:20px;
     width:256px;
-    height:100px;
+    height:150px;
     background-color: #F7F3F7;
     border-radius: 20px;
     /* box-shadow: 0px 1px 2px #2a2b2a; */
@@ -41,19 +41,51 @@ div.avatar{
     height: 100%;
     background-color: #B3DCC5;
 }
+/* Images */
 .span-img{
     display: flex;
     width:48px;
     height: 48px;
 }
-.profile-item{
-    position: absolute;
-    top:5px;
+.span-img-2{
+    display: flex;
+    width: 32px;
+    height:32px;
+}
+/*  */
+/* Profiles */
+.profile{
+    position: relative;
+    row-gap: 8px;
     display: flex;
     padding: 8px 16px;
     width:256px;
     height:64px;
 }
+.profile-2{
+    position: relative;
+    row-gap: 8px;
+    display: flex;
+    padding: 8px 16px;
+    width:256px;
+    height:48px;
+}
+.profile-item{
+    column-gap: 0.5rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width:100%;
+    height:100%;
+}
+/*  */
+/* Profile's texts */
 .view-profile-text{
+    display: flex;
     margin: 10px 5px;
 }
+.view-profile-text-2{
+    display: flex;
+    margin: 5px 5px;
+}
+/*  */

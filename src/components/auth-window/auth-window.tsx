@@ -38,10 +38,10 @@ export default function AuthWindow(){
             console.log(res);
             
             if(res.data.tokens){
-                localStorage.setItem('accessToken',res.data.tokens.access_token)
-                localStorage.setItem('refreshToken',res.data.tokens.refresh_token)
                 alert('Login Successful!')
                 console.log('BackHandleLogin true');
+                localStorage.setItem('accessToken',res.data.tokens.access_token)
+                localStorage.setItem('refreshToken',res.data.tokens.refresh_token)
                 setupTokenRefresh();
                 window.location.reload();
                 console.log('vizvan setupTokenRefresh');
