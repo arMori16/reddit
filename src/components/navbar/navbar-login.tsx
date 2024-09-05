@@ -4,7 +4,6 @@ import AuthWindow from "../auth-window/auth-window";
 import "@/components/navbar/Navbar.css"
 
 const NavbarLogin = ()=>{
-    var test:boolean = true || false;
     const [showAuthWindow,setAuthWindow] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const handleClickOutside = (event:MouseEvent)=>{
@@ -12,12 +11,12 @@ const NavbarLogin = ()=>{
         setAuthWindow(false);
         console.log('xuiiiii');
     
-        document.removeEventListener('click',handleClickOutside);
+        document.removeEventListener('mousedown',handleClickOutside);
     }
     }
     const handleClick = ()=>{ 
         setAuthWindow(true);
-        document.addEventListener('click',handleClickOutside);
+        document.addEventListener('mousedown',handleClickOutside);
     }
     return(
         <>

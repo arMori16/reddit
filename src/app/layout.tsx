@@ -1,4 +1,4 @@
-import { Providers } from "@/components/redux/provider";
+
 import  "./globals.css";
 export const metadata = {
   title: "Create Next App",
@@ -13,13 +13,11 @@ import { getStateFromRedisStorage } from "@/utils/getUserState";
 export default async function RootLayout({ children }:any) {
   const userState = await getStateFromRedisStorage();
   return (
-    <Providers>
       <html lang="en">
         <body>
           <Navbar user={userState}/>
           {children}
         </body>
       </html>
-    </Providers>
   );
 }

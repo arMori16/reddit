@@ -7,7 +7,6 @@ import { logout } from '@/components/redux/userSlice';
 import Cookies from 'js-cookie';
 
 const Avatar = ()=> {
-    const dispatch = useDispatch();
     const [profile,setProfile] = useState(false);
     const divRef = useRef<HTMLDivElement>(null);
     // const handleClick = (e:React.MouseEvent<HTMLDivElement>)=>{
@@ -42,9 +41,8 @@ const Avatar = ()=> {
                     'Authorization':`Bearer ${atToken}`
                 }
             });
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            dispatch(logout());
+            Cookies.remove('accessToken');
+            Cookies.remove('refreshToken');
             setProfile(false);
             Cookies.remove('state');
             window.location.reload();

@@ -6,81 +6,48 @@ import { error } from 'console';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { AxiosResponse } from 'axios';
-import { signupScheme } from './auth-validation-scheme';
+import { signupScheme,loginScheme } from './auth-validation-scheme';
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from 'yup';
 import { useForm, SubmitHandler } from "react-hook-form";
-import { on } from 'events';
 import Cookies from 'js-cookie';
 import { setupTokenRefresh } from '../api/setup-token';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../redux/userStore';
-import { login } from '../redux/userSlice';
+import {  saveTokensToCookies,backHandleLogin } from './auth-window-logic';
+
 
 interface FormData{
-    email: string;
-    password: string;
-    firstName?:string;
-  };
+    email:string,
+    password:string,
+    firstName?:string
+}
 export default function AuthWindow(){ 
-    const user = useSelector((state:RootState)=>state.user);
-    const dispatch = useDispatch();
-    const [email,setEmail] = useState<string>('');
-    const saveTokensToCookies = async(accessToken:string,refreshToken:string):Promise<void>=>{
-        Cookies.set('accessToken',accessToken,{
-            expires: 7,secure:true,sameSite:'strict'
-        });
-        Cookies.set('refreshToken',refreshToken,{
-            expires: 7,secure:true,sameSite:'strict'
-        });
-    }
-    const backHandleLogin = async (action:string,data:any)=>{
-        console.log('Email:', data.email);
-        console.log('Password:', data.password);
-        console.log('First Name:', data.firstName);
-        console.log('Action:', action);
-        console.log('BackHandleLogin vizvan');
-        try{
-            console.log('xui');
-            
-            const res = await axios.post('/',{
-                ...data,
-                action:action
 
-            },)
-            console.log('xui');
-            console.log(res);
-            
-            if(res.data.tokens){
-                alert('Login Successful!')
-                console.log('BackHandleLogin true');
-                localStorage.setItem('accessToken',res.data.tokens.access_token);
-                localStorage.setItem('refreshToken',res.data.tokens.refresh_token);
-                Cookies.set('state','registered');
-                saveTokensToCookies(res.data.tokens.access_token,res.data.tokens.refresh_token);
-                setupTokenRefresh();
-                dispatch(login(res.data.tokens.access_token))
-                window.location.reload();
-                console.log('vizvan setupTokenRefresh');
-                return true;
-            }
-            console.log('BackHandleLogin false');
-            return false;
-        }catch(error:unknown){
-            console.log(error);
-        }
-    }
+    /* <useStataVariables> */
+    const [email,setEmail] = useState<string>('');
     const [view,setView] = useState('login');
-    /* Validation */
+    const [interfaces,setInterface] = useState();
+    const scheme = view === 'signup-2' ? signupScheme : loginScheme;
+    /* </useStataVariables> */
+
+    /* <ChangeView> */
+    const changeView = (view:string)=>{
+        setView(view);
+    }
+    /* </ChangeView> */
+
+
+    /* <Validation> */
     const {register,handleSubmit,watch,reset,formState:{errors}} = useForm<FormData>({
         defaultValues:{
             email:'',
-            password:''
+            password:'',
+            firstName:view === 'signup-2' ? '' : undefined
         },
-        resolver:yupResolver(signupScheme),
+        resolver:yupResolver(scheme),
     });
-    const router = useRouter();
+    /* </Validation> */
 
+    /* <Handles> */
     const handleEmailSubmit = async(data:Partial<FormData>)=>{
         setEmail(data.email || '');
         setView('signup-2');
@@ -95,17 +62,7 @@ export default function AuthWindow(){
             reset();
         }
     }
-
-    /* input values */
-    
-    /* const [password,setPassword] = useState('');
-    const [firstName,setFirstName] = useState(''); */
-    const [error,setError] = useState({});
-    /* ChangeView */
-    const changeView = (view:string)=>{
-        setView(view);
-    }
-    /* Sending POST request to the server */
+    /* </Handles> */
     return(
         <>
             <div className='div-login-container'>
@@ -151,6 +108,7 @@ export default function AuthWindow(){
                                     <input className={`input-label ${errors.email ? 'input-error':''}`} placeholder='Enter your email'  {...register('email')} required></input>
                                 </slot></span>
                             </div>
+                            {errors.email && <div className='error'>{errors.email.message}</div>}
                             <button className='sign-up-btn-2' onClick={()=>{changeView('login')}}>Already have an account?</button>
 
                             {/* login */}
@@ -172,20 +130,19 @@ export default function AuthWindow(){
                             <div className='input-container'>
                                 <div className='label-container'>
                                     <span><slot>
-                                        <input className='input-label' placeholder='Enter your username' {...register('firstName')}/* value={firstName} onChange={(e)=>{setFirstName(e.target.value)}} */ required></input>
+                                        <input className='input-label' placeholder='Enter your username' {...register('firstName')} required></input>
                                     </slot></span>
                                 </div>
+                                {errors.firstName && <div className='error'>{errors.firstName.message}</div>}
                                 <div className='label-container'>
                                     <span><slot>
-                                        <input className='input-label' placeholder='Password' {...register('password')}/* value={password} onChange={(e)=>{setPassword(e.target.value)}} */ required></input>
+                                        <input className='input-label' placeholder='Password' {...register('password')} required></input>
                                     </slot></span>
                                 </div>
-
+                                {errors.password && <div className='error'>{errors.password.message}</div>}
                             </div>
-                            {errors.password && <div className='error'>{errors.password.message}</div>}
-                            {/* login */}
                             <div className='btn-login-container'>
-                                <button className='btn-login' type='submit'/* onClick={()=>{backHandleLogin('signup')}} */>Continue</button>
+                                <button className='btn-login' type='submit'>Continue</button>
                             </div>
                         </form>
                     </>
