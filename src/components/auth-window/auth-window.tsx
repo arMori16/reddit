@@ -107,7 +107,7 @@ export default function AuthWindow(){
     }
     /* Sending POST request to the server */
     return(
-        <div className='model-overlay'>
+        <>
             <div className='div-login-container'>
                 {view === 'login' && (
                 <>
@@ -191,6 +191,6 @@ export default function AuthWindow(){
                     </>
                 )}
             </div>
-        </div>
+        </>
     )
 }

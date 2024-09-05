@@ -35,7 +35,7 @@ const Avatar = ()=> {
         document.addEventListener('mousedown',handleClickOutside)
     }
     const handleLogout = async()=>{
-        const atToken = await localStorage.getItem('accessToken');
+        const atToken = await Cookies.get('accessToken');
         try{
             await axios.post('/logout',{},{
                 headers:{

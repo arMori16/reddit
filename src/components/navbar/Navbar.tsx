@@ -1,12 +1,9 @@
-"use client"
 
-
-import React from 'react';
-import { useEffect,useState,useRef } from 'react';
 import AuthWindow from '../auth-window/auth-window';
 import "@/components/navbar/Navbar.css"
 import "@/components/auth-window/auth-window.css"
 import Avatar from '../navbar-components/avatar/avatar';
+import NavbarLogin from './navbar-login';
 
 
 const Navbar = ({user}:{user:any}) => {
@@ -81,21 +78,6 @@ const Navbar = ({user}:{user:any}) => {
         return <div className='loading-bar'></div>;
     } 
     NProgress.done(); */
-    var test:boolean = true || false;
-    const [showAuthWindow,setAuthWindow] = useState(false);
-    const ref = useRef<HTMLDivElement>(null);
-    const handleClickOutside = (event:MouseEvent)=>{
-        if(ref.current && !ref.current.contains(event.target as Node)){
-        test = false;
-        console.log('xuiiiii');
-    
-        document.removeEventListener('mousedown',handleClickOutside);
-    }
-    }
-    const handleClick = ()=>{ 
-        test = true;
-        document.addEventListener('mousedown',handleClickOutside);
-    }
     
     return (
         <>
@@ -109,17 +91,10 @@ const Navbar = ({user}:{user:any}) => {
                 <nav>
                     <ul id="text-align">
                         <li><a id="nav-element" href='/contact'>Contact</a></li>
-                        {user === 'registered' ? <Avatar/>:<li><button onClick={handleClick} id="login">Log In</button></li>}
+                        {user === 'registered' ? <Avatar/>:<NavbarLogin/>}
                     </ul>
                 </nav>
             </header>
-            {/* {test && (
-            <div className='model-overlay'>
-                <div className='model-content' ref={ref}>
-                    {<AuthWindow />}
-                </div>
-            </div> 
-            )}  */}
             
         </>
     );
