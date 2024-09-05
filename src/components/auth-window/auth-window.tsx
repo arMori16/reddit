@@ -11,7 +11,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from 'yup';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { on } from 'events';
+import Cookies from 'js-cookie';
 import { setupTokenRefresh } from '../api/setup-token';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/userStore';
+import { login } from '../redux/userSlice';
 
 interface FormData{
     email: string;
@@ -19,7 +23,17 @@ interface FormData{
     firstName?:string;
   };
 export default function AuthWindow(){ 
+    const user = useSelector((state:RootState)=>state.user);
+    const dispatch = useDispatch();
     const [email,setEmail] = useState<string>('');
+    const saveTokensToCookies = async(accessToken:string,refreshToken:string):Promise<void>=>{
+        Cookies.set('accessToken',accessToken,{
+            expires: 7,secure:true,sameSite:'strict'
+        });
+        Cookies.set('refreshToken',refreshToken,{
+            expires: 7,secure:true,sameSite:'strict'
+        });
+    }
     const backHandleLogin = async (action:string,data:any)=>{
         console.log('Email:', data.email);
         console.log('Password:', data.password);
@@ -40,9 +54,12 @@ export default function AuthWindow(){
             if(res.data.tokens){
                 alert('Login Successful!')
                 console.log('BackHandleLogin true');
-                localStorage.setItem('accessToken',res.data.tokens.access_token)
-                localStorage.setItem('refreshToken',res.data.tokens.refresh_token)
+                localStorage.setItem('accessToken',res.data.tokens.access_token);
+                localStorage.setItem('refreshToken',res.data.tokens.refresh_token);
+                Cookies.set('state','registered');
+                saveTokensToCookies(res.data.tokens.access_token,res.data.tokens.refresh_token);
                 setupTokenRefresh();
+                dispatch(login(res.data.tokens.access_token))
                 window.location.reload();
                 console.log('vizvan setupTokenRefresh');
                 return true;
@@ -90,7 +107,7 @@ export default function AuthWindow(){
     }
     /* Sending POST request to the server */
     return(
-        <>
+        <div className='model-overlay'>
             <div className='div-login-container'>
                 {view === 'login' && (
                 <>
@@ -174,6 +191,6 @@ export default function AuthWindow(){
                     </>
                 )}
             </div>
-        </>
+        </div>
     )
 }

@@ -1,9 +1,13 @@
 "use client"
 import React, { useState,useEffect,useRef } from 'react';
 import '../avatar/avatar.css'
-import axios from '../../api/axios';;
+import axios from '../../api/axios';
+import { useDispatch } from 'react-redux';
+import { logout } from '@/components/redux/userSlice';
+import Cookies from 'js-cookie';
 
 const Avatar = ()=> {
+    const dispatch = useDispatch();
     const [profile,setProfile] = useState(false);
     const divRef = useRef<HTMLDivElement>(null);
     // const handleClick = (e:React.MouseEvent<HTMLDivElement>)=>{
@@ -31,7 +35,7 @@ const Avatar = ()=> {
         document.addEventListener('mousedown',handleClickOutside)
     }
     const handleLogout = async()=>{
-        const atToken = localStorage.getItem('accessToken');
+        const atToken = await localStorage.getItem('accessToken');
         try{
             await axios.post('/logout',{},{
                 headers:{
@@ -40,7 +44,9 @@ const Avatar = ()=> {
             });
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
+            dispatch(logout());
             setProfile(false);
+            Cookies.remove('state');
             window.location.reload();
         }catch(err){
             console.log(err);

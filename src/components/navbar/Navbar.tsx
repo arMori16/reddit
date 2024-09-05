@@ -1,19 +1,16 @@
 "use client"
+
+
 import React from 'react';
 import { useEffect,useState,useRef } from 'react';
 import AuthWindow from '../auth-window/auth-window';
 import "@/components/navbar/Navbar.css"
 import "@/components/auth-window/auth-window.css"
-import axios from '../api/axios';
 import Avatar from '../navbar-components/avatar/avatar';
-import NProgress from 'nprogress';
-import 'nprogress/nprogress.css';
-import  { setupTokenRefresh } from '@/components/api/setup-token'
 
 
-
-const Navbar = () => {
-    NProgress.start();
+const Navbar = ({user}:{user:any}) => {
+    /* NProgress.start();
     const [token, setToken] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -82,8 +79,24 @@ const Navbar = () => {
     const ref = useRef<HTMLDivElement>(null);
     /* if(loading){
         return <div className='loading-bar'></div>;
-    } */
-    NProgress.done();
+    } 
+    NProgress.done(); */
+    var test:boolean = true || false;
+    const [showAuthWindow,setAuthWindow] = useState(false);
+    const ref = useRef<HTMLDivElement>(null);
+    const handleClickOutside = (event:MouseEvent)=>{
+        if(ref.current && !ref.current.contains(event.target as Node)){
+        test = false;
+        console.log('xuiiiii');
+    
+        document.removeEventListener('mousedown',handleClickOutside);
+    }
+    }
+    const handleClick = ()=>{ 
+        test = true;
+        document.addEventListener('mousedown',handleClickOutside);
+    }
+    
     return (
         <>
             <header className='navbar-container'>
@@ -96,22 +109,17 @@ const Navbar = () => {
                 <nav>
                     <ul id="text-align">
                         <li><a id="nav-element" href='/contact'>Contact</a></li>
-                {!loading && (token ?
-                    <Avatar/>
-                    /* <img src=''></img> */
-                    :
-                    <li><button onClick={handleClick} id="login">Log In</button></li>
-                )}
+                        {user === 'registered' ? <Avatar/>:<li><button onClick={handleClick} id="login">Log In</button></li>}
                     </ul>
                 </nav>
             </header>
-            {showAuthWindow ===true && (
+            {/* {test && (
             <div className='model-overlay'>
                 <div className='model-content' ref={ref}>
                     {<AuthWindow />}
                 </div>
             </div> 
-            )}
+            )}  */}
             
         </>
     );
