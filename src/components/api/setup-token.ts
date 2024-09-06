@@ -1,60 +1,84 @@
-"use server"
+'use client'
 import axios  from "./axios";
 import * as jwt_decode from "jwt-decode";
 import {Decoded} from '../api/interfaces/decoded.interface';
-import { cookies } from "next/headers";
-
-const cookiesStore = cookies();
+import Cookies from "js-cookie";
 const refreshToken = async()=>{
-    const rt = cookiesStore.get('refreshToken');
-    console.log('getItem(refreshtoken): '+ rt);
-    const {data} = await axios.post('/refresh',rt,{
-        headers: {
-            'Authorization': `Bearer ${rt}`, // Добавляем токен в заголовок
-        }
-    })
-    console.log('post sdelan');
-    console.log(data);
-    
-    cookiesStore.set('accessToken',data.access_token);
-    cookiesStore.set('refreshToken',data.refresh_token);
-    console.log('New RT:'+data.refresh_token);
-    
-    return {accessToken:data.accessToken,refreshToken:data.refreshToken};
+    try{
+        const rt = await Cookies.get('refreshToken');
+        console.log('getItem(refreshtoken): '+ rt);
+        const {data} = await axios.post('/refresh',rt,{
+            headers: {
+                'Authorization': `Bearer ${rt}`, // Добавляем токен в заголовок
+            }
+        })
+        console.log('post sdelan');
+        console.log(data);
+        
+        Cookies.set('accessToken',data.access_token,{expires:Date.now() + 15 *60*1000});
+        Cookies.set('refreshToken',data.refresh_token,{expires:28});
+        console.log('New RT:'+data.refresh_token);
+        
+        return {accessToken:data.accessToken,refreshToken:data.refreshToken};
+    }
+    catch(err){
+        console.log(err);
+        return console.error();
+        
+    }
 }
 export const setupTokenRefresh = async():Promise<boolean | undefined>=>{
-    const token = cookiesStore.get('accessToken');
-    if(!token) return false;
-    const decoded_token = jwt_decode.jwtDecode<Decoded>(String(token));
-    const expirationTime = decoded_token.exp *1000;
-    const currentTime = Date.now();
-    console.log('all decoded');
-
-    const timeToRefresh = expirationTime - currentTime - 60000;
-    console.log(timeToRefresh);
+    const atToken = Cookies.get('accessToken');
+    const rtToken = Cookies.get('refreshToken');
+    console.log('THis is rtToken:',rtToken);
+    console.log('THis is atToken:',atToken);
     
-    if(timeToRefresh>0){
-        console.log('xuyaka');
+    // if(rtToken && atToken) return false;
+    if(rtToken && atToken){
+        const decoded_token = jwt_decode.jwtDecode<Decoded>(atToken);
+        const expirationTime = decoded_token.exp * 1000;
+        console.log('EXP TIME:',expirationTime);
         
-        setTimeout(async()=>{
-            try{
-                console.log('vizvan refresh Token');
-                await refreshToken();
-                await setupTokenRefresh();
+        const currentTime = Date.now();
+        console.log('all decoded');
+
+        const timeToRefresh = expirationTime - currentTime - 60000;
+        console.log(timeToRefresh);
+        
+        if(timeToRefresh>0){
+            console.log('xuyaka');
+            
+            setTimeout(async()=>{
+                try{
+                    console.log('vizvan refresh Token');
+                    await refreshToken();
+                    await setupTokenRefresh();
+                    console.log('setTimeout');
+                    
+                    return true;
+                }catch(err){
+                    console.log(err);
+                }
+            },timeToRefresh)
+        }
+        else{
+            console.log('else');
+            
+            refreshToken().then(()=>{
+                setupTokenRefresh();
+            }).then(()=>{
                 return true;
-            }catch(err){
-                console.log(err);
-            }
-        },timeToRefresh)
+            });
+        }
     }
-    else{
-        console.log('else');
+    if(rtToken && !atToken){
+        console.log('Function works');
         
-        refreshToken().then(()=>{
-            setupTokenRefresh();
-        }).then(()=>{
-            return true;
-        });
+        await refreshToken();
+        await setupTokenRefresh();
+    }
+    if(!rtToken && !atToken){
+        return false
     }
 
 }

@@ -4,6 +4,9 @@ import "@/components/navbar/Navbar.css"
 import "@/components/auth-window/auth-window.css"
 import Avatar from '../navbar-components/avatar/avatar';
 import NavbarLogin from './navbar-login';
+import { useEffect } from 'react';
+import { setupTokenRefresh } from '../api/setup-token';
+import SearchBar from '../navbar-components/search-bar/search-bar';
 
 
 const Navbar = ({user}:{user:any}) => {
@@ -78,25 +81,24 @@ const Navbar = ({user}:{user:any}) => {
         return <div className='loading-bar'></div>;
     } 
     NProgress.done(); */
-    
     return (
-        <>
-            <header className='navbar-container'>
-                <div>
+            <header>
+                <div className='logo-text-container'>
                     <div id='logo-container'>
                         <a href="/" className='leaf'> <img src="/leaf2.png"/> </a>
                         <a href='/' id='logo'><span>Mori</span></a>
                     </div>
                 </div>
-                <nav>
-                    <ul id="text-align">
+                <div className='test'>
+                    <SearchBar/>
+                </div>
+                <nav className='text-align'>
+                    <ul /* id="text-align" */>
                         <li><a id="nav-element" href='/contact'>Contact</a></li>
                         {user === 'registered' ? <Avatar/>:<NavbarLogin/>}
                     </ul>
                 </nav>
             </header>
-            
-        </>
     );
 };
 
