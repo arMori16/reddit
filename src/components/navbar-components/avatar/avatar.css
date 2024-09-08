@@ -8,8 +8,10 @@ img.avatar{
 div.avatar{
     width: 48px;
     display: flex;
+    position: relative;
     height: 48px;
-    margin:35px 30px 10px 0px;
+    top:35px;
+    margin:0px 30px 10px 0px;
     background-color: white;
     border-radius: 50%;
     align-items: center;
@@ -27,12 +29,13 @@ div.avatar{
 }
 .profile-container{
     position:absolute;
-    top:100px;
-    right:20px;
+    top:50px;
+    right:0px;
     width:256px;
     height:150px;
     background-color: #F7F3F7;
     border-radius: 20px;
+    z-index: 1300;
     /* box-shadow: 0px 1px 2px #2a2b2a; */
     margin: 10px 1px 0px 0px;
 }

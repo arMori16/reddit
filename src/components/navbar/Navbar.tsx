@@ -82,7 +82,7 @@ const Navbar = ({user}:{user:any}) => {
     } 
     NProgress.done(); */
     return (
-            <header>
+            <nav>
                 <div className='logo-text-container'>
                     <div id='logo-container'>
                         <a href="/" className='leaf'> <img src="/leaf2.png"/> </a>
@@ -92,13 +92,16 @@ const Navbar = ({user}:{user:any}) => {
                 <div className='test'>
                     <SearchBar/>
                 </div>
-                <nav className='text-align'>
-                    <ul /* id="text-align" */>
-                        <li><a id="nav-element" href='/contact'>Contact</a></li>
-                        {user === 'registered' ? <Avatar/>:<NavbarLogin/>}
+                <div className='text-align'>
+                    <ul className='ul-div'>
+                        <li id="nav-element"><a href='/about'>About</a></li>
+                        <li id="nav-element"><a href='/contact'>Contact</a></li>
                     </ul>
-                </nav>
-            </header>
+                </div>
+                <div className='avatar-div'>
+                    {user === 'registered' ? <Avatar/>:<NavbarLogin/>}
+                </div>
+            </nav>
     );
 };
 
