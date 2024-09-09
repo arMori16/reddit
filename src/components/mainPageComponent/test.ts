@@ -4,17 +4,19 @@ export const xui = async () => {
     try {
       console.log('URAAAAAA');
       
-      await axios.post('/catalog/item', {
-        'SeriesName': 'ROMA-KVAS-A-YA-PIDORAS',
-        'Rate': 2,
+      await axios.patch('/catalog/patch', {
+        'SeriesName': 'Vinland-Saga',
+        'Description':"Vinland Saga is an adaptation of the historical-action manga series by Makoto Yukimura. Centering around young Thorfinn, the story sees the young man on a quest for revenge following the murder of his father by the mercenary Askeladd. To accomplish this feat, Thorfinn joins Askeladd's company to bide his time and prepare to face him in the future. The story starts around 1002 AD and revolves around fictional accounts of the Danish invasion of London.",
+        'SeriesViewName':'Vinland Saga',
+        'Rate': 9,
         'Status': 'came out',
         'Type': 'series',
-        'ReleaseYear': 'January 6,2024',
-        'Genre': ['Comedy', 'Fantasy', 'Isekai'],
-        'Studio': ['Studio Add'],
-        'AmountOfEpisode': 12,
+        'ReleaseYear': '2019',
+        'Genre': ['Fantasy', 'Action','Adventure','Epic'],
+        'Studio': ['Wit Studio','MAPPA'],
+        'AmountOfEpisode': 48,
         'VoiceActing': ['AniDub', 'AniVost', 'JumClub'],
-        'VideoSource': 'C:/Users/arMori/desktop/VideofilesHosting',
+        'VideoSource': 'VinlandSaga-1',
       });
       
       return true;

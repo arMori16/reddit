@@ -11,7 +11,7 @@ const CarouselWrapper = ()=>{
             {/* Vinland */}
             <div>
               <a href="/catalog/item/Vinland-Saga">
-                <img src="./posters/Vinland.jpg" alt="" className='poster-img'/>
+                <img src="./posters/Vinland-Saga.jpg" alt="" className='poster-img'/>
                 <span className='poster-span'>
                   Vinland Saga
                 </span>
@@ -38,7 +38,7 @@ const CarouselWrapper = ()=>{
             {/* Maho */}
             <div>
               <a href="/catalog/item/The-wrong-way-to-use-healing-magic">
-                <img src="./posters/Maho.jpg" alt="" className='poster-img'/>
+                <img src="./posters/The-wrong-way-to-use-healing-magic.jpg" alt="" className='poster-img'/>
                 <span className='poster-span'>
                 The Wrong Way to Use Healing Magic
                 </span>

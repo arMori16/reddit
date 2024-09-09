@@ -21,3 +21,19 @@ body{
     height:2000px;
     background-color: #F7F3F7;
 }
+.div-content-img{
+    display: flex;
+    margin:20px;
+    position: relative;
+    width:250px;
+    /* height: auto; */
+}
+.div-img{
+    border-radius: 20px;
+    display: flex;
+    width:250px;
+    height:350px;
+}
+.div-info{
+    font-size: 18px;
+}

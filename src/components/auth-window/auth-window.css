@@ -15,7 +15,7 @@
     font-size: 26px;
     font-weight: 700;
     box-sizing: border-box;
-    z-index: 700;
+    z-index: 1500;
 }
 .slot-container{
     bottom: 20px;
