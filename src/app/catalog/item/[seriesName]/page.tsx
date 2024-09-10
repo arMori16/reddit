@@ -24,7 +24,7 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
         return <div>Ошибка при загрузке данных.</div>;
       }
       
-    const videoURL = `../../videos/${fetchedData.data.VideoSource}/${params.seriesName}.mp4`
+    const videoURL = `../../videos/${fetchedData.data.VideoSource}/${params.seriesName}`
     return(
         <div className="div-main-content-container">
             <ClientRefresh />
@@ -52,7 +52,7 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                     </div>
                 </div>
                 <div className='w-[1000px] h-auto mt-[20px] relative flex'>
-                    <div className='bg-slate-600 w-100% max-w-[1000px] h-[500px] flex flex-col mt-[20px] p-[20px] rounded-[20px] '>
+                    <div className='bg-slate-600 relative w-[100%] max-w-[1000px] h-[500px] flex flex-col mt-[20px] p-[20px] rounded-[20px] '>
                         {/* <video controls={false} className='flex relative w-100% max-w-[1000px] h-auto overflow-hidden object-cover ' src={`../../videos/${fetchedData.data.VideoSource}/${params.seriesName}.mp4`}></video> */}
                         <Player url={videoURL}/>
                     </div>
