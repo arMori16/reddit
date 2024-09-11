@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
-import { EnumPlayerQuality, HTMLCustomVideoElement } from "./player.type";
+import { EnumPlayerQuality, HTMLCustomVideoElement } from "./types/player.type";
 const SKIP_TIME_SECONDS = 10;
 const usePlayer =({url}:any)=>{   
+    const [isShowPlay,setIsShowPlay] = useState(true);
     const [isPlaying,setIsPlaying] = useState(false);
     const playRef = useRef<HTMLCustomVideoElement>(null);
     const [quality,setQuality] = useState(EnumPlayerQuality['1080p']);
@@ -13,6 +14,13 @@ const usePlayer =({url}:any)=>{
             playRef.current?.play();
         }
         setIsPlaying(!isPlaying)
+    }
+    const toggleShowPlay = ()=>{
+        if(isShowPlay){
+            playRef.current?.play();
+        }
+        setIsPlaying(!isPlaying)
+        setIsShowPlay(!isShowPlay);
     }
     const skipTime = (type?: 'forward' | 'backward')=>{
         if (!playRef.current?.currentTime) return;
@@ -47,6 +55,9 @@ const usePlayer =({url}:any)=>{
     }
     return{
         changeQuality,
+        toggleShowPlay,
+        isShowPlay,
+        setIsShowPlay,
         togglePlayPause,
         toggleFullScreen,
         skipTime,

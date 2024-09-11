@@ -1,6 +1,6 @@
 
 import { ChevronDown, ChevronUp, Dot } from "lucide-react";
-import { EnumPlayerQuality } from "./player.type";
+import { EnumPlayerQuality } from "./types/player.type";
 import useOutside from "./useOutside";
 
 const QUALITIES:EnumPlayerQuality[]=[
@@ -23,7 +23,7 @@ export function SelectQuality({currentValue,onChange}:Props){
     };
     return(
         <div className="relative">
-            <button className='flex text-white' onClick={handleButtonClick} ref={buttonRef}>{currentValue} 
+            <button className='flex text-white relative' onClick={handleButtonClick} ref={buttonRef}>{currentValue} 
                 {isShow ? (
                     <ChevronUp color="white"/>
                     ):(
@@ -31,18 +31,20 @@ export function SelectQuality({currentValue,onChange}:Props){
                 )}
             </button>
                 {isShow && (
-                    <ul className="absolute bottom-full text-white" ref={qualityRef} >
-                    {QUALITIES.map(quality=>(
-                        <li  key={quality}>
-                            <button 
-                                onClick={()=>{onChange(quality) 
-                                            setIsShow(false)}}
-                                            className="flex items-center ">
-                                    {currentValue === quality && <Dot/>}{quality}
-                            </button>
-                        </li>
-                    ))}
-                </ul>
+                    <div className=" flex flex-col relative bottom-4">
+                        <ul className="absolute right-3 backdrop-blur-3xl p-2 rounded-t-[10px] bottom-full text-white" ref={qualityRef} >
+                            {QUALITIES.map(quality=>(
+                                <li className="flex justify-end" key={quality}>
+                                    <button 
+                                        onClick={()=>{onChange(quality) 
+                                                    setIsShow(false)}}
+                                                    className="flex items-center">
+                                            {currentValue === quality && <Dot/>}{quality}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 )}
         </div>
     )

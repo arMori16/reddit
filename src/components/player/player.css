@@ -1,0 +1,100 @@
+.player-container{
+    transition-delay: 0s;
+    transition: opacity 1s ease-in-out;
+}
+.controls{
+    opacity: 0;
+}
+.player-container:hover .controls,
+.player-container:focus-within .controls,
+.player-container.paused .controls{
+    transition-delay: 0s;
+    opacity: 1;
+}
+
+.player-container:not(:hover):not(.paused) .controls {
+    transition-delay: 5s; /* Задержка исчезновения на 5 секунд */
+    opacity: 0;
+}
+.mytest{
+    color: white;
+    transition:color 0.5s ease;
+}
+.mytest:hover{
+    color: aquamarine;
+}
+
+
+.volume-high-icon,
+.volume-low-icon,
+.volume-muted-icon{
+    display: none;
+}
+.player-container[data-volume-level = 'high'] .volume-high-icon{
+    display: block;
+}
+.player-container[data-volume-level = 'low'] .volume-low-icon{
+    display: block;
+}
+.player-container[data-volume-level = 'muted'] .volume-muted-icon{
+    display: block;
+}
+
+
+.custom-range {
+    -webkit-appearance: none; 
+    /* right: 0; */ /* Убираем дефолтный стиль */
+    right: 0;
+    width: 0;
+    cursor:pointer;
+    /* transform-origin: right; */
+    transform: scaleX(0);
+    transition:width 0.3s ease-in, transform 0.3s ease-in-out;
+    height: 5px;
+    background: #ddd; /* Цвет заднего фона ползунка */
+    border-radius: 5px; /* Скругленные углы */
+    outline: none; /* Убираем обводку при фокусе */
+    /* transition: background 0.3s ease; */
+  }
+
+  .custom-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    
+    appearance: none;
+    width: 10px; /* Размер "ползунка" */
+    height: 10px;
+    background: #F7F3F7; /* Цвет "ползунка" */
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s ease,transform 0.3s ease-in-out;;
+  }
+
+  .custom-range::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    background: #F7F3F7;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .custom-range::-ms-thumb {
+    width: 10px;
+    height: 10px;
+    background: #F7F3F7;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .custom-range:hover {
+    background: #ccc; /* Цвет при наведении */
+  }
+
+  .custom-range:active::-webkit-slider-thumb {
+    background: #B3DCC5; /* Цвет ползунка при активном клике */
+  }
+  .volume-container:hover .custom-range,
+  .volume-container:focus-within{
+    right: 0;
+    width: 80px;
+    transform: scaleX(1);
+  }

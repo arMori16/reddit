@@ -3,11 +3,31 @@ import axios from '@/components/api/axios';
 import { setupTokenRefresh } from '@/components/api/setup-token';
 import { ClientRefresh } from '@/components/mainPageComponent/setupTokenRefreshServer';
 import Player from '@/components/player/player';
+import { notFound } from "next/navigation";
+
+async function getData(seriesName: string) {
+    try {
+        const res = await axios.get('/catalog/item', {
+            params: { SeriesName: seriesName }
+        });
+        return res.data;
+    } catch (err) {
+        console.log("Ошибка при получении данных:", err);
+        return null; // Возвращаем null в случае ошибки
+    }
+}
 
 type Test={
     SeriesName:string
 }
 const ItemPage = async({params}:{params:{seriesName:string}})=>{
+    const data = await getData(params.seriesName);
+
+    // Если данные не найдены, перенаправляем на страницу 404
+    if (!data) {
+        notFound();
+    }
+
     const req = async()=>{
         try{
             const res = await axios.get('/catalog/item',{params:{
