@@ -2,8 +2,10 @@ import '@/app/catalog/item/[seriesName]/page.css'
 import axios from '@/components/api/axios';
 import { setupTokenRefresh } from '@/components/api/setup-token';
 import { ClientRefresh } from '@/components/mainPageComponent/setupTokenRefreshServer';
+import useVideo from '@/components/mainPageComponent/videoFormatter';
 import Player from '@/components/player/player';
 import { notFound } from "next/navigation";
+import { useState } from 'react';
 
 async function getData(seriesName: string) {
     try {
@@ -44,7 +46,10 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
         return <div>Ошибка при загрузке данных.</div>;
       }
       
-    const videoURL = `../../videos/${fetchedData.data.VideoSource}/${params.seriesName}`
+      
+    const videoURL = `../../videos/${fetchedData.data.VideoSource}/${params.seriesName}`;
+    /* useVideo(params.seriesName); */
+
     return(
         <div className="div-main-content-container">
             <ClientRefresh />
@@ -74,7 +79,7 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                 <div className='w-[1000px] h-auto mt-[20px] relative flex'>
                     <div className='bg-slate-600 relative w-[100%] max-w-[1000px] h-[500px] flex flex-col mt-[20px] p-[20px] rounded-[20px] '>
                         {/* <video controls={false} className='flex relative w-100% max-w-[1000px] h-auto overflow-hidden object-cover ' src={`../../videos/${fetchedData.data.VideoSource}/${params.seriesName}.mp4`}></video> */}
-                        <Player url={videoURL}/>
+                        <Player url={videoURL} seriesName={params.seriesName}/>
                     </div>
                 </div>
                 <div className='bg-slate-50 h-[400px]'>

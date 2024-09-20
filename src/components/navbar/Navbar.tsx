@@ -7,6 +7,7 @@ import NavbarLogin from './navbar-login';
 import { useEffect } from 'react';
 import { setupTokenRefresh } from '../api/setup-token';
 import SearchBar from '../navbar-components/search-bar/search-bar';
+import { ClientRefresh } from '../mainPageComponent/setupTokenRefreshServer';
 
 
 const Navbar = ({user}:{user:any}) => {
@@ -83,6 +84,7 @@ const Navbar = ({user}:{user:any}) => {
     NProgress.done(); */
     return (
             <nav>
+                <ClientRefresh/>
                 <div className='logo-text-container'>
                     <div id='logo-container'>
                         <a href="/" className='leaf'> <img src="/leaf2.png"/> </a>

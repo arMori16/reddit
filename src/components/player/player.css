@@ -2,7 +2,10 @@
     transition-delay: 0s;
     transition: opacity 1s ease-in-out;
 }
-.controls{
+.controls[value = 'none']{
+    opacity: 1;
+}
+.controls[value = 'show']{
     opacity: 0;
 }
 .player-container:hover .controls,
@@ -12,7 +15,7 @@
     opacity: 1;
 }
 
-.player-container:not(:hover):not(.paused) .controls {
+.volume-container:not(:hover):not(.paused) .controls {
     transition-delay: 5s; /* Задержка исчезновения на 5 секунд */
     opacity: 0;
 }
@@ -44,12 +47,13 @@
 .custom-range {
     -webkit-appearance: none; 
     /* right: 0; */ /* Убираем дефолтный стиль */
+    position: relative;
     right: 0;
-    width: 0;
+    width: 0px;
     cursor:pointer;
-    /* transform-origin: right; */
+    transform-origin: right;
     transform: scaleX(0);
-    transition:width 0.3s ease-in, transform 0.3s ease-in-out;
+    transition:width 0.3s ease-out, transform 0.3s ease-in-out;
     height: 5px;
     background: #ddd; /* Цвет заднего фона ползунка */
     border-radius: 5px; /* Скругленные углы */
@@ -59,7 +63,6 @@
 
   .custom-range::-webkit-slider-thumb {
     -webkit-appearance: none;
-    
     appearance: none;
     width: 10px; /* Размер "ползунка" */
     height: 10px;
@@ -89,12 +92,13 @@
     background: #ccc; /* Цвет при наведении */
   }
 
-  .custom-range:active::-webkit-slider-thumb {
+
+  .custom-range:active::w-webkit-slider-thumb {
     background: #B3DCC5; /* Цвет ползунка при активном клике */
   }
-  .volume-container:hover .custom-range,
-  .volume-container:focus-within{
-    right: 0;
+  .volume-container:hover .custom-range{
+    position: relative;
     width: 80px;
     transform: scaleX(1);
   }
+  

@@ -58,17 +58,16 @@ export const setupTokenRefresh = async():Promise<boolean | undefined>=>{
                     return true;
                 }catch(err){
                     console.log(err);
+                    console.log("IT's SETTIMEUP ERROR");
+                    
                 }
             },timeToRefresh)
         }
         else{
             console.log('else');
             
-            refreshToken().then(()=>{
-                setupTokenRefresh();
-            }).then(()=>{
-                return true;
-            });
+            await refreshToken()
+            await setupTokenRefresh();  
         }
     }
     if(rtToken && !atToken){

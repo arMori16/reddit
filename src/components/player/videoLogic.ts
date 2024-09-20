@@ -3,13 +3,15 @@
 
 export function initializeVideoControls(videoSelector:string, playerContainerSelector:string) {
     if(typeof window === "undefined") return;
-    const video = document.querySelector(videoSelector);
-    const playerContainer = document.querySelector(playerContainerSelector);
+    const video = document.querySelector(videoSelector) as HTMLVideoElement;
+    const playerContainer = document.querySelector(playerContainerSelector) as HTMLDivElement;
 
     if (!video || !playerContainer) {
         console.error("Video or player container not found");
         return;
     }
+    console.log('SEICAHS INITIAL');
+    
     video.addEventListener('pause', () => {
         playerContainer.classList.add('paused');
     });
@@ -20,7 +22,7 @@ export function initializeVideoControls(videoSelector:string, playerContainerSel
     });
 }
 
-/* export const toggleVolume = () => {
+export const toggleVolume = () => {
     if(typeof window === "undefined") return;
     const player = document.querySelector('video');
     if (!player) return;
@@ -40,15 +42,18 @@ export function initializeVideoControls(videoSelector:string, playerContainerSel
     // Удаляем ранее добавленный обработчик перед добавлением нового
     player.removeEventListener("click", toggleMute);
     player.addEventListener("click", toggleMute);
-}; */
+};
 
 const testMy = ()=>{
-    if(typeof window === "undefined") return;
+     if(typeof window === "undefined") return;
     const muteBtn = document.querySelector('.mutedBtn') as HTMLButtonElement;
-    const video = document.querySelector('video');
+    const video = document.querySelector('video') as HTMLVideoElement;
     const playContainer = document.querySelector('.player-container') as HTMLDivElement;
-    const volumeSlider = document.querySelector('.volume-slider') as HTMLInputElement;
+    const volumeSlider = document.querySelector('.volume-slider') as HTMLDivElement;
+    const myTest = document.querySelector('.mytest');
     console.log('IM HEREE');
+    const customRange = document.querySelector('input') as HTMLInputElement;
+    
     
     muteBtn?.addEventListener("click",toggleMute);
     volumeSlider?.addEventListener('input',e=>{
@@ -56,27 +61,42 @@ const testMy = ()=>{
         if(!video) return;
         video.volume = Number(target?.value);
         video.muted = Number(target?.value) === 0;
-    })
+    }) 
+    volumeSlider?.addEventListener('input', e => {
+        console.log('SEICAHS VOLUMECHANGE');
+        const target = e.target as HTMLInputElement;
+        if (!video) return;
+        
+        // Обновляем громкость видео
+        video.volume = Number(target.value);
+        video.muted = Number(target.value) === 0;
+    
+        // Обновляем визуальное состояние кнопок и ползунка сразу
+        let volumeLevel;
+        if (video.muted || video.volume === 0) {
+            volumeLevel = 'muted';
+        } else if (video.volume >= 0.4) {
+            volumeLevel = 'high';
+        } else {
+            volumeLevel = 'low';
+        }
+        
+        if (playContainer) {
+            playContainer.dataset.volumeLevel = volumeLevel;
+        }
+    },false);
     function toggleMute(){
         if(!video) return;
         video.muted = !video.muted;
     }
-    video?.addEventListener("volumechange",()=>{
-        if(!volumeSlider) return;
-        volumeSlider.value = String(video.volume);
-        let volumeLevel;
-        if(video.muted || video.volume === 0){
-            volumeSlider.value = String(0);
-            volumeLevel = 'muted';
-        }else if(video.volume >= .4){
-            volumeLevel = 'high';
-        }else{
-            volumeLevel = 'low';
-        }
-        if(!playContainer) return;
-        playContainer.dataset.volumeLevel = volumeLevel;
-    })
-
+    
 }
 
+
+/* export const useVideoLogic = async(seriesName:any,quality:EnumPlayerQuality)=>{
+    console.log('VIDEOLOGIC : ',seriesName);
+    
+    const res = await useVideo(seriesName,quality);
+    return res;
+} */
 export default testMy;
