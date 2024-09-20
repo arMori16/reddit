@@ -95,18 +95,26 @@ const usePlayer =({url}:any,{seriesName}:any)=>{
 
         }else if(quality === '720p'){
             useVideo(seriesName,quality).then(src => {
-                if (src) {
+                if (!src) {console.error('ITs UNDEIFINED');}
                     console.log('ITS VIDEOLOGISC GOIDA!');
                     if(!playRef.current) return;
-                    playRef.current.pause();
+                    console.log('ITS SRC: ',src);
+                    const video = document.querySelector('video') as HTMLVideoElement;
                     playRef.current.src = '';
-                    setQuality(quality);
-                    console.log('SRC: ',src);
-                    
-                    playRef.current.src = src;
+                    URL.revokeObjectURL(playRef.current.src);
                     playRef.current.load();
-                    togglePlayPause();
-                }
+
+                    /* const videoBlob = new Blob([src],{type:'video/mp4'}) */
+                    const videoUrl = URL.createObjectURL(src);
+                    console.log('videoUrl: ',videoUrl);
+                    
+                    playRef.current.src = `${videoUrl}`;
+                    console.log('VIDEO SRC: ',video.src);
+                    
+                    playRef.current.play().catch(err => console.error('Error playing video:', err));
+        
+                    setQuality(quality);
+                    setIsPlaying(!isPlaying);
             })
             .catch(err => console.error('Failed to fetch video', err));
         }else if(quality === '480p'){
