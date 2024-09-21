@@ -40,21 +40,6 @@ export const postSeriesData = async(seriesName:any,quality:EnumPlayerQuality)=>{
             seriesName:seriesName
         })
         console.log('Это консоль лог путей: ',response.data);
-        const videoPaths = response.data;
-
-
-        let videoPath;
-
-        if (quality === '720p') {
-            videoPath = videoPaths[0];
-        } else if (quality === '480p') {
-            videoPath = videoPaths[1];
-        }
-
-        if (!videoPath) {
-            console.error('Video path not found!');
-            return;
-        }
         /* console.log('Видео успешно загружено:', response.data); */
         } catch (error) {
         console.error('Ошибка при загрузке видео:', error);
@@ -101,13 +86,14 @@ const useVideo = async(seriesName:any,quality:EnumPlayerQuality)=>{
             console.error('Video path not found!');
             return;
         }
+        console.log('VIDEOPATH: ',videoPath);
         
         const videoSrc = await axios.get('/videoFormat/getVideo',{
             params:{
                 path:videoPath
             },
             headers:{
-                'Range':'bytes=0-'
+                Range: 'bytes=0-'
             },
             responseType:'blob',
             timeout: 5000

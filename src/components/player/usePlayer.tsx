@@ -1,7 +1,8 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { EnumPlayerQuality, HTMLCustomVideoElement } from "./types/player.type";
 import useVideo, { postSeriesData } from "../mainPageComponent/videoFormatter";
 import Hls from "hls.js";
+import axios from "../api/axios";
 const SKIP_TIME_SECONDS = 10;
 const usePlayer =({url}:any,{seriesName}:any)=>{   
     const [isShowPlay,setIsShowPlay] = useState(true);
@@ -99,7 +100,7 @@ const usePlayer =({url}:any,{seriesName}:any)=>{
                     console.log('ITS VIDEOLOGISC GOIDA!');
                     if(!playRef.current) return;
                     console.log('ITS SRC: ',src);
-                    const video = document.querySelector('video') as HTMLVideoElement;
+                    /* const video = document.querySelector('video') as HTMLVideoElement; */
                     playRef.current.src = '';
                     URL.revokeObjectURL(playRef.current.src);
                     playRef.current.load();
@@ -108,8 +109,8 @@ const usePlayer =({url}:any,{seriesName}:any)=>{
                     const videoUrl = URL.createObjectURL(src);
                     console.log('videoUrl: ',videoUrl);
                     
-                    playRef.current.src = `${videoUrl}`;
-                    console.log('VIDEO SRC: ',video.src);
+                    playRef.current.src = videoUrl;
+                    /* console.log('VIDEO SRC: ',video.src); */
                     
                     playRef.current.play().catch(err => console.error('Error playing video:', err));
         
@@ -120,19 +121,22 @@ const usePlayer =({url}:any,{seriesName}:any)=>{
         }else if(quality === '480p'){
             useVideo(seriesName,quality).then(src => {
                 if (!src) {console.error('ITs UNDEIFINED');}
+
+                    console.log('VIDEOSRC: ',src);
+                    
                     console.log('ITS VIDEOLOGISC GOIDA!');
                     if(!playRef.current) return;
                     console.log('ITS SRC: ',src);
                     const video = document.querySelector('video') as HTMLVideoElement;
-                    playRef.current.src = '';
                     URL.revokeObjectURL(playRef.current.src);
+                    playRef.current.src = '';
                     playRef.current.load();
 
-                    /* const videoBlob = new Blob([src],{type:'video/mp4'}) */
-                    const videoUrl = URL.createObjectURL(src);
-                    console.log('videoUrl: ',videoUrl);
+                    /* const videoBlob = new Blob([src],{type:'video/mp4'})
+                    const videoUrl = URL.createObjectURL(videoBlob);
+                    console.log('videoUrl: ',videoUrl); */
                     
-                    playRef.current.src = `${videoUrl}`;
+                    playRef.current.src = `http://localhost:3001/catalog/${seriesName}/${quality}`;
                     console.log('VIDEO SRC: ',video.src);
                     
                     playRef.current.play().catch(err => console.error('Error playing video:', err));
