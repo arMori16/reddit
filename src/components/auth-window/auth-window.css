@@ -43,14 +43,14 @@
     margin-bottom: 20px;
     top:150px;
 }
-.input-label{
+/* .input-label{
     padding: 10px;
     width: 100%;
     height: 100%;
     background-color: #B3DCC5;
     border:2px solid #B3DCC5;
     border-radius: var(--border-radius);
-}
+} */
 .input-label:focus{ 
     outline: none;
 }
@@ -120,4 +120,20 @@ input::placeholder{
     flex-direction: column;
     width: 368px;
     top: 120px;
+}
+
+.error-email{
+    position: absolute;
+    display: flex;
+    color:rgba(199, 9, 9, 0.6);
+}
+.error-firstname{
+    position: absolute;
+    display: flex;
+    color:rgba(199, 9, 9, 0.6);
+}
+.error-password{
+    position: absolute;
+    display: flex;
+    color:rgba(199, 9, 9, 0.6);
 }

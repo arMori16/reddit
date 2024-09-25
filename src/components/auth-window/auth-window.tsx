@@ -74,15 +74,15 @@ export default function AuthWindow(){
                     acknowledge tha you understand the <a href="/policies/privacy-policy" className='a-login'>Privacy Policy</a></p>
                     </slot>
                     <form onSubmit={handleSubmit(async (data)=> {const isSuccess = backHandleLogin('login',{email:data.email,password:data.password,firstName:'null'})})}>
-                        <div className='label-container'>  
-                            <input className={`input-label ${errors.email ? 'input-error':''}`}  placeholder='Enter your email' {...register('email')} /* value={email} onChange={(e)=>{setEmail(e.target.value)}} */ ></input>
+                        <div className='label-container relative flex items-center justify-center h-[56px] w-[100%] mb-[20px]'>  
+                            <input className={`input-label bg-[#B3DCC5] h-[100%] w-[100%] p-[10px] border-[2px] border-[#B3DCC5] rounded-[20px] ${errors.email ? 'input-error':''}`}  placeholder='Enter your email' {...register('email')} /* value={email} onChange={(e)=>{setEmail(e.target.value)}} */ ></input>
                 
                         </div>
-                        {/* {errors.email && <div className='error'>{errors.email.message}</div>} */}
+                        {errors.email && <div className='error-email'>{errors.email.message}</div>}
                         <div className='label-container'>    
                             <input className={`password-label ${errors.password ? 'input-error':''}`}  placeholder='Password' {...register('password')} /* value={password} onChange={(p)=>{setPassword(p.target.value)}} */ ></input>
                         </div>
-                        {/* {errors.password && <div className='error'>{errors.password.message}</div>} */}
+                        {errors.password && <div className='error-password'>{errors.password.message}</div>}
                         <button className='sign-up-btn' onClick={()=>{changeView('signup')}}>New to Mori?</button>
 
                         {/* login */}
@@ -108,7 +108,7 @@ export default function AuthWindow(){
                                     <input className={`input-label ${errors.email ? 'input-error':''}`} placeholder='Enter your email'  {...register('email')} required></input>
                                 </slot></span>
                             </div>
-                            {errors.email && <div className='error'>{errors.email.message}</div>}
+                            {errors.email && <div className='error-email'>{errors.email.message}</div>}
                             <button className='sign-up-btn-2' onClick={()=>{changeView('login')}}>Already have an account?</button>
 
                             {/* login */}
@@ -133,13 +133,13 @@ export default function AuthWindow(){
                                         <input className='input-label' placeholder='Enter your username' {...register('firstName')} required></input>
                                     </slot></span>
                                 </div>
-                                {errors.firstName && <div className='error'>{errors.firstName.message}</div>}
+                                {errors.firstName && <div className='error-firstname'>{errors.firstName.message}</div>}
                                 <div className='label-container'>
                                     <span><slot>
                                         <input className='input-label' placeholder='Password' {...register('password')} required></input>
                                     </slot></span>
                                 </div>
-                                {errors.password && <div className='error'>{errors.password.message}</div>}
+                                {errors.password && <div className='error-password'>{errors.password.message}</div>}
                             </div>
                             <div className='btn-login-container'>
                                 <button className='btn-login' type='submit'>Continue</button>

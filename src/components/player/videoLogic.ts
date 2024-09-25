@@ -1,25 +1,137 @@
 'use client'
 
-
+import { useRef, useState } from "react";
+import usePlayer from "./usePlayer";
+import { State } from "../useZustand/zustandStorage";
+import { HTMLCustomVideoElement } from "./types/player.type";
+import playbackPosition from "../useZustand/zustandStorage";
 export function initializeVideoControls(videoSelector:string, playerContainerSelector:string) {
     if(typeof window === "undefined") return;
-    const video = document.querySelector(videoSelector) as HTMLVideoElement;
-    const playerContainer = document.querySelector(playerContainerSelector) as HTMLDivElement;
 
+    const video = document.querySelector(videoSelector) as HTMLCustomVideoElement;
+    const currentTimeElement = document.querySelector('.current-time');
+    const totalTimeElement = document.querySelector('.total-time');
+    const controls = document.querySelector('.controls')
+    const fullScreenBtn = document.querySelector('.full-screen-btn');
+    const timeLineContainer = document.querySelector('.timeline-container') as HTMLDivElement
+    const playerContainer = document.querySelector(playerContainerSelector) as HTMLDivElement;
     if (!video || !playerContainer) {
         console.error("Video or player container not found");
         return;
     }
-    console.log('SEICAHS INITIAL');
+
+    let timeout:NodeJS.Timeout | null;
     
+    video.addEventListener('mousemove',(e:MouseEvent)=>{
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+
+        // Показать курсор, если он был скрыт
+        (playerContainer as HTMLDivElement).style.cursor = 'default';
+        (controls as HTMLDivElement).style.visibility = 'visible';
+        // Перезапускаем таймер
+        if(playerContainer.classList.contains("paused")) return;
+        
+        timeout = setTimeout(() => {
+            // Если курсор не двигался в течение 5 секунд, скрыть его
+            (playerContainer as HTMLDivElement).style.cursor = 'none';
+            (controls as HTMLDivElement).style.visibility = 'hidden';
+
+        }, 5000);
+    })
+
+    /* TIMELINE */
+
+    let isScrubbing = false;
+    let wasPaused:any;
+    timeLineContainer?.addEventListener('mousemove',handleTimeLineUpdate);
+    timeLineContainer?.addEventListener('mousedown',toggleScrubbing);
+    document.addEventListener("mouseup",e=>{
+        if(isScrubbing) toggleScrubbing(e);
+    })
+    document.addEventListener("mousemove",e=>{
+        if(isScrubbing) handleTimeLineUpdate(e);
+    })
+    function toggleScrubbing(e:MouseEvent){
+        const rect = timeLineContainer?.getBoundingClientRect();
+        if(!rect) return;
+        const percent = Math.min(Math.max(0,e.x - rect.x,),rect.width)/rect.width;
+        isScrubbing = (e.buttons & 1) === 1;
+        video.classList.toggle("scrubbing",isScrubbing)
+        if(isScrubbing){
+            wasPaused = video.paused;
+            video.pause();
+        }else{
+            video.currentTime = percent * video.duration
+            if(!wasPaused)video.play();
+        }
+        handleTimeLineUpdate(e);
+    }
+    function handleTimeLineUpdate(e:MouseEvent){
+        const rect = timeLineContainer?.getBoundingClientRect();
+        if(!rect) return;
+        const percent = Math.min(Math.max(0,e.x - rect.x,),rect.width)/rect.width;
+        timeLineContainer?.style.setProperty("--preview-position",String(percent));
+        if(isScrubbing){
+            e.preventDefault();
+            timeLineContainer?.style.setProperty("--progress-position",String(percent))
+        }
+    }
+
+    /* TIMELINE */
     video.addEventListener('pause', () => {
         playerContainer.classList.add('paused');
     });
 
+    video.addEventListener("timeupdate",()=>{
+        if(!currentTimeElement) return;
+        const percent = video.currentTime / video.duration;
+        timeLineContainer?.style.setProperty("--progress-position",String(percent));
+        currentTimeElement.textContent = formatDuration(video.currentTime);
+        const currentTime = String(video.currentTime);
+        let isCurrentTimeExists = Number(localStorage.getItem('currentTime'));
+        if(!isNaN(isCurrentTimeExists)){
+            isCurrentTimeExists = Number(currentTime);
+            localStorage.setItem('currentTime', String(isCurrentTimeExists));
+        }else{
+            isCurrentTimeExists = Number(currentTime);
+            localStorage.setItem('currentTime', String(isCurrentTimeExists));
+        }
+        
+    })
     // Когда видео воспроизводится, удалить класс paused
     video.addEventListener('play', () => {
         playerContainer.classList.remove('paused');
     });
+    video.addEventListener('play',()=>{
+        if(!totalTimeElement) return;
+        console.log('ITS TOTALTIME');
+        if(!currentTimeElement) return;
+        currentTimeElement.textContent = formatDuration(video.currentTime);
+        totalTimeElement.textContent = formatDuration(Number(video.duration));
+    })
+    video.addEventListener('loadedmetadata',()=>{
+        if(!totalTimeElement) return;
+        console.log('ITS TOTALTIME');
+        if(!currentTimeElement) return;
+        currentTimeElement.textContent = formatDuration(video.currentTime);
+        totalTimeElement.textContent = formatDuration(Number(video.duration))
+    })
+    const leadingZeroFormatter = new Intl.NumberFormat(undefined,{
+        minimumIntegerDigits:2
+    })
+    const formatDuration = (time:number):any=>{
+        const seconds = Math.floor(time % 60);
+        const minutes = Math.floor(time / 60) % 60;
+        const hours = Math.floor(time / 3600);
+        if(hours === 0){
+            return `${leadingZeroFormatter.format(minutes)}:${leadingZeroFormatter.format(seconds)}`
+        }else{
+            return `${hours}:${leadingZeroFormatter.format(minutes)}:${leadingZeroFormatter.format(seconds)}`
+        }
+    }
+    console.log('SEICAHS INITIAL');
 }
 
 export const toggleVolume = () => {
@@ -44,7 +156,7 @@ export const toggleVolume = () => {
     player.addEventListener("click", toggleMute);
 };
 
-const testMy = ()=>{
+const volumeLogic = ()=>{
      if(typeof window === "undefined") return;
     const muteBtn = document.querySelector('.mutedBtn') as HTMLButtonElement;
     const video = document.querySelector('video') as HTMLVideoElement;
@@ -99,4 +211,4 @@ const testMy = ()=>{
     const res = await useVideo(seriesName,quality);
     return res;
 } */
-export default testMy;
+export default volumeLogic;

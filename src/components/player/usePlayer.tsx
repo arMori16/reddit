@@ -1,149 +1,225 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { EnumPlayerQuality, HTMLCustomVideoElement } from "./types/player.type";
 import useVideo, { postSeriesData } from "../mainPageComponent/videoFormatter";
 import Hls from "hls.js";
 import axios from "../api/axios";
+import { timePosition } from "../useZustand/zustandSaveTime";
+import playbackPosition, { State } from "../useZustand/zustandStorage";
 const SKIP_TIME_SECONDS = 10;
 const usePlayer =({url}:any,{seriesName}:any)=>{   
-    const [isShowPlay,setIsShowPlay] = useState(true);
     const [isPlaying,setIsPlaying] = useState(false);
+    const [isShowPlay,setIsShowPlay] = useState(true);
+    const [isLoading,setIsLoading] = useState(false);
+    const isPlayingRef = useRef(isPlaying);
     const playRef = useRef<HTMLCustomVideoElement>(null);
     const [quality,setQuality] = useState(EnumPlayerQuality['1080p']);
-    function toggleMute(){
+    const updateCurrentTime = playbackPosition((state)=>state.updateCurrentTime)
+    
+    useEffect(() => {
         if(typeof window === "undefined") return;
-        const video = document.querySelector('video') as HTMLVideoElement;
-        console.log('MORI');
-        
-        const volumeSlider = document.querySelector('.volume-slider') as HTMLInputElement;
-        /* const target = e.target as HTMLInputElement */
-        const playContainer = document.querySelector('.player-container') as HTMLDivElement;
-        if(video.muted){
-            console.log('MORI MUTED');
-            if(!video) return;
-            video.muted = !video.muted;
-            if(!playContainer) return;
-            volumeSlider.value = String(0.4);
-            playContainer.dataset.volumeLevel = 'low';
-            /* volumeSlider.setAttribute('value', String(0.4)); */
+        const currentLocalTime = localStorage.getItem('currentTime');
+        const video = document.querySelector('video');
+        if (video) {
+            const handleTimeUpdate = () => {
+                if (isPlaying) { // Условие для активации
+                    const currentTime = String(currentLocalTime);
+                    const newState: State = { currentTime };
+                    
+                    // Обновление состояния
+                    updateCurrentTime(newState);
+                    
+                }
+            };
 
-        }else{
-            console.log('MORI UNMUTED');
-            if(!video) return;
-            video.muted = !video.muted;
-            if(!playContainer) return;
-            volumeSlider.value = String(0);
-            /* volumeSlider.setAttribute('value', String(0)); */
-            playContainer.dataset.volumeLevel = 'muted';
-            /* volumeSlider.dispatchEvent(new Event('input')); */
+            video.addEventListener("timeupdate", handleTimeUpdate);
+
+            // Очистка события
+            return () => {
+                video.removeEventListener("timeupdate", handleTimeUpdate);
+            };
         }
-    }
+    }, [isPlaying, updateCurrentTime]);
+
     const togglePlayPause = ()=>{
+        if(typeof window === "undefined") return;
+        const currentLocalTime = localStorage.getItem('currentTime')
         if(isPlaying){
             playRef.current?.pause();
         }
         else{
-            console.log("URAAAAAA");
-            
+            if(!playRef.current) return;
+            playRef.current.currentTime = Number(currentLocalTime);
             playRef.current?.play();
         }
-        console.log("URAAAAAA");
-        setIsPlaying(!isPlaying)
+        setIsPlaying(!isPlaying);
     }
     const toggleShowPlay = ()=>{
         if(typeof window === "undefined") return;
-        /* const video = document.querySelector('video') as HTMLCustomVideoElement; */
         if(isShowPlay){
+            spaceButton();
+            
             togglePlayPause();
             postSeriesData(seriesName,quality);
             console.log('Here is url in usePlayer: ',seriesName);
             
-           /*  playRef.current.volume = 0.5; */
         }
         
         setIsShowPlay(!isShowPlay);
     }
+    /* Duration */
+    
+    /* Duration */
+    
+    
+    const spaceButton = useCallback(() => {
+        if (typeof window === "undefined") return;
+        
+        const handleKeydown = (e:KeyboardEvent) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                setIsPlaying((prevIsPlaying) => {
+                    if (prevIsPlaying) {
+                        playRef.current?.pause();
+                    } else {
+                        playRef.current?.play();
+                    }
+                    
+                    return !prevIsPlaying; // Возвращаем новое состояние
+                });
+            }
+        };
+        
+        document.addEventListener("keydown", handleKeydown);
+        
+        // Для предотвращения утечек памяти стоит удалить обработчик при размонтировании компонента
+        return () => {
+            document.removeEventListener("keydown", handleKeydown);
+        };
+    }, [playRef, setIsPlaying]);
     const skipTime = (type?: 'forward' | 'backward')=>{
         if (!playRef.current?.currentTime) return;
         if(type === 'forward'){
+            console.log('OHIO');
+            
             playRef.current.currentTime += SKIP_TIME_SECONDS;
         }
         else{
             if(playRef.current?.currentTime >SKIP_TIME_SECONDS){
+                console.log('OHIO');
                 playRef.current.currentTime -= SKIP_TIME_SECONDS;
             }
         }
     }
     const toggleFullScreen = ()=>{
         if(!playRef.current)return;
-        if(playRef.current.requestFullScreen){
-           playRef.current.requestFullscreen();
-        }else if(playRef.current.mozRequestFullScreen){
-            playRef.current.mozRequestFullScreen();
-        }else if(playRef.current?.webkitRequestFullScreen){
-            playRef.current.webkitRequestFullScreen();
-        }else if(playRef.current.msRequestFullScreen){
-            playRef.current.msRequestFullScreen();
+        if(typeof window === "undefined") return;
+        const fullScreenBtn = document.querySelector('.full-screen-btn');
+        const controls = document.querySelector('.controls') as HTMLDivElement;
+        const playerContainer = document.querySelector('.player-container') as HTMLDivElement;
+        fullScreenBtn?.addEventListener("click",toggleFullScreen)
+        if(document.fullscreenElement === null){
+            if(playRef.current.requestFullScreen){
+                (playerContainer as any).requestFullscreen();
+            }else if(playRef.current.mozRequestFullScreen){
+                (playerContainer as any).mozRequestFullScreen();
+            }else if(playRef.current?.webkitRequestFullScreen){
+                (playerContainer as any).webkitRequestFullScreen();
+            }else if(playRef.current.msRequestFullScreen){
+                if (controls) {
+                    controls.style.display = "flex"; // Показать кастомные контроллеры в полноэкранном режиме
+                }
+                (playerContainer as any).msRequestFullScreen();
+            }
+
+        }
+        else{
+            document.exitFullscreen();
         }
     }
+    
     const changeQuality=(quality:EnumPlayerQuality)=>{
+        if(typeof window === "undefined") return;
+        const currentLocalTime = localStorage.getItem('currentTime');
+        const controls = document.querySelector('.controls') as HTMLDivElement;
+        console.log('LOCALSTORAGE: ',currentLocalTime);
+        
         if(!playRef.current) return;
         if(quality === '1080p'){
-            console.log('ITS NOT  GOIDA!');
-            setQuality(quality);
-            playRef.current.src=`${url}-1080p.mp4`
-            playRef.current?.play();
-            setIsPlaying(true);
+            if(isPlaying){
+                setIsPlaying(false);
+            }
+            setIsLoading(true);
+            playRef.current.src=`${url}-1080p.mp4`;
+            controls.classList.add('disabled-controls');
+            setTimeout(()=>{
+                if(!playRef.current) return;
+                playRef.current.currentTime = Number(currentLocalTime);
+                playRef.current?.play().catch(err => console.error('Error playing video:', err));
+                setIsPlaying(true);
+                controls.classList.remove('disabled-controls');
+                setQuality(quality);
+                setIsLoading(false);
+            },3000)
 
         }else if(quality === '720p'){
             useVideo(seriesName,quality).then(src => {
                 if (!src) {console.error('ITs UNDEIFINED');}
-                    console.log('ITS VIDEOLOGISC GOIDA!');
                     if(!playRef.current) return;
                     console.log('ITS SRC: ',src);
-                    /* const video = document.querySelector('video') as HTMLVideoElement; */
                     playRef.current.src = '';
                     URL.revokeObjectURL(playRef.current.src);
                     playRef.current.load();
-
-                    /* const videoBlob = new Blob([src],{type:'video/mp4'}) */
-                    const videoUrl = URL.createObjectURL(src);
-                    console.log('videoUrl: ',videoUrl);
                     
-                    playRef.current.src = videoUrl;
-                    /* console.log('VIDEO SRC: ',video.src); */
-                    
-                    playRef.current.play().catch(err => console.error('Error playing video:', err));
-        
-                    setQuality(quality);
-                    setIsPlaying(!isPlaying);
+                    if(isPlaying){
+                        setIsPlaying(false);
+                    }
+                    setIsLoading(true);
+                    controls.classList.add('disabled-controls');
+                    playRef.current.src = `http://localhost:3001/catalog/${seriesName}/${quality}`;
+                    setTimeout(()=>{
+                        if(!playRef.current) return;
+                        playRef.current.currentTime = Number(currentLocalTime);
+                        playRef.current?.play().catch(err => console.error('Error playing video:', err));
+                        setIsPlaying(true);
+                        setQuality(quality);
+                        controls.classList.remove('disabled-controls');
+                        setIsLoading(false);
+                    },3000)
             })
             .catch(err => console.error('Failed to fetch video', err));
         }else if(quality === '480p'){
             useVideo(seriesName,quality).then(src => {
                 if (!src) {console.error('ITs UNDEIFINED');}
+                    if(typeof window === "undefined") return;
 
                     console.log('VIDEOSRC: ',src);
                     
-                    console.log('ITS VIDEOLOGISC GOIDA!');
                     if(!playRef.current) return;
                     console.log('ITS SRC: ',src);
                     const video = document.querySelector('video') as HTMLVideoElement;
                     URL.revokeObjectURL(playRef.current.src);
                     playRef.current.src = '';
                     playRef.current.load();
-
-                    /* const videoBlob = new Blob([src],{type:'video/mp4'})
-                    const videoUrl = URL.createObjectURL(videoBlob);
-                    console.log('videoUrl: ',videoUrl); */
                     
-                    playRef.current.src = `http://localhost:3001/catalog/${seriesName}/${quality}`;
                     console.log('VIDEO SRC: ',video.src);
                     
-                    playRef.current.play().catch(err => console.error('Error playing video:', err));
-        
-                    setQuality(quality);
-                    setIsPlaying(!isPlaying);
-            })
+                    if(isPlaying){
+                        setIsPlaying(false);
+                    }
+                    setIsLoading(true);
+                    controls.classList.add('disabled-controls');
+                    playRef.current.src = `http://localhost:3001/catalog/${seriesName}/${quality}`;
+                    setTimeout(()=>{
+                        if(!playRef.current) return;
+                        playRef.current.currentTime = Number(currentLocalTime);
+                        playRef.current?.play().catch(err => console.error('Error playing video:', err));
+                        setIsPlaying(true);
+                        setQuality(quality);
+                        controls.classList.remove('disabled-controls');
+                        setIsLoading(false);
+                    },3000)
+    
+                })
             .catch(err => console.error('Failed to fetch video', err));
         }
 
@@ -153,9 +229,10 @@ const usePlayer =({url}:any,{seriesName}:any)=>{
     return{
         changeQuality,
         setIsPlaying,
+        isLoading,
+        setIsLoading,
         toggleShowPlay,
         isShowPlay,
-        toggleMute,
         setIsShowPlay,
         togglePlayPause,
         toggleFullScreen,
