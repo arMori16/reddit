@@ -1,7 +1,10 @@
 "use client"
 import Cookies from "js-cookie";
 import axios from "../api/axios";
+import origAxios from 'axios';
 import { setupTokenRefresh } from "../api/setup-token";
+import { useEffect, useState } from "react";
+import errorStorage from "../useZustand/zustandErrorStorage";
 
 export const saveTokensToCookies = async(accessToken:string,refreshToken:string):Promise<void>=>{
     const accessTokenExpiration = new Date(new Date().getTime() + 15 * 60 * 1000);
@@ -12,7 +15,7 @@ export const saveTokensToCookies = async(accessToken:string,refreshToken:string)
         expires: 28,secure:true,sameSite:'strict'
     });
 }
-export const backHandleLogin = async (action:string,data:any)=>{
+export const backHandleLogin = async (action:string,data:any,setServerError:(error:string)=>void)=>{
     console.log('Email:', data.email);
     console.log('Password:', data.password);
     console.log('First Name:', data.firstName);
@@ -41,7 +44,16 @@ export const backHandleLogin = async (action:string,data:any)=>{
         }
         console.log('BackHandleLogin false');
         return false;
-    }catch(error:unknown){
-        console.log(error);
+    }catch(error:any){
+        if (origAxios.isAxiosError(error) && error.response) {
+            const serverError = String(error.response.data.message);
+            console.log('SERVER ERROR');
+            
+            setServerError(serverError);
+            console.log('THI IS SETSERVER ERROR',serverError);
+            
+        } else {
+            console.error('An unknown error occurred', error);
+        }
     }
 }
