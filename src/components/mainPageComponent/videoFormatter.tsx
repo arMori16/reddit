@@ -3,7 +3,7 @@ import axios from "../api/axios";
 import { EnumPlayerQuality } from "../player/types/player.type";
 
 
-export const postSeriesData = async(seriesName:any,quality:EnumPlayerQuality)=>{
+export const postSeriesData = async(seriesName:any,numOfEpisode:number)=>{
     const req = async()=>{
         try{
             const res = await axios.get('/catalog/item',{params:{
@@ -28,15 +28,16 @@ export const postSeriesData = async(seriesName:any,quality:EnumPlayerQuality)=>{
     const formData = new FormData();
     formData.append('file', selectedFile); // 'file' должно соответствовать полю в @UseInterceptors(FileInterceptor('file'))
     */
-    const videoUrl = 'C:/Users/arMori/Desktop/RedditClone/reddit/public/videos';
+    const videoUrl = 'C:/Users/arMori/Desktop/VideofilesHosting/VinlandSagaAnilibria';
     console.log('IT VideoURL',videoUrl);
    
-    const selectedFile = `${videoUrl}/${fetchedData.data.VideoSource}/${seriesName}-1080p.mp4`
+    const selectedFile = `${videoUrl}/${seriesName}-${numOfEpisode}.mkv`
     console.log(`ITS'S SELECTED FILE: ${selectedFile}`); 
     try {
         
         const response = await axios.post('/videoFormat', {
             videoUrl:selectedFile,
+            numOfEpisode:numOfEpisode,
             seriesName:seriesName
         })
         console.log('Это консоль лог путей: ',response.data);
@@ -46,8 +47,8 @@ export const postSeriesData = async(seriesName:any,quality:EnumPlayerQuality)=>{
         }
 }
 
-const useVideo = async(seriesName:any,quality:EnumPlayerQuality)=>{
-    const videoUrl = 'C:/Users/arMori/Desktop/RedditClone/reddit/public/videos';
+const useVideo = async(seriesName:any,quality:EnumPlayerQuality,numOfEpisode:number)=>{
+    /* const videoUrl = 'C:/Users/arMori/Desktop/RedditClone/reddit/public/videos';
     console.log('IT VideoURL',videoUrl);
    
     const req = async()=>{
@@ -64,11 +65,16 @@ const useVideo = async(seriesName:any,quality:EnumPlayerQuality)=>{
     const fetchedData = await req();
     if(!fetchedData) return console.error('FETCHED DATA!')
     const selectedFile = `${videoUrl}/${fetchedData.data.VideoSource}/${seriesName}-1080p.mp4`
-    console.log(`ITS'S SELECTED FILE: ${selectedFile}`);
+    console.log(`ITS'S SELECTED FILE: ${selectedFile}`); */
+    const videoUrl = 'C:/Users/arMori/Desktop/VideofilesHosting/VinlandSagaAnilibria';
+    console.log('IT VideoURL',videoUrl);
+   
+    const selectedFile = `${videoUrl}/${seriesName}-${numOfEpisode}.mkv`
     try {
         
         const response = await axios.post('/videoFormat', {
             videoUrl:selectedFile,
+            numOfEpisode:numOfEpisode,
             seriesName:seriesName
         })
         console.log('Это консоль лог путей: ',response.data);

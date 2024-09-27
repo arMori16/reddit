@@ -10,6 +10,7 @@ import  volumeLogic, { initializeVideoControls } from "./videoLogic";
 import { useEffect, useRef, useState } from "react";
 import SkipTimeFunction from "@/components/player/SkipTime";
 import { timePosition } from "../useZustand/zustandSaveTime";
+import numOfEpisodeStorage from "../useZustand/zustandNumOfEpisode";
 
 
 const Player = ({ url, seriesName }: { url: string, seriesName: string })=>{
@@ -17,6 +18,9 @@ const Player = ({ url, seriesName }: { url: string, seriesName: string })=>{
     const [isControlsVisible, setIsControlsVisible] = useState(false); // Состояние видимости контролов
     const {playRef,isLoading,setIsLoading,togglePlayPause,changeQuality,toggleFullScreen,setIsPlaying,quality,isPlaying,isShowPlay,setIsShowPlay,toggleShowPlay,skipTime} = usePlayer({url},{seriesName});
     const [isSkipTime,setIsSkipTime] = useState(false);
+    const [numOfEpisode,setNumOfEpisode] = useState(1);
+    const setNumOfEpisodeZustand = numOfEpisodeStorage((state)=>state.updateNumOfEpisode);
+    const getNumOfEpisode = numOfEpisodeStorage((state)=>state.getNumOfEpisode);
     const toggleControlsVisibility = () => {
         setIsControlsVisible((prev) => !prev); // Переключаем видимость контролов
     };
@@ -46,6 +50,9 @@ const Player = ({ url, seriesName }: { url: string, seriesName: string })=>{
     },[])
     initializeVideoControls('video','.player-container');
     volumeLogic() ;
+    /* if(getNumOfEpisode() !== 1){
+        setNumOfEpisode(getNumOfEpisode());
+    } */
     return (
     <div className={"overflow-hidden player-container relative w-[100%] max-w-[1000px]"}data-volume-level={'high'}>
         {isShowPlay && (
@@ -60,7 +67,7 @@ const Player = ({ url, seriesName }: { url: string, seriesName: string })=>{
                 <Loader className="loading" color="white" width={50} height={50}/>
             </div>
         )}
-        <video ref={playRef} controls={false} className='w-full video h-full object-cover ' src={`${url}-1080p.mp4`}></video>
+        <video ref={playRef} controls={false} className='w-full video h-full object-cover ' src={`http://localhost:3001/catalog/${seriesName}-${getNumOfEpisode()}/1080p`}></video>
             <div className={`flex backdrop-blur-xl controls ${isControlsVisible ? 'flex visible' : 'hidden'} bottom-[45px] relative  items-center p-3 justify-between z-2000`}>
                 <div className="flex items-center">
                     <button onClick={()=>skipTime('backward')}><RotateCcw color="white"/></button>

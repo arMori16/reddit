@@ -5,6 +5,7 @@ import Hls from "hls.js";
 import axios from "../api/axios";
 import { timePosition } from "../useZustand/zustandSaveTime";
 import playbackPosition, { State } from "../useZustand/zustandStorage";
+import numOfEpisodeStorage from "../useZustand/zustandNumOfEpisode";
 const SKIP_TIME_SECONDS = 10;
 const usePlayer =({url}:any,{seriesName}:any)=>{   
     const [isPlaying,setIsPlaying] = useState(false);
@@ -13,6 +14,8 @@ const usePlayer =({url}:any,{seriesName}:any)=>{
     const isPlayingRef = useRef(isPlaying);
     const playRef = useRef<HTMLCustomVideoElement>(null);
     const [quality,setQuality] = useState(EnumPlayerQuality['1080p']);
+    const setNumOfEpisodeZustand = numOfEpisodeStorage((state)=>state.updateNumOfEpisode);
+    const getNumOfEpisode = numOfEpisodeStorage((state)=>state.getNumOfEpisode);
     const updateCurrentTime = playbackPosition((state)=>state.updateCurrentTime)
     
     useEffect(() => {
@@ -59,7 +62,7 @@ const usePlayer =({url}:any,{seriesName}:any)=>{
             spaceButton();
             
             togglePlayPause();
-            postSeriesData(seriesName,quality);
+            /* postSeriesData(seriesName,quality); */
             console.log('Here is url in usePlayer: ',seriesName);
             
         }
@@ -139,43 +142,57 @@ const usePlayer =({url}:any,{seriesName}:any)=>{
     
     const changeQuality=(quality:EnumPlayerQuality)=>{
         if(typeof window === "undefined") return;
+        const numOfEpisode = getNumOfEpisode();
         const currentLocalTime = localStorage.getItem('currentTime');
         const controls = document.querySelector('.controls') as HTMLDivElement;
         console.log('LOCALSTORAGE: ',currentLocalTime);
         
-        if(!playRef.current) return;
         if(quality === '1080p'){
-            if(isPlaying){
-                setIsPlaying(false);
-            }
-            setIsLoading(true);
-            playRef.current.src=`${url}-1080p.mp4`;
-            controls.classList.add('disabled-controls');
-            setTimeout(()=>{
+            useVideo(seriesName,quality,getNumOfEpisode()).then(src=>{
                 if(!playRef.current) return;
-                playRef.current.currentTime = Number(currentLocalTime);
-                playRef.current?.play().catch(err => console.error('Error playing video:', err));
-                setIsPlaying(true);
-                controls.classList.remove('disabled-controls');
-                setQuality(quality);
-                setIsLoading(false);
-            },3000)
+                if(isPlaying){
+                    setIsPlaying(false);
+                }
+                /* Clearing */
+
+                playRef.current.src = '';
+                URL.revokeObjectURL(playRef.current.src);
+                playRef.current.load();
+
+                /* Clearing */
+                setIsLoading(true);
+                controls.classList.add('disabled-controls');
+                playRef.current.src=`http://localhost:3001/catalog/${seriesName}-${numOfEpisode}/${quality}`;
+                setTimeout(()=>{
+                    if(!playRef.current) return;
+                    playRef.current.currentTime = Number(currentLocalTime);
+                    playRef.current?.play().catch(err => console.error('Error playing video:', err));
+                    setIsPlaying(true);
+                    controls.classList.remove('disabled-controls');
+                    setQuality(quality);
+                    setIsLoading(false);
+                },3000)
+
+            }).catch(err => console.error('Failed to fetch video', err));
 
         }else if(quality === '720p'){
-            useVideo(seriesName,quality).then(src => {
+            useVideo(seriesName,quality,getNumOfEpisode()).then(src => {
                 if (!src) {console.error('ITs UNDEIFINED');}
                     if(!playRef.current) return;
                     console.log('ITS SRC: ',src);
+                    /* Clearing */
+                    
                     playRef.current.src = '';
                     URL.revokeObjectURL(playRef.current.src);
                     playRef.current.load();
-                    
+
+                    /* Clearing */
                     if(isPlaying){
                         setIsPlaying(false);
                     }
                     setIsLoading(true);
                     controls.classList.add('disabled-controls');
-                    playRef.current.src = `http://localhost:3001/catalog/${seriesName}/${quality}`;
+                    playRef.current.src = `http://localhost:3001/catalog/${seriesName}-${numOfEpisode}/${quality}`;
                     setTimeout(()=>{
                         if(!playRef.current) return;
                         playRef.current.currentTime = Number(currentLocalTime);
@@ -188,7 +205,7 @@ const usePlayer =({url}:any,{seriesName}:any)=>{
             })
             .catch(err => console.error('Failed to fetch video', err));
         }else if(quality === '480p'){
-            useVideo(seriesName,quality).then(src => {
+            useVideo(seriesName,quality,getNumOfEpisode()).then(src => {
                 if (!src) {console.error('ITs UNDEIFINED');}
                     if(typeof window === "undefined") return;
 
@@ -197,10 +214,13 @@ const usePlayer =({url}:any,{seriesName}:any)=>{
                     if(!playRef.current) return;
                     console.log('ITS SRC: ',src);
                     const video = document.querySelector('video') as HTMLVideoElement;
+                    /* Clearing */
+
                     URL.revokeObjectURL(playRef.current.src);
                     playRef.current.src = '';
                     playRef.current.load();
                     
+                    /* Clearing */
                     console.log('VIDEO SRC: ',video.src);
                     
                     if(isPlaying){
@@ -208,7 +228,7 @@ const usePlayer =({url}:any,{seriesName}:any)=>{
                     }
                     setIsLoading(true);
                     controls.classList.add('disabled-controls');
-                    playRef.current.src = `http://localhost:3001/catalog/${seriesName}/${quality}`;
+                    playRef.current.src = `http://localhost:3001/catalog/${seriesName}-${numOfEpisode}/${quality}`;
                     setTimeout(()=>{
                         if(!playRef.current) return;
                         playRef.current.currentTime = Number(currentLocalTime);

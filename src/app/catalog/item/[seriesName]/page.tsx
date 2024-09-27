@@ -3,6 +3,8 @@ import axios from '@/components/api/axios';
 import { setupTokenRefresh } from '@/components/api/setup-token';
 import { ClientRefresh } from '@/components/mainPageComponent/setupTokenRefreshServer';
 import useVideo from '@/components/mainPageComponent/videoFormatter';
+import Episodes from '@/components/player/amountOfEpisode/amountOfEpisodeLogic';
+import setEpisode from '@/components/player/amountOfEpisode/amountOfEpisodeLogic';
 import Player from '@/components/player/player';
 import { notFound } from "next/navigation";
 import { useState } from 'react';
@@ -76,9 +78,9 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                             <p className='flex items-center'>{fetchedData.data.Description}</p>
                     </div>
                 </div>
-                <div className='w-[1000px] h-auto mt-[20px] relative flex'>
-                    <div className='bg-slate-600 relative w-[100%] max-w-[1000px] h-[500px] flex flex-col mt-[20px] p-[20px] rounded-[20px] '>
-                        {/* <video controls={false} className='flex relative w-100% max-w-[1000px] h-auto overflow-hidden object-cover ' src={`../../videos/${fetchedData.data.VideoSource}/${params.seriesName}.mp4`}></video> */}
+                <div className='w-[1000px] bg-slate-600 h-auto mt-[20px] relative flex flex-col rounded-[20px]'>
+                    <Episodes AmountOfEpisode={fetchedData.data.AmountOfEpisode} seriesName={params.seriesName}/>
+                    <div className=' relative w-[100%] max-w-[1000px] h-[500px] flex flex-col p-[20px] '>
                         <Player url={videoURL} seriesName={params.seriesName}/>
                     </div>
                 </div>
