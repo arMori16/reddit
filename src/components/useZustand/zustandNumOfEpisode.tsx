@@ -9,7 +9,7 @@ type Action={
 }
 const numOfEpisodeStorage = create<State & Action>((set:any,get:any)=>({
     numOfEpisode:1,
-    updateNumOfEpisode:(updateNumOfEpisode:number)=>set({updateNumOfEpisode:updateNumOfEpisode}),
+    updateNumOfEpisode:(numOfEpisode:number)=>set({numOfEpisode}),
     getNumOfEpisode:()=>get().numOfEpisode
 }))
 export default numOfEpisodeStorage;

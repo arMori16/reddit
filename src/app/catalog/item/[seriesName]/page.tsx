@@ -70,7 +70,6 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                             <li className='bg-yellow-300 w-auto inline-block' >Episodes: {fetchedData.data.AmountOfEpisode}</li>
                             <li className='bg-yellow-300 w-auto inline-block' >Voice: {fetchedData.data.VoiceActing.join(', ')}</li>
                             <li className='bg-yellow-300 w-auto inline-block' >Rate: {fetchedData.data.Rate}</li>
-                            {/* <li className='bg-yellow-300 w-auto inline-block' >Description: {fetchedData.data.Description}</li> */}
                         </ul>
                     </div>
                     <div className='flex relative w-[700px] ml-auto mr-auto h-[200px]'>
