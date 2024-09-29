@@ -1,13 +1,14 @@
+
 import '@/app/catalog/item/[seriesName]/page.css'
 import axios from '@/components/api/axios';
 import { setupTokenRefresh } from '@/components/api/setup-token';
 import { ClientRefresh } from '@/components/mainPageComponent/setupTokenRefreshServer';
 import useVideo from '@/components/mainPageComponent/videoFormatter';
+import MediaPlayerSection from '@/components/player/MediaPlayerSection/MediaPlayerSection';
 import Episodes from '@/components/player/amountOfEpisode/amountOfEpisodeLogic';
 import setEpisode from '@/components/player/amountOfEpisode/amountOfEpisodeLogic';
 import Player from '@/components/player/player';
 import { notFound } from "next/navigation";
-import { useState } from 'react';
 
 async function getData(seriesName: string) {
     try {
@@ -46,9 +47,7 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
     const fetchedData = await req();
     if (!fetchedData) {
         return <div>Ошибка при загрузке данных.</div>;
-      }
-      
-      
+    }
     const videoURL = `../../videos/${fetchedData.data.VideoSource}/${params.seriesName}`;
     /* useVideo(params.seriesName); */
 
@@ -78,12 +77,7 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                             <p className='flex items-center'>{fetchedData.data.Description}</p>
                     </div>
                 </div>
-                <div className='w-[1000px] bg-slate-600 h-auto mt-[20px] relative flex flex-col rounded-[20px]'>
-                    <Episodes AmountOfEpisode={fetchedData.data.AmountOfEpisode} seriesName={params.seriesName}/>
-                    <div className=' relative w-[100%] max-w-[1000px] h-[500px] flex flex-col p-[20px] '>
-                        <Player url={videoURL} seriesName={params.seriesName}/>
-                    </div>
-                </div>
+                    <MediaPlayerSection AmountOfEpisode={fetchedData.data.AmountOfEpisode} seriesName={params.seriesName}/>
                 <div className='bg-slate-50 h-[400px]'>
 
                 </div>

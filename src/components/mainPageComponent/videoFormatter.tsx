@@ -81,11 +81,13 @@ const useVideo = async(seriesName:any,quality:EnumPlayerQuality,numOfEpisode:num
         const videoPaths = response.data;
 
         let videoPath;
-
-        if (quality === '720p') {
+        if(quality === '1080p'){
             videoPath = videoPaths[0];
-        } else if (quality === '480p') {
+        }
+        else if (quality === '720p') {
             videoPath = videoPaths[1];
+        } else if (quality === '480p') {
+            videoPath = videoPaths[2];
         }
 
         if (!videoPath) {
