@@ -4,19 +4,19 @@ export const xui = async () => {
     try {
       console.log('URAAAAAA');
       
-      await axios.patch('/catalog/patch', {
-        'SeriesName': 'Vinland-Saga',
-        'Description':"Vinland Saga is an adaptation of the historical-action manga series by Makoto Yukimura. Centering around young Thorfinn, the story sees the young man on a quest for revenge following the murder of his father by the mercenary Askeladd. To accomplish this feat, Thorfinn joins Askeladd's company to bide his time and prepare to face him in the future. The story starts around 1002 AD and revolves around fictional accounts of the Danish invasion of London.",
-        'SeriesViewName':'Vinland Saga',
+      await axios.post('/catalog/item', {
+        'SeriesName': 'Jujutsu-Kaisen',
+        'Description':"Jujutsu Kaisen follows the story of Yuji Itadori, an ordinary boy who crosses paths with Megumi Fushiguro, a Jujutsu Sorcerer searching for a powerful Cursed Object known as Ryomen Sukuna's finger. Unintentionally, Yuji's friends unseal the Cursed Object, attracting dangerous Curses to their location. In a desperate attempt to protect his friends, Yuji consumes the finger, becoming the host of Sukuna's power.",
+        'SeriesViewName':'Jujutsu Kaisen',
         'Rate': 9,
         'Status': 'came out',
         'Type': 'series',
-        'ReleaseYear': '2019',
-        'Genre': ['Fantasy', 'Action','Adventure','Epic'],
-        'Studio': ['Wit Studio','MAPPA'],
-        'AmountOfEpisode': 48,
+        'ReleaseYear': 'October 3, 2020',
+        'Genre': ['Fantasy', 'Action','Epic'],
+        'Studio': ['MAPPA'],
+        'AmountOfEpisode': 47,
         'VoiceActing': ['AniDub', 'AniVost', 'JumClub'],
-        'VideoSource': 'VinlandSaga-1',
+        'VideoSource': 'Jujutsu-Kaisen-1',
       });
       
       return true;

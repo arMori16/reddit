@@ -12,6 +12,8 @@ import { notFound } from "next/navigation";
 
 async function getData(seriesName: string) {
     try {
+        console.log('SERIESNAME: ',seriesName);
+        
         const res = await axios.get('/catalog/item', {
             params: { SeriesName: seriesName }
         });
@@ -30,11 +32,15 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
 
     // Если данные не найдены, перенаправляем на страницу 404
     if (!data) {
+        console.log('Something with data...');
+        
         notFound();
     }
 
     const req = async()=>{
         try{
+            console.log('params.seriesName:,',params.seriesName);
+            
             const res = await axios.get('/catalog/item',{params:{
                 SeriesName:params.seriesName
             }});

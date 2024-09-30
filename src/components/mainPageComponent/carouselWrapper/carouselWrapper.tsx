@@ -29,7 +29,7 @@ const CarouselWrapper = ()=>{
             {/* Kaisen */}
             <div>
               <a href="/catalog/item/Jujutsu-Kaisen">
-                <img src="./posters/JutsuKaisen.jpg" alt="" className='poster-img'/>
+                <img src="./posters/Jujutsu-Kaisen.jpg" alt="" className='poster-img'/>
                 <span className='poster-span'>
                   Jujutsu Kaisen
                 </span>
