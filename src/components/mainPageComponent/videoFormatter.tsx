@@ -28,7 +28,7 @@ export const postSeriesData = async(seriesName:any,numOfEpisode:number)=>{
     const formData = new FormData();
     formData.append('file', selectedFile); // 'file' должно соответствовать полю в @UseInterceptors(FileInterceptor('file'))
     */
-    const videoUrl = 'C:/Users/arMori/Desktop/VideofilesHosting/VinlandSagaAnilibria';
+    const videoUrl = `C:/Users/arMori/Desktop/VideofilesHosting/${seriesName}`;
     console.log('IT VideoURL',videoUrl);
    
     const selectedFile = `${videoUrl}/${seriesName}-${numOfEpisode}.mkv`

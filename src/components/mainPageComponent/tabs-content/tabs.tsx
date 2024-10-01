@@ -1,9 +1,10 @@
-'use client'
+'use server'
+import '@/components/mainPageComponent/tabs-content/tabs.css'
 
 
-
-const TabsComponent = ({amountOfSeries,seriesNames}:{amountOfSeries:number,seriesNames:string})=>{
+const TabsComponent = ({amountOfSeries,seriesNames,rate,genre}:{amountOfSeries:number,seriesNames:string,rate:number[],genre:string[][]})=>{
     console.log('ITS TABSCONTENT : seriesNames',seriesNames[0]);
+    console.log('ITS ARRAY OF NUMBRES: ',rate);
     
     return(
         <div className='flex relative flex-wrap w-[980px] h-[2000px]'>
@@ -13,9 +14,19 @@ const TabsComponent = ({amountOfSeries,seriesNames}:{amountOfSeries:number,serie
             </div>
             <div className='flex relative flex-wrap w-[100%] h-[100%]'>
                 {Array.from({length:amountOfSeries},(_,index)=>(
-                <div key={index} className={`flex bg-slate-600 ${(index + 1) % 2 === 0? ``:`mr-[20px]`} ${index} rounded-b-lg overflow-hidden relative w-[480px] h-[260px]`}>
-                    <img srcSet={`http://localhost:3001/catalog/images/${seriesNames[index]} 5x` } /* src={`http://localhost:3001/catalog/images/${seriesNames[index]}`} */ className="w-[180px] h-[100%]" />
-                </div>
+                <a key={index} href={`http://localhost:3000/catalog/item/${seriesNames[index]}`} className={`flex relative h-[260px] w-[480px] ${(index + 1) % 2 === 0? ``:`mr-[20px]`}`}>
+                    <div key={index} className={`flex bg-slate-600 rounded-b-lg overflow-hidden relative w-[480px] h-[260px]`}>
+                        <div className='flex relative'>
+                            <img src={`http://localhost:3001/catalog/images/${seriesNames[index]}`} className="w-[184px] skeleton h-[100%]" />
+                        </div>
+                        <div className='flex flex-col  relative text-rose-50 p-[10px] pb-0 h-auto'>
+                            <h1 className='uppercase text-[14px] font-semibold flex'>{seriesNames[index]}</h1>
+                            <p>Genre: {genre[index].join(', ')}</p>
+                            <p>Rate: {rate[index]}</p>
+                        </div>
+                    </div>
+
+                </a>
                 ))}
             </div>
         </div>
