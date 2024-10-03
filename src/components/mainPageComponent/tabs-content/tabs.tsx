@@ -7,7 +7,7 @@ const TabsComponent = ({amountOfSeries,seriesNames,rate,genre}:{amountOfSeries:n
     console.log('ITS ARRAY OF NUMBRES: ',rate);
     
     return(
-        <div className='flex relative flex-wrap w-[980px] h-[2000px]'>
+        <div className='flex relative flex-wrap w-[980px] h-auto'>
             <div className="flex flex-col relative border-b-[#FFD04B] border-b-[3px] bg-slate-500 rounded-t-2xl w-[100%] text-rose-50">
                 <p className="flex relative m-2">Catalog</p>
                 {/* <hr className="w-[100%] border-[#FFD04B] border-t-[3px]"/> */}
@@ -15,7 +15,7 @@ const TabsComponent = ({amountOfSeries,seriesNames,rate,genre}:{amountOfSeries:n
             <div className='flex relative flex-wrap w-[100%] h-[100%]'>
                 {Array.from({length:amountOfSeries},(_,index)=>(
                 <a key={index} href={`http://localhost:3000/catalog/item/${seriesNames[index]}`} className={`flex relative h-[260px] w-[480px] ${(index + 1) % 2 === 0? ``:`mr-[20px]`}`}>
-                    <div key={index} className={`flex bg-slate-600 rounded-b-lg overflow-hidden relative w-[480px] h-[260px]`}>
+                    <div key={index} className={`flex bg-slate-600 rounded-b-lg mb-[20px] overflow-hidden relative w-[480px] h-[260px]`}>
                         <div className='flex relative'>
                             <img src={`http://localhost:3001/catalog/images/${seriesNames[index]}`} className="w-[184px] skeleton h-[100%]" />
                         </div>

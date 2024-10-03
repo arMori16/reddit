@@ -65,7 +65,7 @@ const CarouselWrapper = ()=>{
             {/* Tsurugi */}
             <div>
               <a href="/catalog/item/Wistoria-Wand-and-Sword">
-                <img src="./posters/Tsurugi.jpg" alt="" className='poster-img'/>
+                <img src="./posters/Wistoria-Wand-and-Sword.jpg" alt="" className='poster-img'/>
                 <span className='poster-span'>
                   Wistoria: Wand and Sword
                 </span>

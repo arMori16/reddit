@@ -24,7 +24,7 @@ const Episodes = ({AmountOfEpisode,seriesName,episode}:{AmountOfEpisode:number,s
     return(
         <div className='flex flex-row flex-wrap gap-2 relative mx-5 mt-5'>
             {Array.from({ length: AmountOfEpisode},(_,index)=>(
-                <div key={index} onClick={()=>{handleEpisodeClick(index)}} className={`${index+1 === getNumOfEpisode()?'flex bg-slate-100 episodes-div cursor-pointer reliative text-slate-600 rounded-lg border-[2px] font-bold outline- series-div items-center justify-center w-10 h-10':'flex cursor-pointer reliative text-rose-50 rounded-lg border-[2px] font-bold outline- series-div items-center justify-center w-10 h-10'} `}>
+                <div key={index} onClick={()=>{handleEpisodeClick(index)}} className={`${index+1 === getNumOfEpisode()?'bg-slate-100 episodes-div text-slate-600':''} flex cursor-pointer reliative text-rose-50 rounded-lg border-[2px] font-bold outline- series-div items-center justify-center w-10 h-10`}>
                     {index + 1}
                 </div>
             ))}
