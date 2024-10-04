@@ -15,7 +15,7 @@ export const saveTokensToCookies = async(accessToken:string,refreshToken:string)
         expires: 28,secure:true,sameSite:'strict'
     });
 }
-export const backHandleLogin = async (action:string,data:any,setServerError:(error:string)=>void)=>{
+export const backHandleLogin = async (action:string,data:any,setServerError:(error:string)=>void,isEmailCode?:boolean)=>{
     console.log('Email:', data.email);
     console.log('Password:', data.password);
     console.log('First Name:', data.firstName);
@@ -33,13 +33,15 @@ export const backHandleLogin = async (action:string,data:any,setServerError:(err
         console.log(res);
         
         if(res.data.tokens){
-            alert('Login Successful!')
-            console.log('BackHandleLogin true');
-            Cookies.set('state','registered');
-            saveTokensToCookies(res.data.tokens.access_token,res.data.tokens.refresh_token);
-            setupTokenRefresh();
-            window.location.reload();
-            console.log('vizvan setupTokenRefresh');
+            if(isEmailCode){
+                alert('Login Successful!')
+                console.log('BackHandleLogin true');
+                Cookies.set('state','registered');
+                saveTokensToCookies(res.data.tokens.access_token,res.data.tokens.refresh_token);
+                setupTokenRefresh();
+                window.location.reload();
+                console.log('vizvan setupTokenRefresh');
+            }
             return true;
         }
         console.log('BackHandleLogin false');
@@ -51,9 +53,26 @@ export const backHandleLogin = async (action:string,data:any,setServerError:(err
             
             setServerError(serverError);
             console.log('THI IS SETSERVER ERROR',serverError);
-            
+            return false;
         } else {
             console.error('An unknown error occurred', error);
+            return false;
         }
     }
 }
+
+export const getEmailCode = async(email:string)=>{
+    try{
+        console.log('ITS HERE',email);
+        
+        const getCode = await axios.get('/mail/getMailReq',{
+            params:{mail:email}
+        })  
+        console.log('ITS AN EMAIL CODE: ',getCode);
+        
+        return getCode.data;
+    }catch(err){
+        console.error('Get error when tried to getEmailCode! ',err);
+        
+    }
+} 

@@ -12,7 +12,7 @@ import * as yup from 'yup';
 import { useForm, SubmitHandler } from "react-hook-form";
 import Cookies from 'js-cookie';
 import { setupTokenRefresh } from '../api/setup-token';
-import {  saveTokensToCookies,backHandleLogin } from './auth-window-logic';
+import {  saveTokensToCookies,backHandleLogin, getEmailCode } from './auth-window-logic';
 import errorStorage from '../useZustand/zustandErrorStorage';
 
 
@@ -26,6 +26,9 @@ export default function AuthWindow(){
 
     /* <useStateVariables> */
     const [email,setEmail] = useState<string>('');
+    const [pass,setPass] = useState<string>('');
+    const [userEmailCode,setUserEmailCode] = useState<String>('');
+    const [isEmailCode,setIsEmailCode] = useState<String>('');
     const [view,setView] = useState('login');
     const [isLoading,setIsLoading] = useState(false);
     const getServerError = errorStorage((state)=>state.getServerError);
@@ -35,9 +38,27 @@ export default function AuthWindow(){
     /* </useStateVariables> */
 
     /* <ChangeView> */
-    const changeView = (view:string)=>{
+    const changeView = async (view:string,userEmail?:string)=>{
         setView(view);
         clearErrors();
+        if(view === 'emailCode'){
+            try{
+                console.log('YEEAH ITS AN EMAIL VIEW!!!!!!!');
+                
+                /* if(email === undefined) return console.error('Email is undefined changeView'); */
+                console.log('HIIEA');
+                
+                const emailCode = await getEmailCode(String(userEmail));
+                console.log('Email CODE: ',emailCode);
+                
+                if(emailCode === undefined) return console.error('Email is undefined changeView');
+                setIsEmailCode(String(emailCode));
+
+            }catch(err){
+                console.error('There is an error!');
+                
+            }
+        }
     }
     /* </ChangeView> */
 
@@ -74,6 +95,22 @@ export default function AuthWindow(){
     /* </Validation> */
 
     /* <Handles> */
+    const handleEmailCode = async(code:string)=>{
+        if(isEmailCode === code){
+            try{
+                console.log('ITS handleEmailCode');
+                const data = {
+                    email:email,
+                    password:pass,
+                    firstName:'null'
+                }
+                await backHandleLogin('login',data,setServerError,true);
+            }catch(err){
+                console.error('Error when trying to handle Email code ! ',err);
+                
+            }
+        }
+    }
     const handleEmailSubmit = async(data:Partial<FormData>)=>{
         setEmail(data.email || '');
         setView('signup-2');
@@ -110,7 +147,11 @@ export default function AuthWindow(){
                     <div className='flex relative h-[100px]'>
 
                     </div>
-                    <form className='flex relative h-[60%] flex-col w-[100%]' onSubmit={handleSubmit(async (data)=> {const isSuccess =await backHandleLogin('login',{email:data.email,password:data.password,firstName:'null'},setServerError)})}>
+                    <form className='flex relative h-[60%] flex-col w-[100%]' onSubmit={handleSubmit(async (data)=> {const isSuccess =await backHandleLogin('login',{email:data.email,password:data.password,firstName:'null'},setServerError);
+                            isSuccess && changeView('emailCode',data.email);
+                            setEmail(data.email);
+                            setPass(data.password);
+                        })}>
                         <div className={`relative ${errors.email  || getServerError() ? '':'mb-4'} flex h-[56px] w-[100%]`}>  
                             <input className={`input-label bg-[#B3DCC5] h-[100%] w-[100%] p-[10px] border-[2px] border-[#B3DCC5] rounded-[20px] ${errors.email || getServerError() ? 'input-error':''}`}  placeholder='Enter your email' {...register('email')} /* value={email} onChange={(e)=>{setEmail(e.target.value)}} */ ></input>
                 
@@ -176,6 +217,24 @@ export default function AuthWindow(){
                             </div>
                         </form>
                     </div>
+                )}
+                {view === 'emailCode' && (
+                    <div className='flex flex-col w-[100%] h-[100%]'>
+                    <slot className='slot-container'>
+                        <h1 className='login-container'>Verify Email</h1>
+                        <p className='p-login'>Reddit is anonymous, so your username is what you'll go by here. Choose wisely—because once you get a name, you can't change it.</p>
+                    </slot>
+                    <div className='flex mt-5 relative h-[60%] flex-col w-[100%]'>
+                        <div className={`relative flex h-[56px] w-[100%]`}>
+                            <input className={`input-label bg-[#B3DCC5] h-[100%] w-[100%] p-[10px] border-[2px] border-[#B3DCC5] rounded-[20px]`} value={String(userEmailCode)} onChange={(e)=>{setUserEmailCode(e.target.value);console.log('Input changed:', e.target.value);}} placeholder='Enter your Code'></input>
+                        </div>
+                        <div className='relative mt-auto flex h-12 w-[100%]'>
+                            <button className='rounded-[30px] bg-[#B3DCC5] transition-colors background-color 0.5s ease flex w-[100%] h-[100%] items-center justify-center' type='button' onClick={()=>{handleEmailCode(String(userEmailCode));console.log('IT WORKS!')}}>
+                                Continue
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 )}
             </div>
         </>
