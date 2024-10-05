@@ -30,6 +30,7 @@ export default function AuthWindow(){
     const [userEmailCode,setUserEmailCode] = useState<String>('');
     const [isEmailCode,setIsEmailCode] = useState<String>('');
     const [view,setView] = useState('login');
+    const [emailView,setEmailView] = useState('')
     const [isLoading,setIsLoading] = useState(false);
     const getServerError = errorStorage((state)=>state.getServerError);
     const setServerError = errorStorage((state) => state.setServerError);
@@ -74,7 +75,7 @@ export default function AuthWindow(){
     /* Clear setServerError either closing tab or switching view */
 
     /* <Validation> */
-    const {register,handleSubmit,watch,reset,formState:{errors},trigger,clearErrors} = useForm<FormData>({
+    const {register,handleSubmit,getValues,watch,reset,formState:{errors},trigger,clearErrors} = useForm<FormData>({
         defaultValues:{
             email:'',
             password:'',
@@ -82,11 +83,28 @@ export default function AuthWindow(){
         },
         resolver:yupResolver(scheme),
     });
-    const handleEmailValidationAndContinue = async () => {
+    const handleEmailValidationAndContinue = async (signupEmail:string) => {
         const isEmailValid = await trigger('email'); // Запускаем валидацию email
         if (isEmailValid) {
           // Если email валиден, переходим на следующий шаг
-          changeView('signup-2');
+            setView('emailCode');
+            setEmailView('signup-2');
+            try{
+                console.log('YEEAH ITS AN EMAIL VIEW!!!!!!!');
+                
+                if(email === undefined) return console.error('Email is undefined changeView');
+                console.log('EMAIL!! ',signupEmail);
+                
+                const emailCode = await getEmailCode(signupEmail);
+                console.log('Email CODE: ',signupEmail);
+                
+                if(emailCode === undefined) return console.error('Email is undefined changeView');
+                setIsEmailCode(String(emailCode));
+
+            }catch(err){
+                console.error('There is an error!');
+                
+            }
         } else {
           // Если email не валиден, показываем ошибку
           console.log('Email is invalid');
@@ -95,16 +113,21 @@ export default function AuthWindow(){
     /* </Validation> */
 
     /* <Handles> */
-    const handleEmailCode = async(code:string)=>{
+    const handleEmailCode = async(code:string,view?:string)=>{
         if(isEmailCode === code){
             try{
-                console.log('ITS handleEmailCode');
-                const data = {
-                    email:email,
-                    password:pass,
-                    firstName:'null'
+                if(view === 'login'){
+                    console.log('ITS handleEmailCode');
+                    const data = {
+                        email:email,
+                        password:pass,
+                        firstName:'null'
+                    }
+                    await backHandleLogin('login',data,setServerError,true);
+
+                }else{
+                    changeView('signup-2');
                 }
-                await backHandleLogin('login',data,setServerError,true);
             }catch(err){
                 console.error('Error when trying to handle Email code ! ',err);
                 
@@ -113,7 +136,6 @@ export default function AuthWindow(){
     }
     const handleEmailSubmit = async(data:Partial<FormData>)=>{
         setEmail(data.email || '');
-        setView('signup-2');
     }
 
     const handleSignup:SubmitHandler<FormData> = async (data:Partial<FormData>)=>{
@@ -150,6 +172,7 @@ export default function AuthWindow(){
                     <form className='flex relative h-[60%] flex-col w-[100%]' onSubmit={handleSubmit(async (data)=> {const isSuccess =await backHandleLogin('login',{email:data.email,password:data.password,firstName:'null'},setServerError);
                             isSuccess && changeView('emailCode',data.email);
                             setEmail(data.email);
+                            setEmailView('login');
                             setPass(data.password);
                         })}>
                         <div className={`relative ${errors.email  || getServerError() ? '':'mb-4'} flex h-[56px] w-[100%]`}>  
@@ -192,7 +215,7 @@ export default function AuthWindow(){
 
                             {/* login */}
                             <div className='relative mt-auto flex h-12 w-[100%]'>
-                                <button className='rounded-[30px] bg-[#B3DCC5] transition-colors background-color 0.5s ease flex w-[100%] h-[100%] items-center justify-center' type='submit' onClick={handleEmailValidationAndContinue}>Continue</button>
+                                <button className='rounded-[30px] bg-[#B3DCC5] transition-colors background-color 0.5s ease flex w-[100%] h-[100%] items-center justify-center' type='submit' onClick={()=>handleEmailValidationAndContinue(getValues('email'))}>Continue</button>
                             </div>
                         </form>
                     </div>
@@ -229,7 +252,11 @@ export default function AuthWindow(){
                             <input className={`input-label bg-[#B3DCC5] h-[100%] w-[100%] p-[10px] border-[2px] border-[#B3DCC5] rounded-[20px]`} value={String(userEmailCode)} onChange={(e)=>{setUserEmailCode(e.target.value);console.log('Input changed:', e.target.value);}} placeholder='Enter your Code'></input>
                         </div>
                         <div className='relative mt-auto flex h-12 w-[100%]'>
-                            <button className='rounded-[30px] bg-[#B3DCC5] transition-colors background-color 0.5s ease flex w-[100%] h-[100%] items-center justify-center' type='button' onClick={()=>{handleEmailCode(String(userEmailCode));console.log('IT WORKS!')}}>
+                            <button className='rounded-[30px] bg-[#B3DCC5] transition-colors background-color 0.5s ease flex w-[100%] h-[100%] items-center justify-center' type='button' onClick={()=>{
+                                emailView === 'login'? handleEmailCode(String(userEmailCode),'login'):handleEmailCode(String(userEmailCode));
+
+                                }
+                            }>
                                 Continue
                             </button>
                         </div>
