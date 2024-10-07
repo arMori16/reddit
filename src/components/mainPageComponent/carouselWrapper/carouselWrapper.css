@@ -42,7 +42,6 @@ body{
     justify-content: center;
     width:var(--sezon-width);
     height: 40px;
-    background-color: #F7F3F7;
 }
 .poster-span{
     display: flex;

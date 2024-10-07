@@ -4,7 +4,7 @@ import '@/components/mainPageComponent/carouselWrapper/carouselWrapper.css'
 const CarouselWrapper = ()=>{
     return(
         <div className='main-container'>
-          <div className='carousel-text'>
+          <div className='carousel-text bg-[#3C3C3C] text-rose-50'>
               SEASON'S ANIME
           </div>
           <div className='carousel-wrapper'>

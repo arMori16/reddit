@@ -23,7 +23,7 @@ export default async function Home() {
   const reqAmountOfSeries = await axios.get('/catalog/getAmountOfSeries');
   const amountOfSeries = reqAmountOfSeries.data;
   return (
-      <body className='w-full'>
+      <body className='w-full bg-[#242424]'>
         <div className='flex relative flex-col items-center'>
           <div className='flex'>
             <CarouselWrapper/>

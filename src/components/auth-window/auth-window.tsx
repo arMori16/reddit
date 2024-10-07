@@ -141,7 +141,7 @@ export default function AuthWindow(){
     const handleSignup:SubmitHandler<FormData> = async (data:Partial<FormData>)=>{
         const finalData:any = {email,...data}
         setIsLoading(true);
-        const isSuccess = await backHandleLogin(view === 'login'? 'login':'signup',finalData,setServerError);
+        const isSuccess = await backHandleLogin(view === 'login'? 'login':'signup',finalData,setServerError,true);
 
 
         setIsLoading(false);

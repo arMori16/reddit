@@ -21,7 +21,7 @@ const NavbarLogin = ()=>{
     }
     return(
         <>
-            <li><button onClick={handleClick} id="login">Log In</button></li>
+            <li><button onClick={handleClick} id="login" className='text-rose-50'>Log In</button></li>
             {showAuthWindow && (
             <div className='model-overlay'>
                 <div className='model-content' ref={ref}>
