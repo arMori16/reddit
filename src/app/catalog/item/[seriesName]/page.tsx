@@ -2,6 +2,7 @@
 import '@/app/catalog/item/[seriesName]/page.css'
 import axios from '@/components/api/axios';
 import { setupTokenRefresh } from '@/components/api/setup-token';
+import Comments from '@/components/comments/comments';
 import { ClientRefresh } from '@/components/mainPageComponent/setupTokenRefreshServer';
 import useVideo from '@/components/mainPageComponent/videoFormatter';
 import MediaPlayerSection from '@/components/player/MediaPlayerSection/MediaPlayerSection';
@@ -83,8 +84,14 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                     </div>
                 </div>
                     <MediaPlayerSection AmountOfEpisode={fetchedData.data.AmountOfEpisode} seriesName={params.seriesName}/>
-                <div className='bg-slate-50 h-[400px]'>
+                <div className='bg-[#242424] h-[100px]'>
 
+                </div>
+                <div className='w-full'>
+                    <div className="relative flex bg-[#3C3C3C] overflow-hidden w-[100%] h-[40px] rounded-t-lg text-rose-50">
+                        <div className='bg-[#222222] flex relative w-[100px] p-2 rounded-br-lg h-full'>Comments</div>
+                    </div>
+                    <Comments />
                 </div>
             </div>
         </div>
