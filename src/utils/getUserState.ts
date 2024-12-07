@@ -24,8 +24,8 @@ export const getStateFromRedisStorage = async()=>{
     const value = await getStateFromCookiesStorage();
     console.log('ITS VALUE: ',value);
     
-    await redis.set('state',value,'EX',3600);
+    /* await redis.set('state',value,'EX',3600);
     const userState = await redis.get('state');
-    console.log('THIS is USERSTATE',userState);
-    return userState;
+    console.log('THIS is USERSTATE',userState); */
+    return value;
 }

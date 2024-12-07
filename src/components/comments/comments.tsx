@@ -15,7 +15,6 @@ const Comments = ()=>{
             setIsOnFocus(false);
         }
     }
-
     return(
         <div className="h-auto flex flex-col relative w-full rounded-b-xl bg-[#3C3C3C] p-[10px]">
             <div className="flex relative h-[100px] w-auto">

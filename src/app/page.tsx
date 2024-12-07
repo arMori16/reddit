@@ -5,7 +5,7 @@ import TabsComponent from '@/components/mainPageComponent/tabs-content/tabs';
 import { xui2 } from '@/components/mainPageComponent/test';
 
 export default async function Home() {
-  /* const res = await xui2(); */
+  const res = await xui2();
   /* const seriesName = await axios.get('/catalog/item',{
     params:{
       seriesName:
@@ -23,7 +23,7 @@ export default async function Home() {
   const reqAmountOfSeries = await axios.get('/catalog/getAmountOfSeries');
   const amountOfSeries = reqAmountOfSeries.data;
   return (
-      <body className='w-full bg-[#242424]'>
+      <div className='w-full h-[100vw] bg-[#242424]'>
         <div className='flex relative flex-col items-center'>
           <div className='flex'>
             <CarouselWrapper/>
@@ -35,7 +35,7 @@ export default async function Home() {
             <TabsComponent amountOfSeries={amountOfSeries} seriesNames={seriesNames} rate={rate} genre={genre}/>
           </div>
         </div>
-      </body>
+      </div>
   );
 
 }

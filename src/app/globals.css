@@ -14,14 +14,18 @@
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
   }
+
 }
 
-body {
-    
-}
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+  html,body{
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
 }

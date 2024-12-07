@@ -5,18 +5,18 @@ export const xui = async () => {
       console.log('URAAAAAA');
       
       await axios.post('/catalog/item', {
-        'SeriesName': 'Wistoria-Wand-and-Sword',
-        'Description':"A teen without magical powers enrolls in a magic academy. He can't use a wand, but his skill with a sword fuels his drive to keep a promise to a friend.",
-        'SeriesViewName':'Wistoria Wand and Sword',
-        'Rate': 7,
+        'SeriesName': 'Jujutsu-Kaisen',
+        'Description':"Jujutsu Kaisen follows the story of Yuji Itadori, an ordinary boy who crosses paths with Megumi Fushiguro, a Jujutsu Sorcerer searching for a powerful Cursed Object known as Ryomen Sukuna's finger. Unintentionally, Yuji's friends unseal the Cursed Object, attracting dangerous Curses to their location. In a desperate attempt to protect his friends, Yuji consumes the finger, becoming the host of Sukuna's power.",
+        'SeriesViewName':'Jujutsu Kaisen',
+        'Rate': 9.5,
         'Status': 'came out',
         'Type': 'series',
-        'ReleaseYear': '2024',
-        'Genre': ['Fantasy', 'Action','Epic','Adventure'],
-        'Studio': ['Actas','Bandai Namco Pictures'],
-        'AmountOfEpisode': 12,
+        'ReleaseYear': '2020',
+        'Genre': ['Fantasy', 'Action','Epic'],
+        'Studio': ['Studio MAPPA'],
+        'AmountOfEpisode': 47,
         'VoiceActing': ['AnimeVost', 'Anilibria', 'JumClub'],
-        'VideoSource': 'Wistoria-Wand-and-Sword-1',
+        'VideoSource': 'Jujutsu-Kaisen',
       });
       
       return true;
