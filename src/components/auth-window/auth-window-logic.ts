@@ -3,8 +3,6 @@ import Cookies from "js-cookie";
 import axios from "../api/axios";
 import origAxios from 'axios';
 import { setupTokenRefresh } from "../api/setup-token";
-import { useEffect, useState } from "react";
-import errorStorage from "../useZustand/zustandErrorStorage";
 
 export const saveTokensToCookies = async(accessToken:string,refreshToken:string):Promise<void>=>{
     const accessTokenExpiration = new Date(new Date().getTime() + 15 * 60 * 1000);
@@ -14,6 +12,9 @@ export const saveTokensToCookies = async(accessToken:string,refreshToken:string)
     Cookies.set('refreshToken',refreshToken,{
         expires: 28,secure:true,sameSite:'strict'
     });
+    /* Cookies.set('user',refreshToken,{
+        expires: 28,secure:true,sameSite:'strict'
+    }); */
 }
 export const backHandleLogin = async (action:string,data:any,setServerError:(error:string)=>void,isEmailCode?:boolean)=>{
     console.log('Email:', data.email);

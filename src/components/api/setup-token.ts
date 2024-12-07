@@ -4,6 +4,7 @@ import * as jwt_decode from "jwt-decode";
 import {Decoded} from '../api/interfaces/decoded.interface';
 import Cookies from "js-cookie";
 const refreshToken = async(rt:string)=>{
+const refreshToken = async(rt:string)=>{
     try{
         console.log('getItem(refreshtoken): '+ rt);
         const {data} = await axios.post('/refresh',rt,{
@@ -51,6 +52,7 @@ export const setupTokenRefresh = async():Promise<boolean | undefined>=>{
                 try{
                     console.log('vizvan refresh Token');
                     await refreshToken(rtToken);
+                    await refreshToken(rtToken);
                     await setupTokenRefresh();
                     console.log('setTimeout');
                     
@@ -66,6 +68,7 @@ export const setupTokenRefresh = async():Promise<boolean | undefined>=>{
             console.log('else');
             
             await refreshToken(rtToken)
+            await refreshToken(rtToken)
             await setupTokenRefresh();  
             return true;
         }
@@ -73,6 +76,7 @@ export const setupTokenRefresh = async():Promise<boolean | undefined>=>{
     if(rtToken && !atToken){
         console.log('Function works');
         
+        await refreshToken(rtToken);
         await refreshToken(rtToken);
         await setupTokenRefresh();
         return true;
