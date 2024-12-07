@@ -6,12 +6,12 @@ export const metadata = {
 };
 
 import Navbar from "@/components/navbar/Navbar"
-import { getStateFromRedisStorage } from "@/utils/getUserState";
+import { getStateFromCookiesStorage } from "@/utils/getUserState";
 
 
 
 export default async function RootLayout({ children }:any) {
-  const userState = await getStateFromRedisStorage();
+  const userState = await getStateFromCookiesStorage();
   return (
       <html lang="en">
         <body>

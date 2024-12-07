@@ -1,7 +1,7 @@
 import redis from "@/redis/redisConfig";
 import { cookies } from "next/headers";
 
-const getStateFromCookiesStorage = ():string=>{
+export const getStateFromCookiesStorage = ():string=>{
     try{
         const cookiesStore = cookies();
         const userState = cookiesStore.get('state');
@@ -18,14 +18,4 @@ const getStateFromCookiesStorage = ():string=>{
         console.log(err);
         return 'err';
     }
-}
-
-export const getStateFromRedisStorage = async()=>{
-    const value = await getStateFromCookiesStorage();
-    console.log('ITS VALUE: ',value);
-    
-    await redis.set('state',value,'EX',3600);
-    const userState = await redis.get('state');
-    console.log('THIS is USERSTATE',userState);
-    return userState;
 }
