@@ -3,10 +3,11 @@ import axios from '@/components/api/axios';
 import CarouselWrapper from '@/components/mainPageComponent/carouselWrapper/carouselWrapper';
 import TabsComponent from '@/components/mainPageComponent/tabs-content/tabs';
 import { xui2 } from '@/components/mainPageComponent/test';
+import getSeriesInfo from '@/utils/getSeriesInfo';
 
 export default async function Home() {
-  /* const res = await xui2(); */
-  /* const seriesName = await axios.get('/catalog/item',{
+/*   const res = await xui2();
+ */  /* const seriesName = await axios.get('/catalog/item',{
     params:{
       seriesName:
     }
@@ -22,18 +23,19 @@ export default async function Home() {
   
   const reqAmountOfSeries = await axios.get('/catalog/getAmountOfSeries');
   const amountOfSeries = reqAmountOfSeries.data; */
+  const seriesInfo = await getSeriesInfo();
   return (
-      <div className='w-full h-[100vw] bg-[#242424]'>
-        <div className='flex relative flex-col items-center'>
+      <div className='w-full h-[100%] bg-[#242424]'>
+        <div className='flex relative h-full flex-col items-center'>
           <div className='flex'>
             <CarouselWrapper/>
           </div>
           <div className='flex relative justify-center h-[400px] w-[1000px]'>
 
           </div>
-          <div className='flex relative flex-wrap'>
-{/*             <TabsComponent amountOfSeries={amountOfSeries} seriesNames={seriesNames} rate={rate} genre={genre}/>
- */}          </div>
+          <div className='flex relative flex-wrap h-full'>
+             <TabsComponent amountOfSeries={seriesInfo.amountOfSeries} seriesNames={seriesInfo.seriesNames} seriesViewNames={seriesInfo.seriesViewName} rate={seriesInfo.rate} genre={seriesInfo.genre}/>
+          </div>
         </div>
       </div>
   );

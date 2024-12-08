@@ -5,18 +5,18 @@ export const xui = async () => {
       console.log('URAAAAAA');
       
       await axios.post('/catalog/item', {
-        'SeriesName': 'Jujutsu-Kaisen',
-        'Description':"Jujutsu Kaisen follows the story of Yuji Itadori, an ordinary boy who crosses paths with Megumi Fushiguro, a Jujutsu Sorcerer searching for a powerful Cursed Object known as Ryomen Sukuna's finger. Unintentionally, Yuji's friends unseal the Cursed Object, attracting dangerous Curses to their location. In a desperate attempt to protect his friends, Yuji consumes the finger, becoming the host of Sukuna's power.",
-        'SeriesViewName':'Jujutsu Kaisen',
-        'Rate': 9.5,
+        'SeriesName': 'The-wrong-way-to-use-healing-magic',
+        'Description':"An ordinary walk home from school turns into an epic journey for Usato. After suddenly being dropped into another world with two fellow students, Usato learns he was summoned there by accident. But things turn around when he discovers a unique aptitude for healing magic! Now, he trains beyond human limitations, using his self-healing abilities to gain absurd strength and unrivaled stamina.",
+        'SeriesViewName':'The wrong way to use healing magic',
+        'Rate': 8.6,
         'Status': 'came out',
         'Type': 'series',
-        'ReleaseYear': '2020',
-        'Genre': ['Fantasy', 'Action','Epic'],
-        'Studio': ['Studio MAPPA'],
-        'AmountOfEpisode': 47,
-        'VoiceActing': ['AnimeVost', 'Anilibria', 'JumClub'],
-        'VideoSource': 'Jujutsu-Kaisen',
+        'ReleaseYear': '2024',
+        'Genre': ['Fantasy', 'Action','Epic','Adventure'],
+        'Studio': ['Studio Add'],
+        'AmountOfEpisode': 12,
+        'VoiceActing': ['JumClub','AnimeVost','Anixar'],
+        'VideoSource': 'The-wrong-way-to-use-healing-magic',
       });
       
       return true;
