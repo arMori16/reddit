@@ -67,7 +67,7 @@ export const getEmailCode = async(email:string)=>{
         console.log('ITS HERE',email);
         
         const getCode = await axios.post('/mail/getMailReq',{
-            params:{mail:email}
+            mail:email
         })  
         console.log('ITS AN EMAIL CODE: ',getCode);
         

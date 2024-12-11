@@ -64,7 +64,7 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
             <div>
                 <div className='flex relative w-[1000px] mt-[20px] h-auto bg-[#3C3C3C] text-rose-50 rounded-[20px] flex-wrap'>
                     <div className='div-content-img h-[350px]'>
-                        <img className='div-img' src={`../../posters/${params.seriesName}.jpg`} alt={fetchedData.data.SeriesName}/>
+                        <img className='div-img' src={`http://localhost:3001/catalog/images/${params.seriesName}`} alt={fetchedData.data.SeriesName}/>
                     </div>
                     <div className='div-info '>
                         <h1 className='text-3xl mt-5 flex'>{fetchedData.data.SeriesViewName}</h1>
@@ -79,7 +79,7 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                             <li className='w-auto inline-block' >Rate: {fetchedData.data.Rate}</li>
                         </ul>
                     </div>
-                    <div className='flex relative w-[700px] ml-auto mr-auto h-[200px]'>
+                    <div className='flex relative w-[700px] ml-auto mr-auto h-auto my-5'>
                             <p className='flex items-center'>{fetchedData.data.Description}</p>
                     </div>
                 </div>
@@ -91,7 +91,7 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                     <div className="relative flex bg-[#3C3C3C] overflow-hidden w-[100%] h-[40px] rounded-t-lg text-rose-50">
                         <div className='bg-[#222222] flex relative w-[100px] p-2 rounded-br-lg h-full'>Comments</div>
                     </div>
-                    <Comments />
+                    <Comments seriesName={params.seriesName}/>
                 </div>
             </div>
         </div>

@@ -25,15 +25,15 @@ export default async function Home() {
   const amountOfSeries = reqAmountOfSeries.data; */
   const seriesInfo = await getSeriesInfo();
   return (
-      <div className='w-full h-[100%] bg-[#242424]'>
-        <div className='flex relative h-full flex-col items-center'>
+      <div className='w-full relative min-h-[100vh] h-auto bg-[#242424]'>
+        <div className='flex relative flex-col items-center'>
           <div className='flex'>
             <CarouselWrapper/>
           </div>
           <div className='flex relative justify-center h-[400px] w-[1000px]'>
 
           </div>
-          <div className='flex relative flex-wrap h-full'>
+          <div className='flex relative flex-wrap h-full mb-[200px]'>
              <TabsComponent amountOfSeries={seriesInfo.amountOfSeries} seriesNames={seriesInfo.seriesNames} seriesViewNames={seriesInfo.seriesViewName} rate={seriesInfo.rate} genre={seriesInfo.genre}/>
           </div>
         </div>
