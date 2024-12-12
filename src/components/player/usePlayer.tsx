@@ -36,9 +36,15 @@ const usePlayer =({seriesName}:any)=>{
 
             video.addEventListener("timeupdate", handleTimeUpdate);
 
+            const handleClick = () => {
+                togglePlayPause();
+            };
+            
+            playRef.current?.addEventListener("click", handleClick);
             // Очистка события
             return () => {
                 video.removeEventListener("timeupdate", handleTimeUpdate);
+                playRef.current?.removeEventListener("click", handleClick);
             };
         }
     }, [isPlaying, updateCurrentTime]);
@@ -71,6 +77,7 @@ const usePlayer =({seriesName}:any)=>{
         
         setIsShowPlay(!isShowPlay);
     }
+
     const choosedEpisode = ()=>{
         if (typeof window === "undefined") return;
         const currentEpisode = localStorage.getItem('episode');
@@ -80,21 +87,34 @@ const usePlayer =({seriesName}:any)=>{
         if(!playRef.current) return;
         playRef.current.src = `http://localhost:3001/catalog/${seriesName}-${currentEpisode}/${quality}`;
     }
-    
+    const isFocusableElement = (element: HTMLElement | null): boolean => {
+        if (!element) return false;
+        const focusableTags = ["INPUT", "TEXTAREA"];
+        const isFocusable = focusableTags.includes(element.tagName) || element.isContentEditable;
+        console.log("Element:", element, "Is Focusable:", isFocusable);
+        return isFocusable;
+    };
     
     const spaceButton = useCallback(() => {
         if (typeof window === "undefined") return;
-        
         const handleKeydown = (e:KeyboardEvent) => {
             if (e.code === 'Space') {
+                const activeElement = document.activeElement as HTMLElement;
+                console.log("Active element:", activeElement);
+
+                if (isFocusableElement(activeElement)) {
+                    console.log("Focused on a focusable element. Ignoring Space key.");
+                    return;
+                }
                 e.preventDefault();
+                
                 setIsPlaying((prevIsPlaying) => {
                     if (prevIsPlaying) {
                         playRef.current?.pause();
                     } else {
                         playRef.current?.play();
                     }
-                    
+                        
                     return !prevIsPlaying; // Возвращаем новое состояние
                 });
             }

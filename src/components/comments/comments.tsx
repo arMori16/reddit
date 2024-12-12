@@ -47,6 +47,7 @@ const Comments = ({seriesName}:{seriesName:string})=>{
     }, [updateComments]);
     const handleCreateComment = ()=>{
         setUpdateComments((prev)=>!prev);
+        setText('');
         createComment(seriesName,text)
     }
     return(
@@ -61,23 +62,27 @@ const Comments = ({seriesName}:{seriesName:string})=>{
                 
             </div>
             {commentInfo.map((comment,index)=>(
-                <div key={index} className="flex relative w-full max-w-full pt-4 mb-4 bg-[#3C3C3C] h-[120px] max-h-[150px] border-t-[1px] border-gray-500">
-                        <Link href={''} className="flex min-w-[6.25rem] h-[6.25rem]  custom-xs:min-w-[2.65rem] custom-xs:mt-[0.33rem] custom-xs:h-[2.65rem] mr-3">
-                            <img src="/Sweety.jpg" className="flex rounded-lg w-full h-full" alt="" />
+                <div key={index} className="block relative w-full max-w-full pt-4 mb-4 bg-[#3C3C3C] h-[120px] max-h-[150px] border-t-[1px] border-gray-500">
+                        <Link href={''} className="float-left min-w-[6.25rem] h-[6.25rem]  custom-xs:min-w-[2.65rem] custom-xs:mt-[0.33rem] custom-xs:h-[2.65rem] mr-3">
+                            <img src="/Sweety.jpg" className="block rounded-lg w-full h-full" alt="" />
                         </Link>
-                    <div className="relative w-full flex fex-col h-[3rem]">
-                            <div className="flex relative flex-col comment-head w-full">
-                                <div className="relative flex text-[#B3DCC5] w-auto h-auto">
-                                    {comment.user}
+                    <div className="relative w-full block h-[3rem]">
+                            <div className="block relative comment-head w-full">
+                                <div className="relative flex flex-col w-auto h-auto">
+                                    <span className="text-[#B3DCC5]"> 
+                                        {comment.user}
+                                    </span>
+                                    <span className="relative flex items-center justify-center bg-[#629377] text-rose-50 rounded-md  w-[5rem] max-w-[6rem] h-5 text-[11px] px-1">
+                                        {comment.time}
+                                    </span>
                                 </div>
-                                <div className="relative flex bg-[#629377] text-rose-50 rounded-md justify-center  w-[5rem] max-w-[6rem] h-5 text-[11px] items-center px-1">
+                                {/* <div className="relative block bg-[#629377] text-rose-50 rounded-md  w-[5rem] max-w-[6rem] h-5 text-[11px] px-1">
                                     {comment.time}
-                                </div>
-
+                                </div> */}
                             </div>
                     </div>
-                    <div className="flex w-full custom-xs:ml-0">
-                        <div className="relative flex text-rose-50 mt-2 w-full h-auto text-[14px]">
+                    <div className="block w-full custom-xs:ml-0">
+                        <div className="relative block text-rose-50 mt-2 w-full h-auto text-[14px]">
                             {comment.text}
                         </div>
                     </div>

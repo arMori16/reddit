@@ -15,6 +15,10 @@ module.exports = {
       screens: {
         'custom-md': { max: '40.5rem' }, // 648px breakpoint
         'custom-xs': { max: '36.25rem' },
+        'custom-image':{max:'21.62rem'},
+        landscape:{
+          raw:"(orientation:landscape)"
+        }
       },
     },
   },

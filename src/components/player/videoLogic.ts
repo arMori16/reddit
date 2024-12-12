@@ -131,7 +131,6 @@ export function initializeVideoControls(videoSelector:string, playerContainerSel
             return `${hours}:${leadingZeroFormatter.format(minutes)}:${leadingZeroFormatter.format(seconds)}`
         }
     }
-    console.log('SEICAHS INITIAL');
 }
 
 export const toggleVolume = () => {

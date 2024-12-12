@@ -63,11 +63,11 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
             <ClientRefresh />
             <div className='w-full flex flex-col items-center  h-full'>
                 <div className='flex relative min-w-[20%] w-[62.5rem] max-w-[90%] mt-[20px] h-auto bg-[#3C3C3C] text-rose-50 rounded-[20px] flex-wrap'>
-                    <div className='div-content-img h-[350px]'>
-                        <img className='div-img' src={`http://localhost:3001/catalog/images/${params.seriesName}`} alt={fetchedData.data.SeriesName}/>
+                    <div className='flex relative m-5 w-[15.62rem] max-h-[21.87rem] custom-image:h-auto'>
+                        <img className='flex max-h-full w-full rounded-[20px]' src={`http://localhost:3001/catalog/images/${params.seriesName}`} alt={fetchedData.data.SeriesName}/>
                     </div>
                     <div className='div-info custom-md:ml-5'>
-                        <h1 className='text-3xl mt-5 flex'>{fetchedData.data.SeriesViewName}</h1>
+                        <h1 className='text-3xl custom-xs:mt-0 mt-5 flex'>{fetchedData.data.SeriesViewName}</h1>
                         <ul className='inline-flex flex-col'>
                             <li className='w-auto inline-block' >Status: {fetchedData.data.Status}</li>
                             <li className='w-auto inline-block' >Type: {fetchedData.data.Type}</li>
