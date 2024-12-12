@@ -37,6 +37,10 @@ body{
 .div-info{
     font-size: 18px;
 }
-.series-div{
-    
-}
+
+/* @media (max-width:480px){
+    .xuy{
+        margin-right: auto;
+        margin-left: auto;
+    }
+} */

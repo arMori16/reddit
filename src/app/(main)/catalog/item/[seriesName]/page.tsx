@@ -1,5 +1,5 @@
 
-import '@/app/catalog/item/[seriesName]/page.css'
+import '@/app/(main)/catalog/item/[seriesName]/page.css'
 import axios from '@/components/api/axios';
 import { setupTokenRefresh } from '@/components/api/setup-token';
 import Comments from '@/components/comments/comments';
@@ -61,12 +61,12 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
     return(
         <div className="div-main-content-container bg-[#242424]">
             <ClientRefresh />
-            <div>
-                <div className='flex relative w-[1000px] mt-[20px] h-auto bg-[#3C3C3C] text-rose-50 rounded-[20px] flex-wrap'>
+            <div className='w-full flex flex-col items-center  h-full'>
+                <div className='flex relative min-w-[20%] w-[62.5rem] max-w-[90%] mt-[20px] h-auto bg-[#3C3C3C] text-rose-50 rounded-[20px] flex-wrap'>
                     <div className='div-content-img h-[350px]'>
                         <img className='div-img' src={`http://localhost:3001/catalog/images/${params.seriesName}`} alt={fetchedData.data.SeriesName}/>
                     </div>
-                    <div className='div-info '>
+                    <div className='div-info custom-md:ml-5'>
                         <h1 className='text-3xl mt-5 flex'>{fetchedData.data.SeriesViewName}</h1>
                         <ul className='inline-flex flex-col'>
                             <li className='w-auto inline-block' >Status: {fetchedData.data.Status}</li>
@@ -79,7 +79,7 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                             <li className='w-auto inline-block' >Rate: {fetchedData.data.Rate}</li>
                         </ul>
                     </div>
-                    <div className='flex relative w-[700px] ml-auto mr-auto h-auto my-5'>
+                    <div className='flex relative w-[700px] p-5 ml-auto mr-auto h-auto my-5'>
                             <p className='flex items-center'>{fetchedData.data.Description}</p>
                     </div>
                 </div>
@@ -87,7 +87,7 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                 <div className='bg-[#242424] h-[100px]'>
 
                 </div>
-                <div className='w-full'>
+                <div className='w-[62.5rem] max-w-[90%]'>
                     <div className="relative flex bg-[#3C3C3C] overflow-hidden w-[100%] h-[40px] rounded-t-lg text-rose-50">
                         <div className='bg-[#222222] flex relative w-[100px] p-2 rounded-br-lg h-full'>Comments</div>
                     </div>
