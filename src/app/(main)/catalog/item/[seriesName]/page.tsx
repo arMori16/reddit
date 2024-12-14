@@ -60,14 +60,14 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
 
     return(
         <div className="div-main-content-container bg-[#242424]">
-            <ClientRefresh />
-            <div className='w-full flex flex-col items-center  h-full'>
-                <div className='flex relative min-w-[20%] w-[62.5rem] max-w-[90%] mt-[20px] h-auto bg-[#3C3C3C] text-rose-50 rounded-[20px] flex-wrap'>
-                    <div className='flex relative m-5 w-[15.62rem] max-h-[21.87rem] custom-image:h-auto'>
+            {/* <ClientRefresh /> */}
+            <div className='w-[68rem] max-w-full flex flex-col items-center  h-full'>
+                <div className='flex relative p-5 w-[68rem] max-w-[96%] mt-9 h-auto bg-[#3C3C3C] text-rose-50 rounded-[20px] flex-wrap'>
+                    <div className='flex relative mr-5 custom-image:mr-0 w-[15.62rem] max-h-[21.87rem] custom-image:h-auto'>
                         <img className='flex max-h-full w-full rounded-[20px]' src={`http://localhost:3001/catalog/images/${params.seriesName}`} alt={fetchedData.data.SeriesName}/>
                     </div>
-                    <div className='div-info custom-md:ml-5'>
-                        <h1 className='text-3xl custom-xs:mt-0 mt-5 flex'>{fetchedData.data.SeriesViewName}</h1>
+                    <div className='div-info'>
+                        <h1 className='text-3xl custom-xs:mt-0  flex'>{fetchedData.data.SeriesViewName}</h1>
                         <ul className='inline-flex flex-col'>
                             <li className='w-auto inline-block' >Status: {fetchedData.data.Status}</li>
                             <li className='w-auto inline-block' >Type: {fetchedData.data.Type}</li>
@@ -79,7 +79,7 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                             <li className='w-auto inline-block' >Rate: {fetchedData.data.Rate}</li>
                         </ul>
                     </div>
-                    <div className='flex relative w-[700px] p-5 ml-auto mr-auto h-auto my-5'>
+                    <div className='flex relative break-words w-[43.75rem] ml-auto mr-auto h-auto mt-7'>
                             <p className='flex items-center'>{fetchedData.data.Description}</p>
                     </div>
                 </div>
@@ -87,7 +87,7 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                 <div className='bg-[#242424] h-[100px]'>
 
                 </div>
-                <div className='w-[62.5rem] max-w-[90%]'>
+                <div className='w-[68rem] max-w-[96%]'>
                     <div className="relative flex bg-[#3C3C3C] overflow-hidden w-[100%] h-[40px] rounded-t-lg text-rose-50">
                         <div className='bg-[#222222] flex relative w-[100px] p-2 rounded-br-lg h-full'>Comments</div>
                     </div>

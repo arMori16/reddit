@@ -13,13 +13,17 @@ module.exports = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       screens: {
+        'custom-s':{max:'26rem'},
         'custom-md': { max: '40.5rem' }, // 648px breakpoint
         'custom-xs': { max: '36.25rem' },
+        'custom-lg': { max: '59.125rem' },
         'custom-image':{max:'21.62rem'},
         landscape:{
           raw:"(orientation:landscape)"
         }
       },
+      fontFamily:{
+      }
     },
   },
   plugins: [],
