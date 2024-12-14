@@ -78,11 +78,6 @@ li{
     display: flex;
     position: relative;
 } */
-.avatar-div{
-    display: flex;
-    position: relative;
-    margin-left: 0px;
-}
 .model-overlay{
     position: fixed;
     top: 0;

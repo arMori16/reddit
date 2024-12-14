@@ -14,7 +14,7 @@ const CarouselWrapper = async()=>{
           <div className='carousel-wrapper'>
             {Array.from({length:seriesInfo.amountOfSeries},(_,index)=>(
               <Link key={index} href={`catalog/item/${seriesInfo.seriesNames[index]}`}>
-                <img src={`http://localhost:3001/catalog/images/${seriesInfo.seriesNames[index]}`} alt="" className='poster-img'/>
+                <img src={`http://localhost:3001/catalog/images/${seriesInfo.seriesNames[index]}/images`} alt="" className='poster-img'/>
                   <span className='poster-span'>
                     {seriesInfo.seriesViewName[index]}
                   </span>

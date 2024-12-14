@@ -66,11 +66,9 @@ const Player = ({ seriesName,episode }: { seriesName: string,episode:number })=>
         
     },[])
     initializeVideoControls('video','.player-container');
-    volumeLogic() ;
-    console.log('isShowPLYA!!!!!!!!!',isShowPlay);
-    
+    volumeLogic();
     return (
-    <div className={"overflow-hidden player-container relative w-[100%] max-w-[1000px]"}data-volume-level={'high'}>
+    <div className={"overflow-hidden player-container max-h-[31.25rem] h-[31.25rem]  relative w-[100%] max-w-[62.5rem]"}data-volume-level={'high'}>
         {isShowPlay && (
             <div className="w-[100%] h-[100%] absolute flex items-center justify-center">
                 <button className="w-[100%] h-[100%] flex items-center justify-center  z-[100]" onClick={()=>{toggleShowPlay();toggleControlsVisibility();/* setIsLoading(true);loading() */}}>
@@ -83,7 +81,7 @@ const Player = ({ seriesName,episode }: { seriesName: string,episode:number })=>
                 <Loader className="loading" color="white" width={50} height={50}/>
             </div>
         )}
-        <video ref={playRef} controls={false} className='w-full video h-full object-cover rounded-lg' src={`http://localhost:3001/catalog/${seriesName}-${getNumOfEpisode()}/1080p`}></video>
+        <video ref={playRef} controls={false} className='w-full video h-auto max-h-full object-cover rounded-lg' src={`http://localhost:3001/catalog/${seriesName}-${getNumOfEpisode()}/1080p`}></video>
             <div className={`flex backdrop-blur-xl controls ${isControlsVisible ? 'flex visible' : 'hidden'} bottom-[45px] relative  items-center p-3 justify-between z-2000`}>
                 <div className="flex items-center">
                     <button onClick={()=>skipTime('backward')}><RotateCcw color="white"/></button>

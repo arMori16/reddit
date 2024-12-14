@@ -9,19 +9,6 @@ import Cookies from 'js-cookie';
 const Avatar = ()=> {
     const [profile,setProfile] = useState(false);
     const divRef = useRef<HTMLDivElement>(null);
-    // const handleClick = (e:React.MouseEvent<HTMLDivElement>)=>{
-    //     e.stopPropagation();
-    // }
-    //The first variant
-    /* const useEffects = useEffect(()=>{
-        const handler = (e:MouseEvent)=>{
-            if(!divRef.current?.contains(e.target as Node)){
-                setProfile(false);
-            }
-
-        }
-        document.addEventListener('mousedown',handler)
-    },[]) */
     const handleClickOutside = (event:MouseEvent)=>{
         if(divRef.current && !divRef.current.contains(event.target as Node)){
             document.removeEventListener('mousedown',handleClickOutside)
@@ -52,16 +39,16 @@ const Avatar = ()=> {
         }
     }
     return (
-        <div className="avatar">
-            <button onClick={handleAvatarClick} className='avatar-btn'>
-                <img className='avatar' src='/Sweety.jpg' width={50} height={50}/>
+        <div className="flex relative w-[3rem] h-auto">
+            <button onClick={handleAvatarClick} className='w-[3rem] h-[3rem] overflow-hidden border-[#B3DCC5] border-[3px] rounded-[50%] z-[1000]'>
+                <img className='rounded-[50%]' src='/Sweety.jpg'/>
             </button>
             {profile===true && (
                     <div className='profile-container' ref={divRef}>
                         <a href='/users/:userId' className='profile'>
                             <span className='profile-item'>
                                 <span className='span-img'> 
-                                    <img className='avatar' src='/Sweety.jpg'/>
+                                    <img className='rounded-[50%]' src='/Sweety.jpg'/>
                                 </span>
                                 <span className='view-profile-text'>
                                     View Profile

@@ -28,6 +28,9 @@
     margin: 0;
     padding: 0;
 }
+  html::-webkit-scrollbar{
+    display: none;
+  }
   @font-face{
     font-family: 'Aclonica';
     src:url('./Aclonica-Regular.ttf');

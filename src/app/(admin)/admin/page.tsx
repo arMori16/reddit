@@ -1,19 +1,37 @@
+"use client"
+
+import Avatar from "@/components/navbar-components/avatar/avatar";
+import SearchBar from "@/components/navbar-components/search-bar/search-bar";
+import { usePathname, useRouter } from "next/navigation";
+
+
 
 
 
 const AdminPage = ()=>{
     return(
-        <div className="flex relative w-full min-h-[100vh] bg-[#242424]">
-            <div className="flex flex-col bg-[#3A2A8D] font-semibold text-[1.25rem] text-rose-50 p-5 bg-opacity-40 w-[22.5rem] max-w-[22.5rem]">
-                <div className="flex font-bold ml-5  text-[1.50rem] ">
-                    Admin
+        <div className="flex flex-col relative w-full min-h-full">
+            {/* {`search+logo`} */}
+            <div className="flex h-[9.25rem] pt-7 w-full max-w-full">
+                <div className="flex items-center w-[85%] justify-center pl-7">
+                    <SearchBar/>
                 </div>
-                <button className="flex mt-5 items-center rounded-xl pl-8 hover:bg-[#6A4CFF] hover:bg-opacity-30 max-w-full w-full h-[4rem]">
-                    Dashboard
-                </button>
+                <div className="flex flex-col items-center relative">
+                    <Avatar/>
+                    <span className="flex text-[#D98C8C] font-semibold text-[1.25rem]">Admin</span>
+                </div>
             </div>
-            <div>
-                
+            {/* {`3labels`} */}
+            <div className="">
+
+            </div>
+            {/* {`labels2`} */}
+            <div className="">
+
+            </div>
+            {/* {`label1`} */}
+            <div className="">
+
             </div>
         </div>
     )
