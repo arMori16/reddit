@@ -31,7 +31,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-w-full min-h-screen h-full bg-[#242424]">
         <div className="flex w-full min-h-[100vh] h-[100vh] bg-[#242424]">
-            <div className="flex flex-col break-words sticky top-1 flex-shrink-0 h-full bg-[#3A2A8D] font-medium text-[1.25rem] text-rose-50 p-5 bg-opacity-40 w-[18rem] max-w-[18rem]">
+            <div className="flex flex-col break-words fixed flex-shrink-0 h-full bg-[#3A2A8D] font-medium text-[1.25rem] text-rose-50 p-5 bg-opacity-40 w-[18rem] max-w-[18rem]">
                 <div className="flex font-bold ml-5 text-[1.50rem] ">
                     Admin
                 </div>
