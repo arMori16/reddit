@@ -10,26 +10,10 @@
     align-items: center;
     justify-content: center;
 } */
-.search-bar-content{
+/* .search-bar-content{
     width: 560px;
     display: flex;
     position: relative;
     align-items: center;
     justify-items: center;
-    /* padding: 10px; */
-}
-.input-bar{
-    width: 560px;
-    height: 40px;
-    /* border:2px solid #B3DCC5; */
-    border-radius: 20px;
-    padding: 5px 5px 5px 40px;
-}
-.input-bar:focus{
-    outline: none;
-}
-.magnifier-bar{
-    position: absolute;
-    right: 0;
-    padding: 5px 15px 5px 5px;
-}
+} */

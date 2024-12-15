@@ -1,5 +1,6 @@
 "use client"
 import "@/app/globals.css"
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function RootLayout({
@@ -9,6 +10,12 @@ export default function RootLayout({
 }) {
   const router = useRouter();
   const pathName = usePathname();
+  const items= [
+    'Dashboard',
+    'Users',
+    'Series',
+    'Comments'
+  ]
   const isActive = (url:string) => {
     if(url === pathName){
       return true;
@@ -16,42 +23,24 @@ export default function RootLayout({
       return false;
     }
   }
-  const handleRedirectUser = (url:string)=>{
+  /* const handleRedirectUser = (url:string)=>{
       router.push(`http://localhost:3000/admin/${url}`)
-  }
+  } */
+ /* className={`flex mt-2 items-center ${isActive('/admin/users')?'bg-[#6A4CFF] bg-opacity-30':''} rounded-xl pl-8 hover:bg-[#6A4CFF] duration-500 transition ease-in-out hover:bg-opacity-30 max-w-full w-full h-[4rem]`} */
   return (
     <html lang="en">
-      <body className="w-full min-h-full bg-[#242424]">
-        <div className="flex relative w-full min-h-[100vh] h-[100vh] bg-[#242424]">
-            <div className="flex flex-col bg-[#3A2A8D] font-semibold text-[1.25rem] text-rose-50 p-5 bg-opacity-40 w-[22.5rem] max-w-full">
+      <body className="min-w-full min-h-screen h-full bg-[#242424]">
+        <div className="flex w-full min-h-[100vh] h-[100vh] bg-[#242424]">
+            <div className="flex flex-col break-words sticky top-1 flex-shrink-0 h-full bg-[#3A2A8D] font-medium text-[1.25rem] text-rose-50 p-5 bg-opacity-40 w-[18rem] max-w-[18rem]">
                 <div className="flex font-bold ml-5 text-[1.50rem] ">
                     Admin
                 </div>
-                <button onClick={()=>{
-                  handleRedirectUser('');
-                  }} className={`flex mt-5 items-center ${isActive('/admin')?'bg-[#6A4CFF] bg-opacity-30':''} rounded-xl pl-8 hover:bg-[#6A4CFF] hover:bg-opacity-30 max-w-full w-full h-[4rem]`}>
-                    Dashboard
-                </button>
-                <button onClick={()=>{
-                  handleRedirectUser('users');
-              }} className={`flex  items-center ${isActive('/admin/users')?'bg-[#6A4CFF] bg-opacity-30':''} rounded-xl pl-8 hover:bg-[#6A4CFF] hover:bg-opacity-30 max-w-full w-full h-[4rem]`}>
-                    Users
-                </button>
-                <button onClick={()=>{
-                  handleRedirectUser('series');
-              }} className={`flex items-center ${isActive('/admin/series')?'bg-[#6A4CFF] bg-opacity-30':''} rounded-xl pl-8 hover:bg-[#6A4CFF] hover:bg-opacity-30 max-w-full w-full h-[4rem]`}>
-                    Series
-                </button>
-                <button onClick={()=>{
-                  handleRedirectUser('comments');
-              }} className={`flex items-center ${isActive('/admin/comments')?'bg-[#6A4CFF] bg-opacity-30':''} rounded-xl pl-8 hover:bg-[#6A4CFF] hover:bg-opacity-30 max-w-full w-full h-[4rem]`}>
-                    Comments
-                </button>
-            </div>
-            <div>
                 
+                <Link href={''} className={`flex mt-2 items-center ${isActive('/admin/users')?'bg-[#6A4CFF] bg-opacity-30':''} rounded-xl pl-8 hover:bg-[#6A4CFF] duration-500 transition ease-in-out hover:bg-opacity-30 max-w-full w-full h-[4rem]`}>
+
+                </Link>
             </div>
-          {children}
+            <div className="ml-[18rem] flex-[1] min-h-full">{children}</div>
         </div>
       </body>
     </html>

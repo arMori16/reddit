@@ -18,6 +18,7 @@ module.exports = {
         'custom-xs': { max: '36.25rem' },
         'custom-lg': { max: '59.125rem' },
         'custom-image':{max:'21.62rem'},
+        'custom-xl2':{max:'71.25rem'},
         landscape:{
           raw:"(orientation:landscape)"
         }
