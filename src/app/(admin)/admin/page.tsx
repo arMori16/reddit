@@ -1,14 +1,17 @@
-"use client"
+"use server"
 
 import Avatar from "@/components/navbar-components/avatar/avatar";
 import SearchBar from "@/components/navbar-components/search-bar/search-bar";
+import { getALlCounts, getSeries } from "@/utils/admin.logic";
 import { usePathname, useRouter } from "next/navigation";
 
 
 
 
 
-const AdminPage = ()=>{
+const AdminPage = async()=>{
+    const counts = await getALlCounts();
+    const seriesInfo = await getSeries();
     return(
         <div className="flex flex-col w-full min-h-full px-5">
             {/* {`search+logo`} */}
@@ -21,31 +24,51 @@ const AdminPage = ()=>{
                     <span className="flex text-[#D98C8C] font-semibold text-[1.25rem]">Admin</span>
                 </div>
             </div>
+            <div className="flex font-medium text-[1.5rem] h-[3rem] ml-4 text-rose-50">
+                Analytics
+            </div>
             {/* {`3labels`} */}
             <div className="flex max-w-fll w-full min-h-[30rem] h-[30rem]">
-                {/* {`labels2`} */}
+                {/* SeriesInfo */}
                 <div className="flex max-w-[50%] w-[50%] h-full">
-                    <div className="flex w-full max-w-full bg-[#3A2A8D] bg-opacity-70 rounded-lg">
-
+                    <div className="flex flex-col w-full max-w-full bg-[#3A2A8D] p-5 bg-opacity-70 rounded-lg">
+                        {Array.from({length:seriesInfo.length},(_,index)=>(
+                            <div key={index} className="flex max-w-full w-full h-[3.5rem] items-center border-b-2 overflow-scroll border-rose-50 text-[1rem] text-rose-50 font-medium">
+                                <div className="flex p-1 rounded-md w-auto h-[85%]">
+                                    <img src={`http://localhost:3001/catalog/images/${seriesInfo[index].SeriesName}/images`} className="rounded-sm" alt="" />
+                                </div>
+                                <div className="flex ml-1">
+                                    {seriesInfo[index].SeriesViewName}
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
-                {/* <div className="flex w-full max-w-full justify-between max-h-[20rem] h-[20rem]">
-                </div> */}
+                {/* SeriesInfo */}
                 <div className="flex flex-col max-w-[48%] w-[48%] h-full text-[1.25rem] text-rose-50 font-light ml-auto">
                     <div className="flex w-full h-[9rem] items-center justify-end gap-5">
                         <button className="flex flex-col max-w-[33.33%] w-[12rem] p-3 h-[5.4rem] bg-[#3A2A8D] bg-opacity-70 rounded-lg">
                             <div className="flex">
                                 Comments
                             </div>
+                            <div className="flex w-full justify-center max-w-full text-[1rem] text-rose-50 font-medium">
+                                {counts.comments}
+                            </div>
                         </button>
                         <button className="flex flex-col max-w-[33.33%] w-[10rem] p-3 h-[5.4rem] bg-[#3A2A8D] bg-opacity-70 rounded-lg">
                             <div className="flex">
                                 Series
                             </div>
+                            <div className="flex w-full justify-center max-w-full text-[1rem] text-rose-50 font-medium">
+                                {counts.series}
+                            </div>
                         </button>
                         <button className="flex flex-col  max-w-[33.33%] w-[11rem] p-3 h-[5.4rem] bg-[#3A2A8D] bg-opacity-70 rounded-lg">
                             <div className="flex">
                                 Users
+                            </div>
+                            <div className="flex text-[1rem] w-full justify-center max-w-full text-rose-50 font-medium">
+                                {counts.users}
                             </div>
                         </button>
                     </div>
