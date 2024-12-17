@@ -1,4 +1,6 @@
 import axios from "@/components/api/axios"
+import Cookies from "js-cookie";
+/* import { cookies } from "next/headers"; */
 
 
 
@@ -28,5 +30,20 @@ export const getSeries = async()=>{
         return series.data
     }catch(err){
         throw new Error('Error when trying to getSeries for admin page(dashboard)!');
+    }
+}
+
+export const uploadImage = async(file:any)=>{
+    try{
+        const formData = new FormData();
+        formData.append('image',file);
+        const atToken = Cookies.get('accessToken');
+        const postFile = await axios.post('/media/upload',formData,{
+            headers:{
+                'Authorization':`Bearer ${atToken}`
+            }
+        })
+    }catch(err){
+        throw new Error(`Can't upload the image!\n${err}`)
     }
 }
