@@ -1,10 +1,10 @@
 import '@/components/mainPageComponent/carouselWrapper/carouselWrapper.css'
-import getSeriesInfo from '@/utils/getSeriesInfo';
+import getSeriesInfo, { getSeasonedCatalog } from '@/utils/getSeriesInfo';
 import Link from 'next/link';
 
 
 const CarouselWrapper = async()=>{
-  const seriesInfo = await getSeriesInfo();
+  const seriesInfo = await getSeasonedCatalog();
 
     return(
         <div className='main-container'>
@@ -12,9 +12,9 @@ const CarouselWrapper = async()=>{
               SEASON'S ANIME
           </div>
           <div className='carousel-wrapper'>
-            {Array.from({length:seriesInfo.amountOfSeries},(_,index)=>(
-              <Link key={index} href={`catalog/item/${seriesInfo.seriesNames[index]}`}>
-                <img src={`http://localhost:3001/media/images/${seriesInfo.seriesNames[index]}/images`} alt="" className='poster-img'/>
+            {Array.from({length:7},(_,index)=>(
+              <Link key={index} href={`catalog/item/${seriesInfo.seriesName[index]}`}>
+                <img src={`http://localhost:3001/media/images/${seriesInfo.seriesName[index]}/images`} alt="" className='poster-img'/>
                   <span className='poster-span'>
                     {seriesInfo.seriesViewName[index]}
                   </span>

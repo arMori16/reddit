@@ -2,7 +2,9 @@
 import Cookies from "js-cookie";
 import axios from "../api/axios";
 import origAxios from 'axios';
-import { setupTokenRefresh } from "../api/setup-token";
+import { tokenManager } from "../api/setup-token";
+import { toast } from "react-toastify";
+
 
 export const saveTokensToCookies = async(accessToken:string,refreshToken:string):Promise<void>=>{
     const accessTokenExpiration = new Date(new Date().getTime() + 15 * 60 * 1000);
@@ -35,11 +37,11 @@ export const backHandleLogin = async (action:string,data:any,setServerError:(err
         
         if(res.data.tokens){
             if(isEmailCode){
-                alert('Login Successful!')
+                toast.success('Successfully')
                 console.log('BackHandleLogin true');
                 Cookies.set('state','registered');
                 saveTokensToCookies(res.data.tokens.access_token,res.data.tokens.refresh_token);
-                setupTokenRefresh();
+                tokenManager.setupTokenRefresh();
                 window.location.reload();
                 console.log('vizvan setupTokenRefresh');
             }

@@ -5,7 +5,6 @@ import "@/components/auth-window/auth-window.css"
 import Avatar from '../navbar-components/avatar/avatar';
 import NavbarLogin from './navbar-login';
 import SearchBar from '../navbar-components/search-bar/search-bar';
-import { ClientRefresh } from '../mainPageComponent/setupTokenRefreshServer';
 import Link from 'next/link';
 
 
@@ -16,7 +15,6 @@ const Navbar = ({user}:{user:any}) => {
                 <img src="http://localhost:3001/media/images/main2.jpeg/images" className='object-cover w-full h-full' alt="" />
             </div>
             <div className='flex relative w-full border-y-2 border-[#B3DCC5] bg-[#585454]'>
-                <ClientRefresh/>
                 <div className='flex ml-5 relative h-[3.50rem] items-center'>
                     <div className='flex relative justify-items-center items-center h-full'>
                         <div className='flex relative w-[2.50rem] h-[2.50rem]'>
@@ -27,7 +25,7 @@ const Navbar = ({user}:{user:any}) => {
                         </div>
                     </div>
                 </div>
-                <div className='flex relative ml-auto items-center justify-center custom-lg:hidden'>
+                <div className='flex w-[80%] relative ml-auto items-center justify-center custom-lg:hidden'>
                     <SearchBar/>
                 </div>
                 <div className='text-align'>

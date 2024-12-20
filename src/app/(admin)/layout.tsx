@@ -1,9 +1,11 @@
 "use client"
 import "@/app/globals.css"
+import ClientRefreshToken from "@/components/api/clientRefreshToken";
 import Avatar from "@/components/navbar-components/avatar/avatar";
 import SearchBar from "@/components/navbar-components/search-bar/search-bar";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { ToastContainer } from "react-toastify";
 
 export default function RootLayout({children}:{children: React.ReactNode}){
   const pathName = usePathname();
@@ -17,6 +19,8 @@ export default function RootLayout({children}:{children: React.ReactNode}){
   return (
     <html lang="en">
       <body className="min-w-full min-h-screen h-full bg-[#242424]">
+      <ToastContainer position="bottom-right"/>
+      <ClientRefreshToken/>
         <div className="flex w-full min-h-[100vh] h-[100vh] bg-[#242424]">
             <div className="flex flex-col break-words fixed flex-shrink-0 h-full bg-[#2C2C2C] font-medium text-[1.25rem] text-rose-50 p-5 bg-opacity-50 w-[18rem] max-w-[18rem]">
                 <div className="flex font-bold ml-5 mb-3 text-[1.50rem] ">

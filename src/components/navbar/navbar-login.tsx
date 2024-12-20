@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from "react";
 import AuthWindow from "../auth-window/auth-window";
 import "@/components/navbar/Navbar.css"
-import { setupTokenRefresh } from "../api/setup-token";
 
 const NavbarLogin = ()=>{
     const [showAuthWindow,setAuthWindow] = useState(false);

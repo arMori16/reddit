@@ -1,10 +1,7 @@
 
 import '@/app/(main)/catalog/item/[seriesName]/page.css'
 import axios from '@/components/api/axios';
-import { setupTokenRefresh } from '@/components/api/setup-token';
 import Comments from '@/components/comments/comments';
-import { ClientRefresh } from '@/components/mainPageComponent/setupTokenRefreshServer';
-import useVideo from '@/components/mainPageComponent/videoFormatter';
 import MediaPlayerSection from '@/components/player/MediaPlayerSection/MediaPlayerSection';
 import Episodes from '@/components/player/amountOfEpisode/amountOfEpisodeLogic';
 import setEpisode from '@/components/player/amountOfEpisode/amountOfEpisodeLogic';

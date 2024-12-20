@@ -1,17 +1,10 @@
 "use client"
 
 import React, { useEffect,useState } from 'react';
-import axios from '../api/axios';
-import { error } from 'console';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { AxiosResponse } from 'axios';
 import { signupScheme,loginScheme } from './auth-validation-scheme';
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from 'yup';
 import { useForm, SubmitHandler } from "react-hook-form";
-import Cookies from 'js-cookie';
-import { setupTokenRefresh } from '../api/setup-token';
 import {  saveTokensToCookies,backHandleLogin, getEmailCode } from './auth-window-logic';
 import errorStorage from '../useZustand/zustandErrorStorage';
 

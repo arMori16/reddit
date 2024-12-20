@@ -1,14 +1,36 @@
-"use server"
-import { getALlCounts, getSeries } from "@/utils/admin.logic";
+"use client"
+import usePageCounter from "@/components/useZustand/zustandPageCounter";
+import { getAllCounts, getSeries } from "@/utils/admin.logic";
+import InfiniteScroll from "@/utils/infiniteScroll";
+import { useEffect, useState } from "react";
 
 
 
 
 
 
-const AdminPage = async()=>{
-    const counts = await getALlCounts();
-    const seriesInfo = await getSeries();
+const AdminPage = ()=>{
+    const {getPage} = usePageCounter();
+    const page = getPage();
+    const [counts,setCounts] = useState<{
+        comments:number,
+        series:number,
+        users:number,
+    }>({ comments: 0, users: 0, series: 0 });
+    const [seriesInfo,setSeriesInfo] = useState<{
+        SeriesName:string,
+        SeriesViewName:string
+    }[]>([]);
+    
+    useEffect(()=>{
+        const fetchedData = async()=>{
+            const countsData = await getAllCounts();
+            const seriesInfoData = await getSeries(page);
+            setCounts(countsData);
+            setSeriesInfo(seriesInfoData);
+        }
+        fetchedData()
+    },[])
     return(
         <div className="flex flex-col w-full min-h-full px-5">
             {/* {`search+logo`} */}
@@ -28,17 +50,17 @@ const AdminPage = async()=>{
             <div className="flex max-w-fll w-full min-h-[30rem] h-[30rem]">
                 {/* SeriesInfo */}
                 <div className="flex max-w-[50%] w-[50%] h-full">
-                    <div className="flex flex-col w-full max-w-full bg-[#352877] p-5 rounded-lg">
-                        {Array.from({length:seriesInfo.length},(_,index)=>(
-                            <div key={index} className="flex max-w-full w-full h-[3.5rem] items-center border-b-2 overflow-scroll border-rose-50 text-[1rem] text-rose-50 font-medium">
-                                <div className="flex p-1 rounded-md w-auto h-[85%]">
-                                    <img src={`http://localhost:3001/media/images/${seriesInfo[index].SeriesName}/images`} className="rounded-sm" alt="" />
-                                </div>
-                                <div className="flex ml-1">
-                                    {seriesInfo[index].SeriesViewName}
-                                </div>
+                    <div className="flex w-full max-w-full bg-[#352877] p-5 rounded-lg text-[1rem] text-rose-50 font-medium">
+                        <InfiniteScroll itemsWidth={`70%`} width={`100%`} height={`100%`} itemsHeight={`3.5rem`} fetchedData={seriesInfo} argument={`SeriesViewName`}>
+                            <div className="flex flex-col max-w-[2.5rem] w-[2.5rem] h-full items-center overflow-scroll">
+                            {Array.from({length:seriesInfo.length},(_,index)=>(
+                                    <div key={index} className="flex p-1 w-[2.5rem] h-[3.5rem] border-b-2 border-white">
+                                        <img src={`http://localhost:3001/media/images/${seriesInfo[index].SeriesName}/images`} className="rounded-sm" alt="" />
+                                    </div>
+                            ))}
                             </div>
-                        ))}
+                        </InfiniteScroll>
+                        
                     </div>
                 </div>
                 {/* SeriesInfo */}

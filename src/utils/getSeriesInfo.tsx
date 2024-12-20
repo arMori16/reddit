@@ -21,7 +21,18 @@ const getSeriesInfo = async()=>{
     }
 }
 
-const getSeasonedCatalog = async()=>{
-    
+export const getSeasonedCatalog = async()=>{
+    const getFirstPageCatalog = await axios.get('/catalog/getCatalog',{
+        params:{
+            a:7
+        }
+    });
+    console.log('GETFIRSTPAGE: ',getFirstPageCatalog.data);
+    const seriesViewNames = getFirstPageCatalog.data.map((item:{SeriesViewName:string}) => item.SeriesViewName);
+    const seriesNames = getFirstPageCatalog.data.map((item:{SeriesName:string}) => item.SeriesName);
+    return {
+        seriesName:seriesNames,
+        seriesViewName:seriesViewNames,
+    }
 }
 export default getSeriesInfo;

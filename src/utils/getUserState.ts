@@ -1,3 +1,4 @@
+'use server'
 import redis from "@/redis/redisConfig";
 import { cookies } from "next/headers";
 
