@@ -3,9 +3,6 @@ import '@/app/(main)/catalog/item/[seriesName]/page.css'
 import axios from '@/components/api/axios';
 import Comments from '@/components/comments/comments';
 import MediaPlayerSection from '@/components/player/MediaPlayerSection/MediaPlayerSection';
-import Episodes from '@/components/player/amountOfEpisode/amountOfEpisodeLogic';
-import setEpisode from '@/components/player/amountOfEpisode/amountOfEpisodeLogic';
-import Player from '@/components/player/player';
 import { notFound } from "next/navigation";
 
 async function getData(seriesName: string) {

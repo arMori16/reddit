@@ -13,7 +13,7 @@ type Action={
 
 const usePageCounter = create<State & Action>((set:any,get:any)=>({
     page:0,
-    setPage:(num:number)=>set({num}),
+    setPage:(num:number)=>set({page:num}),
     getPage:()=>get().page
 }))
 export default usePageCounter;

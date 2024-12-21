@@ -7,10 +7,15 @@ import { useEffect, useRef, useState } from "react"
     SeriesViewName:string,
     SeriesName:string
 } */
-const InfiniteScroll = ({fetchedData,children,height,itemsHeight,argument,width,itemsWidth}:{fetchedData:any[],children?:React.ReactNode,height:number | string,itemsHeight:any,argument:any,width:number | string,itemsWidth:number | string})=>{
+const InfiniteScroll = ({fetchedData,children,height,itemsHeight,argument,width,itemsWidth,componentRef}:{componentRef:HTMLDivElement | null,fetchedData:any[],children?:React.ReactNode,height:number | string,itemsHeight:any,argument:any,width:number | string,itemsWidth:number | string})=>{
     const {page,getPage,setPage} = usePageCounter();
     const [series,setSeries] = useState<any[]>([]);
-    const divRef = useRef<HTMLDivElement>(null);
+    const divRef = componentRef;
+    if(divRef === null){
+        return (
+            <></>
+        )
+    }
     const [hasMore, setHasMore] = useState(true);
     /* const fetchData = async()=>{
         const getSeries = await axios.get('');
@@ -21,38 +26,39 @@ const InfiniteScroll = ({fetchedData,children,height,itemsHeight,argument,width,
     } */
     useEffect(()=>{
         if (fetchedData.length > 0) {
-            setSeries((prevSeries) => [...prevSeries, ...fetchedData]);
+            setSeries((prevSeries) => 
+            {const newSeries = [...prevSeries, ...fetchedData];
+            // Remove duplicates by `SeriesName` (or other unique identifiers)
+            const uniqueSeries = Array.from(new Map(newSeries.map(item => [item.SeriesName, item])).values());
+            return uniqueSeries;});
             setHasMore(fetchedData.length > 0);
         }
     },[page,fetchedData])
     const handleScroll = () => {
-        if (divRef.current) {
-          const { scrollTop, scrollHeight, clientHeight } = divRef.current;
-          if (scrollTop + clientHeight >= scrollHeight - 5 && hasMore) {
-            setPage(getPage() + 1); // Load the next set of data
+        console.log('It is handleScroll!');
+        if (divRef) {
+          const { scrollTop, scrollHeight, clientHeight } = divRef;
+          
+          if (scrollTop + clientHeight >= scrollHeight - 50 && hasMore) {
+            console.log('Changing page!');
+            setPage(page + 1); // Load the next set of data
+            console.log('Page: ',getPage());
           }
         }
       };
     
       useEffect(() => {
-        const div = divRef.current
+        const div = divRef
         if(div){
+            console.log('CURRENT!');
+            
             div.addEventListener("scroll", handleScroll);
             return () => div.removeEventListener("scroll", handleScroll);
         }
       }, [hasMore]);
     return (
-        <div ref={divRef} className={`flex w-[${width}] h-[${height}] overflow-y-scroll`}>
+        <div className={`flex w-[${width}] h-[${height}]`}>
             {children}
-            <div className="flex flex-col w-full h-full">
-                {Array.from({length:fetchedData.length},(_,index)=>(
-                    <div key={index} className={`flex w-[${itemsWidth}] h-[${itemsHeight}] border-b-2 border-white`}>
-                        <div className="flex ml-1 w-full h-full items-center">
-                            {fetchedData[index][argument]}
-                        </div>
-                    </div>
-                ))}
-            </div>
         </div>
     )
 }

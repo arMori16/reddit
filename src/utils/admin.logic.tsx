@@ -77,3 +77,20 @@ export const addSeries = async(data:any)=>{
 
     
 }
+export const deleteSeries = async(seriesName:string)=>{
+    const atToken = Cookies.get('accessToken');
+    try{
+        const postDelete = axios.delete('catalog/item',{
+            params:{
+                seriesName:seriesName
+            },
+            headers:{
+                'Authorization':`Bearer ${atToken}`
+            }
+        })
+        toast.success('Delete successfully!')
+    }catch(err){
+        console.error(`Error when trying to delete series! ${err}`);
+        toast.error('Delete failed >:')
+    }
+}

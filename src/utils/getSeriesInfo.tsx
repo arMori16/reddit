@@ -1,7 +1,11 @@
 import axios from "@/components/api/axios";
 
 const getSeriesInfo = async()=>{
-    const getFirstPageCatalog = await axios.get('/catalog/getCatalog');
+    const getFirstPageCatalog = await axios.get('/catalog/getCatalog',{
+        params:{
+            take:16
+        }
+    });
     console.log('ITS getFirstPageCatalog: ',getFirstPageCatalog.data[0].SeriesName);
     console.log('MESSAGE!!!!!');
     const seriesNames = getFirstPageCatalog.data.map((item:{SeriesName:string}) => item.SeriesName);
