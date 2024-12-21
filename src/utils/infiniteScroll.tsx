@@ -2,20 +2,14 @@
 
 import axios from "@/components/api/axios";
 import usePageCounter from "@/components/useZustand/zustandPageCounter";
-import { useEffect, useRef, useState } from "react"
+import { RefObject, useEffect, useRef, useState } from "react"
 /* interface Series {
     SeriesViewName:string,
     SeriesName:string
 } */
-const InfiniteScroll = ({fetchedData,children,height,itemsHeight,argument,width,itemsWidth,componentRef}:{componentRef:HTMLDivElement | null,fetchedData:any[],children?:React.ReactNode,height:number | string,itemsHeight:any,argument:any,width:number | string,itemsWidth:number | string})=>{
+const InfiniteScroll = ({fetchedData,children,height,itemsHeight,argument,width,itemsWidth,componentRef}:{componentRef:RefObject<HTMLDivElement>,fetchedData:any[],children?:React.ReactNode,height:number | string,itemsHeight:any,argument:any,width:number | string,itemsWidth:number | string})=>{
     const {page,getPage,setPage} = usePageCounter();
     const [series,setSeries] = useState<any[]>([]);
-    const divRef = componentRef;
-    if(divRef === null){
-        return (
-            <></>
-        )
-    }
     const [hasMore, setHasMore] = useState(true);
     /* const fetchData = async()=>{
         const getSeries = await axios.get('');
@@ -33,11 +27,14 @@ const InfiniteScroll = ({fetchedData,children,height,itemsHeight,argument,width,
             return uniqueSeries;});
             setHasMore(fetchedData.length > 0);
         }
+        return (()=>{
+            setPage(0);
+        })
     },[page,fetchedData])
     const handleScroll = () => {
         console.log('It is handleScroll!');
-        if (divRef) {
-          const { scrollTop, scrollHeight, clientHeight } = divRef;
+        if (componentRef.current) {
+          const { scrollTop, scrollHeight, clientHeight } = componentRef.current;
           
           if (scrollTop + clientHeight >= scrollHeight - 50 && hasMore) {
             console.log('Changing page!');
@@ -48,7 +45,9 @@ const InfiniteScroll = ({fetchedData,children,height,itemsHeight,argument,width,
       };
     
       useEffect(() => {
-        const div = divRef
+        const div = componentRef.current
+        console.log('EVEN THIS IS DOESNT WORK>??');
+        
         if(div){
             console.log('CURRENT!');
             

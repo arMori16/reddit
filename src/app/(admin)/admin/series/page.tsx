@@ -35,19 +35,19 @@ const Series = ()=>{
                 <div className="flex w-full h-full max-w-full bg-[#352877] p-5 rounded-lg text-[1rem] text-rose-50 font-medium">
                     <div ref={divRef} className="flex flex-col max-w-full w-full h-full overflow-y-scroll">
                         <div className="flex w-full h-full">
-                            <div className="flex flex-col w-[2.5rem] min-h-[3.5rem] border-b-2 border-white">
+                            <div className="flex flex-col w-[2.5rem] min-h-[3.5rem]">
                                 {Array.from({length:seriesInfo.length},(_,index)=>(
-                                        <div key={index} className="flex p-1 w-[2.5rem] min-h-[3.5rem]">
+                                        <div key={index} className="flex p-1 w-[2.5rem] min-h-[3.5rem] border-b-2 border-white">
                                             <img src={`http://localhost:3001/media/images/${seriesInfo[index].SeriesName}/images`} className="rounded-sm" alt="" />
                                         </div>
                                 
                                 ))}
                             </div>
                             
-                            <InfiniteScroll componentRef={divRef.current} itemsWidth={`70%`} width={`100%`} height={`100%`} itemsHeight={`3.5rem`} fetchedData={seriesInfo} argument={`SeriesViewName`}>
+                            <InfiniteScroll componentRef={divRef} itemsWidth={`70%`} width={`100%`} height={`100%`} itemsHeight={`3.5rem`} fetchedData={seriesInfo} argument={`SeriesViewName`}>
                                 <div className="flex flex-col w-full h-full">
                                     {Array.from({length:seriesInfo.length},(_,index)=>(
-                                        <div key={index} className="flex ml-1 w-[70%] min-h-[3.5rem] items-center">
+                                        <div key={index} className="flex pl-2 w-full min-h-[3.5rem] items-center border-b-2 border-white">
                                             {seriesInfo[index].SeriesViewName}
                                         </div>
                                     ))}
@@ -57,7 +57,7 @@ const Series = ()=>{
                             
                             <div className="flex flex-col w-[8rem] h-full">
                                 {Array.from({length:seriesInfo.length},(_,index)=>(
-                                <div key={index} className="flex min-h-[3.5rem] w-[8rem]  gap-2 items-center ml-auto mr-4 text-[0.85rem]">
+                                <div key={index} className="flex min-h-[3.5rem] w-[8rem]  gap-2 items-center ml-auto mr-4 text-[0.85rem] border-b-2 border-white">
                                     <div className="flex w-[50%] h-[1.50rem]">
                                         <Link href={''} className="flex bg-[#5DC090] justify-center items-center w-full rounded-sm">view</Link>
                                     </div>
