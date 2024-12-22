@@ -2,7 +2,7 @@
 import usePageCounter from "@/components/useZustand/zustandPageCounter";
 import { getAllCounts, getSeries } from "@/utils/admin.logic";
 import InfiniteScroll from "@/utils/infiniteScroll";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 
 
@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 const AdminPage = ()=>{
     const {getPage} = usePageCounter();
     const page = getPage();
+    const divRef = useRef<HTMLDivElement>(null)
     const [counts,setCounts] = useState<{
         comments:number,
         series:number,
@@ -21,12 +22,9 @@ const AdminPage = ()=>{
         SeriesName:string,
         SeriesViewName:string
     }[]>([]);
-    console.log('PAGE IN ADMIN: ',page);
     
     useEffect(()=>{
         const fetchedData = async()=>{
-            console.log('FetchDATA PAGE: ',page);
-            
             const countsData = await getAllCounts();
             const seriesInfoData = await getSeries(page);
             setCounts(countsData);
@@ -57,8 +55,7 @@ const AdminPage = ()=>{
             <div className="flex max-w-fll w-full min-h-[30rem] h-[30rem]">
                 {/* SeriesInfo */}
                 <div className="flex max-w-[50%] w-[50%] h-full">
-                    <div className="flex w-full max-w-full bg-[#352877] p-5 rounded-lg text-[1rem] text-rose-50 font-medium overflow-y-scroll">
-                        {/* <InfiniteScroll itemsWidth={`70%`} width={`100%`} height={`100%`} itemsHeight={`3.5rem`} fetchedData={seriesInfo} argument={`SeriesViewName`}>
+                    <div ref={divRef} className="flex w-full max-w-full bg-[#352877] p-5 rounded-lg text-[1rem] text-rose-50 font-medium overflow-y-scroll">
                             <div className="flex flex-col max-w-[2.5rem] w-[2.5rem] h-full items-center">
                             {Array.from({length:seriesInfo.length},(_,index)=>(
                                     <div key={index} className="flex p-1 w-[2.5rem] min-h-[3.5rem] border-b-2 border-white">
@@ -66,8 +63,15 @@ const AdminPage = ()=>{
                                     </div>
                             ))}
                             </div>
-                        </InfiniteScroll> */}
-                        
+                        <InfiniteScroll componentRef={divRef} itemsWidth={`70%`} width={`100%`} height={`100%`} itemsHeight={`3.5rem`} fetchedData={seriesInfo} argument={`SeriesViewName`}>
+                            <div className="flex flex-col w-full h-full">
+                                {Array.from({length:seriesInfo.length},(_,index)=>(
+                                    <div key={index} className="flex pl-2 w-full min-h-[3.5rem] items-center border-b-2 border-white">
+                                        {seriesInfo[index].SeriesViewName}
+                                    </div>
+                                ))}
+                            </div>
+                        </InfiniteScroll>
                     </div>
                 </div>
                 {/* SeriesInfo */}

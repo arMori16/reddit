@@ -18,7 +18,7 @@ export default function RootLayout({children}:{children: React.ReactNode}){
   const isActive = (url:string) => url === pathName;
   return (
     <html lang="en">
-      <body className="min-w-full min-h-screen h-full bg-[#242424]">
+      <body className="min-w-full min-h-screen bg-[#242424]">
       <ToastContainer position="bottom-right"/>
       <ClientRefreshToken/>
         <div className="flex w-full min-h-[100vh] h-[100vh] bg-[#242424]">

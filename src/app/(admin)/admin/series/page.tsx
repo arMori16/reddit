@@ -59,7 +59,7 @@ const Series = ()=>{
                                 {Array.from({length:seriesInfo.length},(_,index)=>(
                                 <div key={index} className="flex min-h-[3.5rem] w-[8rem]  gap-2 items-center ml-auto mr-4 text-[0.85rem] border-b-2 border-white">
                                     <div className="flex w-[50%] h-[1.50rem]">
-                                        <Link href={''} className="flex bg-[#5DC090] justify-center items-center w-full rounded-sm">view</Link>
+                                        <Link href={`series/view/${seriesInfo[index].SeriesName}`} className="flex bg-[#5DC090] justify-center items-center w-full rounded-sm">view</Link>
                                     </div>
                                     <div className="flex w-[50%] h-[1.50rem]">
                                         <button onClick={()=>{deleteSeries(seriesInfo[index].SeriesName);

@@ -12,7 +12,7 @@ const Navbar = ({user}:{user:any}) => {
     return (
         <nav className='flex flex-col bg-[#F7F3F7]'>
             <div className='flex relative w-full max-w-full h-[14rem]'>
-                <img src="http://localhost:3001/media/images/main2.jpeg/images" className='object-cover w-full h-full' alt="" />
+                <img src="http://localhost:3001/media/images/main3.jpeg/images" className='object-cover w-full h-full' alt="" />
             </div>
             <div className='flex relative w-full border-y-2 border-[#B3DCC5] bg-[#585454]'>
                 <div className='flex ml-5 relative h-[3.50rem] items-center'>
@@ -20,8 +20,8 @@ const Navbar = ({user}:{user:any}) => {
                         <div className='flex relative w-[2.50rem] h-[2.50rem]'>
                             <Link href="/"> <img src="/leaf2.png"/> </Link>
                         </div>
-                        <div className='flex relative items-center text-[2rem] mt-2 font-medium font-[Aclonica]'>
-                            <Link href='/' className='text-rose-50'>Mori</Link>
+                        <div className='flex relative items-center text-[2rem] ml-3 font-medium'>
+                            <Link href='/' className='text-rose-50'>AniMori</Link>
                         </div>
                     </div>
                 </div>

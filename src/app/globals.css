@@ -17,10 +17,19 @@
 
 }
 
+@layer base{
+  textarea{
+    resize: none;
+    field-sizing: content;
+  }
+}
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Edge */
   }
   html,body{
     width: 100%;

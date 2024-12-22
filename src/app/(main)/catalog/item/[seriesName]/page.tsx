@@ -10,7 +10,7 @@ async function getData(seriesName: string) {
         console.log('SERIESNAME: ',seriesName);
         
         const res = await axios.get('/catalog/item', {
-            params: { SeriesName: seriesName }
+            params: { seriesName: seriesName }
         });
         return res.data;
     } catch (err) {
@@ -23,6 +23,7 @@ type Test={
     SeriesName:string
 }
 const ItemPage = async({params}:{params:{seriesName:string}})=>{
+    console.log('PArams:   ',params.seriesName);
     const data = await getData(params.seriesName);
 
     // Если данные не найдены, перенаправляем на страницу 404
@@ -35,9 +36,12 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
     const req = async()=>{
         try{
             console.log('params.seriesName:,',params.seriesName);
+            const seriesName = params.seriesName
+            console.log('PArams:   ',seriesName);
             
-            const res = await axios.get('/catalog/item',{params:{
-                SeriesName:params.seriesName
+            const res = await axios.get('/catalog/item',{
+                params:{
+                    seriesName:seriesName
             }});
             return {data:res.data};
         }catch(err){
@@ -60,17 +64,47 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                     <div className='flex relative mr-5 custom-image:mr-0 w-[15.62rem] max-h-[21.87rem] custom-image:h-auto'>
                         <img className='flex max-h-full w-full rounded-[20px]' src={`http://localhost:3001/media/images/${params.seriesName}/images`} alt={fetchedData.data.SeriesName}/>
                     </div>
-                    <div className='div-info'>
+                    <div className='flex flex-col'>
                         <h1 className='text-3xl custom-xs:mt-0  flex'>{fetchedData.data.SeriesViewName}</h1>
-                        <ul className='inline-flex flex-col'>
-                            <li className='w-auto inline-block' >Status: {fetchedData.data.Status}</li>
-                            <li className='w-auto inline-block' >Type: {fetchedData.data.Type}</li>
-                            <li className='w-auto inline-block' >Release: {fetchedData.data.ReleaseYear}</li>
-                            <li className='w-auto inline-block' >Genre: {fetchedData.data.Genre.join(', ')}</li>
-                            <li className='w-auto inline-block' >Studio: {fetchedData.data.Studio.join(', ')}</li>
-                            <li className='w-auto inline-block' >Episodes: {fetchedData.data.AmountOfEpisode}</li>
-                            <li className='w-auto inline-block' >Voice: {fetchedData.data.VoiceActing.join(', ')}</li>
-                            <li className='w-auto inline-block' >Rate: {fetchedData.data.Rate}</li>
+                        <ul className='flex flex-col mt-3'>
+                            <li>
+                                <div className='w-[6rem]'>Status:</div>
+                                <div className='ml-5'>{fetchedData.data.Status}</div></li>
+                            <li>
+                                <div className='w-[6rem]'>Type:</div> 
+                                <div className='ml-5'>{fetchedData.data.Type}</div></li>
+                            <li>
+                                <div className='w-[6rem]'>Release:</div> 
+                                <div className='ml-5'>{fetchedData.data.ReleaseYear}</div></li>
+                            <li>
+                                <div className='w-[6rem]'>Genre:</div> 
+                                <div className='flex gap-1 ml-5'>{fetchedData.data.Genre.map((item:string,index:number)=>(
+                                    <div key={index} className='flex border-2 border-gray-500 hover:border-rose-50 rounded-md font-medium text-[0.85rem] py-[2px] px-[4px] items-center justify-center'>
+                                        {item}
+                                    </div>
+                                    ))}
+                                </div>
+                            </li>
+                            <li>
+                                <div className='w-[6rem]'>Studio:</div> 
+                                <div className='ml-5'>{fetchedData.data.Studio.join(', ')}</div>
+                            </li>
+                            <li>
+                                <div className='w-[6rem]'>Episodes:</div> 
+                                <div className='ml-5'>{fetchedData.data.AmountOfEpisode}</div>
+                            </li>
+                            <li>
+                                <div className='w-[6rem]'>Voice:</div>
+                                <div className='ml-5 flex gap-1'>{fetchedData.data.VoiceActing.map((item:string,index:number)=>(
+                                    <div key={index} className='flex bg-[#4eb997] hover:bg-[#43a083] rounded-md font-medium text-[0.85rem] py-[2px] px-[4px] items-center justify-center'>
+                                        {item}
+                                    </div>
+                                    ))}
+                                </div>
+                            </li>
+                            <li>
+                                <div className='w-[6rem]'>Rate:</div> 
+                                <div className='ml-5'>{fetchedData.data.Rate}</div></li>
                         </ul>
                     </div>
                     <div className='flex relative break-words w-[43.75rem] ml-auto mr-auto h-auto mt-7'>

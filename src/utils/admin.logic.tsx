@@ -94,3 +94,59 @@ export const deleteSeries = async(seriesName:string)=>{
         toast.error('Delete failed >:')
     }
 }
+
+export const getDataView = async(seriesName:string):Promise<{
+    seriesName:string,
+    description:string,
+    seriesViewName:string,
+    rate:number,
+    status:string,
+    type:string,
+    releaseYear:string,
+    genre:string[],
+    studio:string[],
+    amountOfEpisode:number,
+    voiceActing:string[],
+    videoSource:string,
+}>=>{
+    try{
+        console.log('LOG!!!!!!!!!:   ',seriesName);
+        
+        const getData = await axios.get('/catalog/item',{
+            params:{
+                seriesName
+            }
+        })
+        console.log('This is getdata for viewpage: ',getData.data);
+        return{
+            seriesName:getData.data.SeriesName,
+            description:getData.data.Description,
+            seriesViewName:getData.data.SeriesViewName,
+            rate:getData.data.Rate,
+            status:getData.data.Status,
+            type:getData.data.Type,
+            releaseYear:getData.data.ReleaseYear,
+            genre:getData.data.Genre,
+            studio:getData.data.Studio,
+            amountOfEpisode:getData.data.AmountOfEpisode,
+            voiceActing:getData.data.VoiceActing,
+            videoSource:getData.data.VideoSource
+        }
+    }catch(err){
+        console.error('Cannot getData for the admin view page');
+        return{
+            seriesName:'',
+            description:'',
+            seriesViewName:'',
+            rate:0,
+            status:'',
+            type:'',
+            releaseYear:'',
+            genre:[''],
+            studio:[''],
+            amountOfEpisode:0,
+            voiceActing:[''],
+            videoSource:'',
+        }
+    }
+}
