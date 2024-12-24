@@ -45,7 +45,7 @@ export default function RootLayout({children}:{children: React.ReactNode}){
                     <span className="flex text-[#D98C8C] font-semibold text-[1.25rem]">Admin</span>
                 </div>
               </div>
-              <div className="flex min-h-full p-5">{children}</div>
+              <div className="flex min-h-auto p-5">{children}</div>
             </div>
         </div>
       </body>

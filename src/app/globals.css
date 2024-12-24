@@ -21,6 +21,7 @@
   textarea{
     resize: none;
     field-sizing: content;
+    outline-style: none;
   }
 }
 
