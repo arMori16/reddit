@@ -2,7 +2,7 @@
 import axios from "@/components/api/axios"
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
-/* import { cookies } from "next/headers"; */
+import { SeriesInfo } from "./dto/adminDto/seriesInfo.dto";
 
 
 
@@ -95,20 +95,7 @@ export const deleteSeries = async(seriesName:string)=>{
     }
 }
 
-export const getDataView = async(seriesName:string):Promise<{
-    seriesName:string,
-    description:string,
-    seriesViewName:string,
-    rate:number,
-    status:string,
-    type:string,
-    releaseYear:string,
-    genre:string[],
-    studio:string[],
-    amountOfEpisode:number,
-    voiceActing:string[],
-    videoSource:string,
-}>=>{
+export const getDataView = async(seriesName:string):Promise<SeriesInfo>=>{
     try{
         console.log('LOG!!!!!!!!!:   ',seriesName);
         
@@ -119,34 +106,53 @@ export const getDataView = async(seriesName:string):Promise<{
         })
         console.log('This is getdata for viewpage: ',getData.data);
         return{
-            seriesName:getData.data.SeriesName,
-            description:getData.data.Description,
-            seriesViewName:getData.data.SeriesViewName,
-            rate:getData.data.Rate,
-            status:getData.data.Status,
-            type:getData.data.Type,
-            releaseYear:getData.data.ReleaseYear,
-            genre:getData.data.Genre,
-            studio:getData.data.Studio,
-            amountOfEpisode:getData.data.AmountOfEpisode,
-            voiceActing:getData.data.VoiceActing,
-            videoSource:getData.data.VideoSource
+            SeriesName:getData.data.SeriesName,
+            Description:getData.data.Description,
+            SeriesViewName:getData.data.SeriesViewName,
+            Rate:getData.data.Rate,
+            Status:getData.data.Status,
+            Type:getData.data.Type,
+            ReleaseYear:getData.data.ReleaseYear,
+            Genre:getData.data.Genre,
+            Studio:getData.data.Studio,
+            AmountOfEpisode:getData.data.AmountOfEpisode,
+            VoiceActing:getData.data.VoiceActing,
+            VideoSource:getData.data.VideoSource
         }
     }catch(err){
         console.error('Cannot getData for the admin view page');
         return{
-            seriesName:'',
-            description:'',
-            seriesViewName:'',
-            rate:0,
-            status:'',
-            type:'',
-            releaseYear:'',
-            genre:[''],
-            studio:[''],
-            amountOfEpisode:0,
-            voiceActing:[''],
-            videoSource:'',
+            SeriesName:'',
+            Description:'',
+            SeriesViewName:'',
+            Rate:0,
+            Status:'',
+            Type:'',
+            ReleaseYear:'',
+            Genre:[''],
+            Studio:[''],
+            AmountOfEpisode:0,
+            VoiceActing:[''],
+            VideoSource:''
         }
     }
+}
+export const updateSeries = async(data:SeriesInfo,seriesName:string)=>{
+    console.log('SeriesName for the admin view page: ',seriesName);
+    
+    try{
+        const atToken = Cookies.get('accessToken');
+        const update = await axios.put(`/catalog/admin/series/${seriesName}`,data,{
+            headers:{
+                'Authorization':`Bearer ${atToken}`
+            }
+        })
+        if(update){
+            toast.success('Sumitted successfully!')
+        }
+    }catch(err){
+        console.error(`Error when trying to update the series!\n ${err}`);
+        toast.error('Cannot update the series information!');
+    }
+
 }

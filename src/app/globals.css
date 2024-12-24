@@ -22,6 +22,11 @@
     resize: none;
     field-sizing: content;
     outline-style: none;
+
+  }
+  textarea:hover{
+    border-radius: 0.25rem;
+    outline-style: solid;
   }
 }
 
