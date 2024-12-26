@@ -2,6 +2,7 @@
 import usePageCounter from "@/components/useZustand/zustandPageCounter";
 import { getAllCounts, getSeries } from "@/utils/admin.logic";
 import InfiniteScroll from "@/utils/infiniteScroll";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 
@@ -10,7 +11,7 @@ import { useEffect, useRef, useState } from "react";
 
 
 const AdminPage = ()=>{
-    const {getPage} = usePageCounter();
+    const {getPage,setPage} = usePageCounter();
     const page = getPage();
     const divRef = useRef<HTMLDivElement>(null)
     const [counts,setCounts] = useState<{
@@ -22,11 +23,14 @@ const AdminPage = ()=>{
         SeriesName:string,
         SeriesViewName:string
     }[]>([]);
-    
+    useEffect(() => {
+        console.log("Pathname or Component changed, resetting page...");
+        setPage(0); // Reset the page state
+    }, []);
     useEffect(()=>{
         const fetchedData = async()=>{
             const countsData = await getAllCounts();
-            const seriesInfoData = await getSeries(page);
+            const seriesInfoData = await getSeries(getPage());
             setCounts(countsData);
             setSeriesInfo((prevSeries) => 
                 {const newSeries = [...prevSeries, ...seriesInfoData];

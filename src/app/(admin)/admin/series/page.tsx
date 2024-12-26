@@ -3,22 +3,25 @@ import usePageCounter from "@/components/useZustand/zustandPageCounter";
 import { deleteSeries, getAllCounts, getSeries } from "@/utils/admin.logic";
 import InfiniteScroll from "@/utils/infiniteScroll";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef, RefObject } from "react";
 
 
 const Series = ()=>{
     const divRef = useRef<HTMLDivElement>(null)
-    const {getPage} = usePageCounter();
+    const {getPage,setPage} = usePageCounter();
     const page = getPage();
-    const [trigger,setTrigger] = useState(false);
     const [seriesInfo,setSeriesInfo] = useState<{
         SeriesName:string,
         SeriesViewName:string
     }[]>([]);
-    
+    useEffect(() => {
+        console.log("Pathname or Component changed, resetting page...");
+        setPage(0); // Reset the page state
+    }, []);
     useEffect(()=>{
         const fetchedData = async()=>{
-            const seriesInfoData = await getSeries(page);
+            const seriesInfoData = await getSeries(getPage());
             setSeriesInfo((prevSeries) => 
                 {const newSeries = [...prevSeries, ...seriesInfoData];
                 // Remove duplicates by `SeriesName` (or other unique identifiers)
@@ -27,8 +30,7 @@ const Series = ()=>{
             );
         }
         fetchedData()
-        setTrigger(false);
-    },[trigger,page])
+    },[page])
     return(
         <div className="flex max-w-full flex-col w-full h-full">
             <div className="flex max-w-full w-full h-[35rem] p-5 bg-[#352877] rounded-md">
@@ -63,7 +65,7 @@ const Series = ()=>{
                                     </div>
                                     <div className="flex w-[50%] h-[1.50rem]">
                                         <button onClick={()=>{deleteSeries(seriesInfo[index].SeriesName);
-                                            setTrigger(true);
+                                            setSeriesInfo((prev)=>prev.filter((item)=>item.SeriesName !== seriesInfo[index].SeriesName))
                                             }} className="flex bg-[#B32C25] justify-center items-center w-full rounded-sm">delete</button>
                                     </div>
                                 </div>

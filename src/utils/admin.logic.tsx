@@ -176,3 +176,22 @@ export const getCommentsData = async(page:number)=>{
         
     }
 }
+export const handleCommentDelete = async(commentId:number)=>{
+    try{
+        const atToken = Cookies.get('accessToken');
+        const deleteComment = await axios.delete('/comments/admin',{
+            params:{
+                CommentId:commentId
+            },
+            headers:{
+                'Authorization':`Bearer ${atToken}`
+            }
+        })
+        if(deleteComment){
+            toast.success('Deleted successfully!')
+        }
+    }catch(err){
+        console.error(`Couldn't delete the comment!Error: ${err}`);
+        toast.error(`Couldn't delete the comment!`);
+    }
+}

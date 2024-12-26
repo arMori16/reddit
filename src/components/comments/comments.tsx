@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { createComment, getFirstComments } from "./comments.logic";
 import Link from "next/link";
+import { CommentsDto } from "@/utils/dto/adminDto/comments.dto";
 
 
 
@@ -12,8 +13,7 @@ const Comments = ({seriesName}:{seriesName:string})=>{
     /* const [usersArray, setUsersArray] = useState<string[]>([]);
     const [timeArray,setTimeArray] = useState<string[]>([])
     const [commentText,setCommentText] = useState<string[]>([]); */
-    const [commentId,setCommentIds] = useState<number[]>([]);
-    const [commentInfo,setCommentInfo] = useState<any[]>([]);
+    const [commentInfo,setCommentInfo] = useState<CommentsDto[]>([]);
     const [updateComments, setUpdateComments] = useState<boolean>(false); // Store users array here
     const handleOnFocus = ()=>{
         setIsOnFocus(true); 
@@ -26,20 +26,8 @@ const Comments = ({seriesName}:{seriesName:string})=>{
 
     useEffect(() => {
         const fetchData = async () => {
-            const {createdAtArray,commentText,usersArray,commentId} = await getFirstComments(seriesName);
-            setCommentIds(commentId);
-            /* setTimeArray(createdAtArray);
-            setUsersArray(usersArray);
-            setCommentText(commentText); */
-            const comments = commentId.map((id: number, index: number) => ({
-                id,
-                user: usersArray[index],
-                time: createdAtArray[index],
-                text: commentText[index],
-            }));
-    
-            setCommentInfo(comments); // Store structured comments
-            console.log("Comments: ", comments);
+            const data = await getFirstComments(seriesName);
+            setCommentInfo(data); // Store structured comments
             
         };
 
@@ -49,6 +37,11 @@ const Comments = ({seriesName}:{seriesName:string})=>{
         setUpdateComments((prev)=>!prev);
         setText('');
         createComment(seriesName,text)
+    }
+    if(!commentInfo){
+        return(
+            <></>
+        )
     }
     return(
         <div className="relative flex flex-col w-full p-4 bg-[#3C3C3C] mb-[100px]">
@@ -70,10 +63,10 @@ const Comments = ({seriesName}:{seriesName:string})=>{
                             <div className="block relative comment-head w-full">
                                 <div className="relative flex flex-col w-auto h-auto">
                                     <span className="text-[#B3DCC5]"> 
-                                        {comment.user}
+                                        {comment.UserName}
                                     </span>
-                                    <span className="relative flex items-center justify-center bg-[#629377] text-rose-50 rounded-md  w-[5rem] max-w-[6rem] h-5 text-[11px] px-1">
-                                        {comment.time}
+                                    <span className="relative flex items-center justify-center bg-[#629377] text-rose-50 rounded-md  min-w-[5rem] w-[5.5rem] max-w-[6rem] h-5 text-[11px] px-1">
+                                        {comment.createdAt}
                                     </span>
                                 </div>
                                 {/* <div className="relative block bg-[#629377] text-rose-50 rounded-md  w-[5rem] max-w-[6rem] h-5 text-[11px] px-1">
@@ -83,7 +76,7 @@ const Comments = ({seriesName}:{seriesName:string})=>{
                     </div>
                     <div className="block w-full custom-xs:ml-0">
                         <div className="relative block text-rose-50 mt-2 w-full h-auto text-[14px]">
-                            {comment.text}
+                            {comment.CommentText}
                         </div>
                     </div>
                 </div>

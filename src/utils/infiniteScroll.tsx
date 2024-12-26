@@ -1,8 +1,9 @@
 'use client'
-
+import {debounce} from "lodash";
 import axios from "@/components/api/axios";
 import usePageCounter from "@/components/useZustand/zustandPageCounter";
 import { RefObject, useEffect, useRef, useState } from "react"
+import { CommentsDto } from "./dto/adminDto/comments.dto";
 /* interface Series {
     SeriesViewName:string,
     SeriesName:string
@@ -11,7 +12,6 @@ const InfiniteScroll = ({fetchedData,children,height,width,componentRef,isFlexCo
     const {page,getPage,setPage} = usePageCounter();
     const [series,setSeries] = useState<any[]>([]);
     const [hasMore, setHasMore] = useState(true);
-    let scrollTimeout: ReturnType<typeof setTimeout> | null = null;
     const [loading, setLoading] = useState(false);
     /* const fetchData = async()=>{
         const getSeries = await axios.get('');
@@ -21,47 +21,39 @@ const InfiniteScroll = ({fetchedData,children,height,width,componentRef,isFlexCo
         return getSeries.data;
     } */
     useEffect(()=>{
-        if (fetchedData.length > 0) {
+        console.log('FetchedData: ',fetchedData);
+        
+        if (fetchedData.length > 0 && fetchedData) {
             setSeries((prevSeries) => 
             {const newSeries = [...prevSeries, ...fetchedData];
             // Remove duplicates by `SeriesName` (or other unique identifiers)
             const uniqueSeries = Array.from(new Map(newSeries.map(item => [item.SeriesName, item])).values());
             return uniqueSeries;});
-            setHasMore(fetchedData.length > 1);
+            setHasMore(fetchedData.length === 15);
             setLoading(false);
-        }else {
-            console.log('SETHASMORE FALSE!!!!!');
-            
+        }else{
+            console.log('No more data. Setting hasMore to false.');
             setHasMore(false); // No more data to load
         }
     },[page,fetchedData])
-    const handleScroll = () => {
-        console.log('It is handleScroll!');
-        if (componentRef.current) {
-          const { scrollTop, scrollHeight, clientHeight } = componentRef.current;
-          console.log('HASMORE : ',hasMore);
-          if (scrollTimeout) {
-            clearTimeout(scrollTimeout);
+    const handleScroll = debounce(() => {
+        if (!componentRef.current || loading || !hasMore) return;
+        
+        console.log('It is handleScroll!',loading);
+        const { scrollTop, scrollHeight, clientHeight } = componentRef.current;
+        
+        if (scrollTop + clientHeight >= scrollHeight *0.75 && hasMore && !loading) {
+            console.log('Changing page!');
+            setLoading(true)
+            setPage(getPage() + 1); // Load the next set of data
+            console.log('Page: ',getPage());
         }
-        scrollTimeout = setTimeout(()=>{
-            if (scrollTop + clientHeight >= scrollHeight - 50 && hasMore && !loading) {
-              console.log('Changing page!');
-              setLoading(true)
-              setPage(getPage() + 1); // Load the next set of data
-              console.log('Page: ',getPage());
-            }
-            
-        },300)
-        }
-      };
+      },300);
     
       useEffect(() => {
         const div = componentRef.current
-        console.log('EVEN THIS IS DOESNT WORK>??');
         
         if(div){
-            console.log('CURRENT!');
-            
             div.addEventListener("scroll", handleScroll);
             return () => div.removeEventListener("scroll", handleScroll);
         }

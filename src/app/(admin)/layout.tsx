@@ -3,12 +3,20 @@ import "@/app/globals.css"
 import ClientRefreshToken from "@/components/api/clientRefreshToken";
 import Avatar from "@/components/navbar-components/avatar/avatar";
 import SearchBar from "@/components/navbar-components/search-bar/search-bar";
+import usePageCounter from "@/components/useZustand/zustandPageCounter";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 
 export default function RootLayout({children}:{children: React.ReactNode}){
+  const {setPage} = usePageCounter();
   const pathName = usePathname();
+  useEffect(()=>{
+    console.log('IT IS WORKING!');
+    
+    setPage(0);
+  },[pathName])
   const items= [
     'Dashboard',
     'Users',
