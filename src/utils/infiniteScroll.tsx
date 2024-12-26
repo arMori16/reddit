@@ -7,10 +7,12 @@ import { RefObject, useEffect, useRef, useState } from "react"
     SeriesViewName:string,
     SeriesName:string
 } */
-const InfiniteScroll = ({fetchedData,children,height,itemsHeight,argument,width,itemsWidth,componentRef}:{componentRef:RefObject<HTMLDivElement>,fetchedData:any[],children?:React.ReactNode,height:number | string,itemsHeight:any,argument:any,width:number | string,itemsWidth:number | string})=>{
+const InfiniteScroll = ({fetchedData,children,height,width,componentRef,isFlexCol}:{isFlexCol?:boolean,componentRef:RefObject<HTMLDivElement>,fetchedData:any[],children?:React.ReactNode,height:number | string,width:number | string,})=>{
     const {page,getPage,setPage} = usePageCounter();
     const [series,setSeries] = useState<any[]>([]);
     const [hasMore, setHasMore] = useState(true);
+    let scrollTimeout: ReturnType<typeof setTimeout> | null = null;
+    const [loading, setLoading] = useState(false);
     /* const fetchData = async()=>{
         const getSeries = await axios.get('');
         const data:Series[] = getSeries.data;
@@ -25,22 +27,31 @@ const InfiniteScroll = ({fetchedData,children,height,itemsHeight,argument,width,
             // Remove duplicates by `SeriesName` (or other unique identifiers)
             const uniqueSeries = Array.from(new Map(newSeries.map(item => [item.SeriesName, item])).values());
             return uniqueSeries;});
-            setHasMore(fetchedData.length > 0);
+            setHasMore(fetchedData.length > 1);
+            setLoading(false);
+        }else {
+            console.log('SETHASMORE FALSE!!!!!');
+            
+            setHasMore(false); // No more data to load
         }
-        return (()=>{
-            setPage(0);
-        })
     },[page,fetchedData])
     const handleScroll = () => {
         console.log('It is handleScroll!');
         if (componentRef.current) {
           const { scrollTop, scrollHeight, clientHeight } = componentRef.current;
-          
-          if (scrollTop + clientHeight >= scrollHeight - 50 && hasMore) {
-            console.log('Changing page!');
-            setPage(page + 1); // Load the next set of data
-            console.log('Page: ',getPage());
-          }
+          console.log('HASMORE : ',hasMore);
+          if (scrollTimeout) {
+            clearTimeout(scrollTimeout);
+        }
+        scrollTimeout = setTimeout(()=>{
+            if (scrollTop + clientHeight >= scrollHeight - 50 && hasMore && !loading) {
+              console.log('Changing page!');
+              setLoading(true)
+              setPage(getPage() + 1); // Load the next set of data
+              console.log('Page: ',getPage());
+            }
+            
+        },300)
         }
       };
     
@@ -56,7 +67,7 @@ const InfiniteScroll = ({fetchedData,children,height,itemsHeight,argument,width,
         }
       }, [hasMore]);
     return (
-        <div className={`flex w-[${width}] h-[${height}]`}>
+        <div className={`flex ${isFlexCol ? 'flex-col':''} w-[${width}] h-[${height}]`}>
             {children}
         </div>
     )

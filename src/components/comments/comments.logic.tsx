@@ -38,11 +38,6 @@ export const getFirstComments = async(seriesName:string):Promise<{
             }
         });
         console.log('FirstCooment: ',firstComments.data);
-        
-        const formatDate = (isoString: string): string => {
-            const date = new Date(isoString);
-            return format(date, "dd MMM HH:mm");
-        };
         const createdAtArray = firstComments.data.commentUsers.map((comment:any)=>formatDate(comment.createdAt));
         const commentText = firstComments.data.commentUsers.map((comment:any)=>comment.CommentText);
         const commentId = firstComments.data.commentUsers.map((comment:any)=>comment.Id);
@@ -57,3 +52,7 @@ export const getFirstComments = async(seriesName:string):Promise<{
         return { createdAtArray: [], usersArray: [],commentText: [],commentId: []};
     }
 }
+export const formatDate = (isoString: string): string => {
+    const date = new Date(isoString);
+    return format(date, "dd MMM HH:mm");
+};

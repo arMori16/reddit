@@ -44,7 +44,7 @@ const Series = ()=>{
                                 ))}
                             </div>
                             
-                            <InfiniteScroll componentRef={divRef} itemsWidth={`70%`} width={`100%`} height={`100%`} itemsHeight={`3.5rem`} fetchedData={seriesInfo} argument={`SeriesViewName`}>
+                            <InfiniteScroll componentRef={divRef} width={`100%`} height={`100%`} fetchedData={seriesInfo}>
                                 <div className="flex flex-col w-full h-full">
                                     {Array.from({length:seriesInfo.length},(_,index)=>(
                                         <div key={index} className="flex pl-2 w-full min-h-[3.5rem] items-center border-b-2 border-white">
