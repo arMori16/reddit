@@ -10,7 +10,7 @@ import Link from 'next/link';
 
 const Navbar = ({user}:{user:any}) => {
     return (
-        <nav className='flex flex-col bg-[#F7F3F7]'>
+        <nav className='flex flex-col bg-[#F7F3F7] mb-[2rem]'>
             <div className='flex relative w-full max-w-full h-[14rem]'>
                 <img src="http://localhost:3001/media/images/main3.jpeg/images" className='object-cover w-full h-full' alt="" />
             </div>

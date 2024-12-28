@@ -25,11 +25,12 @@ export const createComment = async(seriesName:string,text:string) =>{
     }
 }
 
-export const getFirstComments = async(seriesName:string)=>{
+export const getFirstComments = async(seriesName:string,page:number)=>{
     try{
         const firstComments = await axios.get('comments/users',{
             params:{
-                seriesName:seriesName
+                seriesName:seriesName,
+                skip:page*15
             }
         });
         console.log('FirstCooment: ',firstComments.data);

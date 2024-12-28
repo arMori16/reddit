@@ -36,7 +36,7 @@ const Comments = ()=>{
         )
     }
     return(
-        <div ref={divRef} className={`flex flex-col bg-[#352877] px-5 pb-5 w-full max-h-[35rem] h-full rounded-md overflow-y-scroll scrollbar-hide`}>
+        <div ref={divRef} className={`flex flex-col bg-[#352877] px-5 pb-5 w-full max-h-[37rem] h-full rounded-md overflow-y-scroll scrollbar-hide`}>
             <div className={`flex w-full h-[3rem] border-b-2 border-white font-medium text-[1.25rem] text-rose-50 p-1 justify-between`}>
                 <div className="flex w-[6rem] h-full items-end justify-center">
                     User

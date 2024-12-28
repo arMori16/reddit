@@ -8,7 +8,7 @@ import { CommentsDto } from "./dto/adminDto/comments.dto";
     SeriesViewName:string,
     SeriesName:string
 } */
-const InfiniteScroll = ({fetchedData,children,height,width,componentRef,isFlexCol}:{isFlexCol?:boolean,componentRef:RefObject<HTMLDivElement>,fetchedData:any[],children?:React.ReactNode,height:number | string,width:number | string,})=>{
+const InfiniteScroll = ({fetchedData,children,height,width,componentRef,isFlexCol,isWindow}:{isWindow?:boolean,isFlexCol?:boolean,componentRef:RefObject<HTMLDivElement>,fetchedData:any[],children?:React.ReactNode,height:number | string,width:number | string,})=>{
     const {page,getPage,setPage} = usePageCounter();
     const [series,setSeries] = useState<any[]>([]);
     const [hasMore, setHasMore] = useState(true);
@@ -37,26 +37,60 @@ const InfiniteScroll = ({fetchedData,children,height,width,componentRef,isFlexCo
         }
     },[page,fetchedData])
     const handleScroll = debounce(() => {
-        if (!componentRef.current || loading || !hasMore) return;
+        const target = isWindow ? window : componentRef.current;
+        if (!target || loading || !hasMore) return;
         
         console.log('It is handleScroll!',loading);
-        const { scrollTop, scrollHeight, clientHeight } = componentRef.current;
-        
-        if (scrollTop + clientHeight >= scrollHeight *0.75 && hasMore && !loading) {
-            console.log('Changing page!');
-            setLoading(true)
-            setPage(getPage() + 1); // Load the next set of data
-            console.log('Page: ',getPage());
-        }
+        if (isWindow) {
+            // Handle window scrolling
+            const scrollTop = window.scrollY;
+            const clientHeight = window.innerHeight;
+            const scrollHeight = document.documentElement.scrollHeight;
+      
+            if (scrollTop + clientHeight >= scrollHeight * 0.75) {
+              setLoading(true);
+              setPage(getPage() + 1);
+            }
+          } else if (componentRef.current) {
+            // Handle div scrolling
+            const scrollTop = componentRef.current.scrollTop;
+            const clientHeight = componentRef.current.clientHeight;
+            const scrollHeight = componentRef.current.scrollHeight;
+      
+            if (scrollTop + clientHeight >= scrollHeight * 0.75) {
+              setLoading(true);
+              setPage(getPage() + 1);
+            }
+          }
       },300);
-    
-      useEffect(() => {
+      /* if(isWindow){
+        useEffect(()=>{
+            window.addEventListener("scroll",handleScroll);
+            return(()=>{
+                window.removeEventListener("scroll",handleScroll);
+            })
+        },[hasMore])
+      } */
+      /* useEffect(() => {
         const div = componentRef.current
         
-        if(div){
+        if(div && !isWindow){
             div.addEventListener("scroll", handleScroll);
             return () => div.removeEventListener("scroll", handleScroll);
         }
+      }, [hasMore]); */
+      useEffect(() => {
+        const target = isWindow ? window : componentRef.current;
+    
+        if (target) {
+          target.addEventListener("scroll", handleScroll);
+        }
+    
+        return () => {
+          if (target) {
+            target.removeEventListener("scroll", handleScroll);
+          }
+        };
       }, [hasMore]);
     return (
         <div className={`flex ${isFlexCol ? 'flex-col':''} w-[${width}] h-[${height}]`}>

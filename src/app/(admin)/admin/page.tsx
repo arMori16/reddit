@@ -39,7 +39,7 @@ const AdminPage = ()=>{
                 return uniqueSeries;});
         }
         fetchedData()
-    },[page])
+    },[])
     return(
         <div className="flex flex-col w-full min-h-full px-5">
             {/* {`search+logo`} */}
