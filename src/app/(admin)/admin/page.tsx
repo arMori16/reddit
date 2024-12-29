@@ -13,7 +13,7 @@ import { useEffect, useRef, useState } from "react";
 const AdminPage = ()=>{
     const {getPage,setPage} = usePageCounter();
     const page = getPage();
-    const divRef = useRef<HTMLDivElement>(null)
+    const divRef = useRef<HTMLDivElement>(null);
     const [counts,setCounts] = useState<{
         comments:number,
         series:number,
@@ -23,10 +23,10 @@ const AdminPage = ()=>{
         SeriesName:string,
         SeriesViewName:string
     }[]>([]);
-    useEffect(() => {
+    /* useEffect(() => {
         console.log("Pathname or Component changed, resetting page...");
         setPage(0); // Reset the page state
-    }, []);
+    }, []); */
     useEffect(()=>{
         const fetchedData = async()=>{
             const countsData = await getAllCounts();
@@ -39,19 +39,9 @@ const AdminPage = ()=>{
                 return uniqueSeries;});
         }
         fetchedData()
-    },[])
+    },[page])
     return(
         <div className="flex flex-col w-full min-h-full px-5">
-            {/* {`search+logo`} */}
-            {/* <div className="flex h-[9.25rem] pt-7 w-full max-w-full">
-                <div className="flex items-center w-[85%] justify-center ml-auto mr-auto flex-shrink">
-                    <SearchBar/>
-                </div>
-                <div className="flex flex-col w-[6rem] items-center relative">
-                    <Avatar/>
-                    <span className="flex text-[#D98C8C] font-semibold text-[1.25rem]">Admin</span>
-                </div>
-            </div> */}
             <div className="flex font-medium text-[1.5rem] h-[3rem] ml-4 text-rose-50">
                 Analytics
             </div>

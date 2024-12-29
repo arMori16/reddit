@@ -2,6 +2,8 @@ import axios from "@/components/api/axios";
 import { SeriesInfo } from "./dto/adminDto/seriesInfo.dto";
 
 const getSeriesInfo = async(page:number)=>{
+    console.log('PAGE: ',page);
+    
    try{
     const req = await axios.get('/catalog/getCatalog',{
         params:{

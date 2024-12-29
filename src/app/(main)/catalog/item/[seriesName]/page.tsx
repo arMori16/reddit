@@ -95,7 +95,7 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                             </li>
                             <li>
                                 <div className='w-[6rem]'>Voice:</div>
-                                <div className='ml-5 flex gap-1'>{fetchedData.data.VoiceActing.map((item:string,index:number)=>(
+                                <div className='ml-5 flex gap-1 w-[17rem] flex-wrap'>{fetchedData.data.VoiceActing.map((item:string,index:number)=>(
                                     <div key={index} className='flex bg-[#4eb997] hover:bg-[#43a083] rounded-md font-medium text-[0.85rem] py-[2px] px-[4px] items-center justify-center'>
                                         {item}
                                     </div>

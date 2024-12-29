@@ -7,24 +7,37 @@ import usePageCounter from '@/components/useZustand/zustandPageCounter';
 import { SeriesInfo } from '@/utils/dto/adminDto/seriesInfo.dto';
 import { SSeriesDto } from '@/utils/dto/main/SSeriesDto';
 import getSeriesInfo, { getPageCount } from '@/utils/getSeriesInfo';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
-export default async function Home() {
-  const seriesInfo = await getSeriesInfo(0);
+export default async function Home({searchParams}:{searchParams:{page:number}}) {
+  
+  const seriesInfo = await getSeriesInfo(searchParams.page - 1);
   const counts = await getPageCount() || 1;
+  
+  if(searchParams.page > counts){
+    notFound()
+  }
   return (
       <div className='max-w-full relative min-h-[100vh] h-auto bg-[#242424]'>
         <div className='flex relative flex-col items-center mx-2'>
           <div className='flex'>
             <CarouselWrapper/>
           </div>
-          <div className='flex relative justify-center h-[400px] max-w-[60rem]'>
+          <div className='flex relative justify-center h-[15rem] max-w-[60rem]'>
 
           </div>
           <div className='flex relative flex-wrap'>
              <TabsComponent seriesNames={seriesInfo.seriesNames} seriesViewNames={seriesInfo.seriesViewName} rate={seriesInfo.rate} genre={seriesInfo.genre}/>
           </div>
-          <div>
-            {Array.from({length:counts})}
+          <div className='flex mb-[10rem] max-w-[61.25rem] h-[2.5rem] p-1 gap-x-2 font-medium text-white'>
+            {Array.from({length:counts <= 7?counts:7},(value,index)=>(
+              <Link key={index} href={`http://localhost:3000/?page=${index + 1}`} className='flex bg-gray-300 h-full w-[2rem] items-center justify-center rounded-md'>
+                <p>{index + 1}</p>
+              </Link>
+            ))}
+            <p>...</p>
+            <Link href={`http://localhost:3000/?page=${counts}`} className='flex bg-gray-300 h-full w-[2rem] items-center justify-center rounded-md'>{counts}</Link>
           </div>
         </div>
       </div>
