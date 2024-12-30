@@ -53,7 +53,7 @@ const AdminPage = ()=>{
                             <div className="flex flex-col max-w-[2.5rem] w-[2.5rem] h-full items-center">
                             {Array.from({length:seriesInfo.length},(_,index)=>(
                                     <div key={index} className="flex p-1 w-[2.5rem] min-h-[3.5rem] border-b-2 border-white">
-                                        <img src={`http://localhost:3001/media/images/${seriesInfo[index].SeriesName}/images`} className="rounded-sm" alt="" />
+                                        <img src={`http://localhost:3001/media/${seriesInfo[index].SeriesName}/images`} className="rounded-sm" alt="" />
                                     </div>
                             ))}
                             </div>

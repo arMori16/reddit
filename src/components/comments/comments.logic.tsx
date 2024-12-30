@@ -2,6 +2,7 @@
 import { format } from "date-fns";
 import axios from "../api/axios"
 import { cookies, headers } from "next/headers";
+import { formatDate } from "@/utils/formattDate";
 
 
 export const createComment = async(seriesName:string,text:string) =>{
@@ -44,7 +45,3 @@ export const getFirstComments = async(seriesName:string,page:number)=>{
         /* return { createdAtArray: [], usersArray: [],commentText: [],commentId: [],userName: []}; */
     }
 }
-export const formatDate = (isoString: string): string => {
-    const date = new Date(isoString);
-    return format(date, "dd MMM HH:mm");
-};

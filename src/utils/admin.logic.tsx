@@ -3,7 +3,8 @@ import axios from "@/components/api/axios"
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import { SeriesInfo } from "./dto/adminDto/seriesInfo.dto";
-import { formatDate } from "@/components/comments/comments.logic";
+import { formatDate } from "./formattDate";
+
 
 
 
@@ -162,6 +163,7 @@ export const getCommentsData = async(page:number)=>{
         const atToken = Cookies.get('accessToken');
         const getComments = await axios.get('/comments/admin',{
             params:{
+                take:15,
                 skip:page * 15
             },
             headers:{
@@ -169,8 +171,17 @@ export const getCommentsData = async(page:number)=>{
             }
         })
         console.log('It is getcomments data! ',getComments.data);
-        await getComments.data.map((item:any,index:number)=>item.createdAt = formatDate(item.createdAt));
-        return getComments.data
+        const data = getComments.data.map((item: any) => {
+            console.log('It is item createdAt: ',item.createdAt);
+            
+            return {
+                ...item,
+                createdAt: formatDate(String(item.createdAt)), // Ensure it's a string
+            };
+        });
+        console.log('Final Formatted Data:', data);
+    
+        return data;
     }catch(err){
         console.error(`Error when trying to get comments data for admin! \n ${err}`);
         

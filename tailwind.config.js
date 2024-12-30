@@ -21,6 +21,7 @@ module.exports = {
         'custom-md': { max: '40.5rem' }, // 648px breakpoint
         'custom-xs': { max: '36.25rem' },
         'custom-lg': { max: '59.125rem' },
+        'custom-65':{ raw: '(max-width: 65vw)' },
         'custom-image':{max:'21.62rem'},
         'custom-xl2':{max:'71.25rem'},
         landscape:{

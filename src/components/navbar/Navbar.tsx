@@ -12,7 +12,7 @@ const Navbar = ({user}:{user:any}) => {
     return (
         <nav className='flex flex-col bg-[#F7F3F7] mb-[2rem]'>
             <div className='flex relative w-full max-w-full h-[14rem]'>
-                <img src="http://localhost:3001/media/images/main3.jpeg/images" className='object-cover w-full h-full' alt="" />
+                <img src="http://localhost:3001/media/main3.jpeg/images" className='object-cover w-full h-full' alt="" />
             </div>
             <div className='flex relative w-full border-y-2 border-[#B3DCC5] bg-[#585454]'>
                 <div className='flex ml-5 relative h-[3.50rem] items-center'>

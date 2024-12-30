@@ -5,6 +5,7 @@ import { getCommentsData, handleCommentDelete } from "@/utils/admin.logic";
 import { useEffect, useRef, useState } from "react";
 import InfiniteScroll from "@/utils/infiniteScroll";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 const Comments = ()=>{
     const [data,setData] = useState<CommentsDto[]>([]);
@@ -35,6 +36,8 @@ const Comments = ()=>{
             <div className="text-3xl flex text-rose-50 w-full h-full justify-center mt-[2rem]">Loading...</div>
         )
     }
+    
+    
     return(
         <div ref={divRef} className={`flex flex-col bg-[#352877] px-5 pb-5 w-full max-h-[37rem] h-full rounded-md overflow-y-scroll scrollbar-hide`}>
             <div className={`flex w-full h-[3rem] border-b-2 border-white font-medium text-[1.25rem] text-rose-50 p-1 justify-between`}>
@@ -52,13 +55,13 @@ const Comments = ()=>{
                 {filteredData.map((item,index)=>(
                     <div key={index} className="flex w-full h-[4rem] border-b-2 border-white text-white">
                         <div className="flex min-w-[8rem] w-[10rem] h-full p-[6px]">
-                            <div className="flex min-w-[2.75rem] w-[2.75rem] overflow-hidden h-full rounded-md">
+                            <div className="flex min-w-[2.75rem] w-[2.75rem] overflow-hidden h-full rounded-md custom-xs:min-w-[2.65rem] custom-xs:mt-[0.33rem] custom-xs:h-[2.65rem]">
                                 <img src={`./../Sweety.jpg`} alt="" />
                             </div>
                             <div className="flex flex-col min-w-[7rem] max-w-[10rem] ml-2 h-full">
-                                <div className="flex w-full overflow-x-scroll">
+                                <Link href={`http://localhost:3000/admin/comments/view/${encodeURIComponent(item.UserName)}/${encodeURIComponent(String(item.createdAt))}/${encodeURIComponent(item.CommentText)}`} className={`flex w-full overflow-x-scroll hover:text-[#b5536d]`}>
                                     {item.UserName}
-                                </div>
+                                </Link>
                                 <div className="flex w-full">
                                     {item.createdAt}
                                 </div>

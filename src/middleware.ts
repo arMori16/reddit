@@ -5,7 +5,6 @@ import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  console.log('MIDDLEWARE!!!!!!!!!!!!!!!!!!!!!!!!!');
   
   // Check if the user is accessing the /admin route
   if (pathname.startsWith('/admin')) {

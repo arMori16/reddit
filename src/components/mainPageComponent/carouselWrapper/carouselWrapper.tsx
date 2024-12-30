@@ -33,7 +33,7 @@ const CarouselWrapper = async()=>{
           <div className='flex max-w-full h-[16.25rem] overflow-hidden'>
             {Array.from({length:7},(_,index)=>(
               <Link key={index} href={`catalog/item/${seriesInfo?.seriesName[index]}`} className='flex relative flex-none overflow-hidden flex-col max-w-[11.5rem] h-full'>
-                <img src={`http://localhost:3001/media/images/${seriesInfo?.seriesName[index]}/images`} alt="" className='flex w-[11.5rem] h-full'/>
+                <img src={`http://localhost:3001/media/${seriesInfo?.seriesName[index]}/images`} alt="" className='flex w-[11.5rem] h-full'/>
                 <span className='flex absolute text-rose-50 bottom-0 bg-[rgba(0,0,0,0.6)] h-[2.8rem] items-center justify-center pt-[5px] px-1 w-full'>
                   {seriesInfo?.seriesViewName[index]}
                 </span>

@@ -18,7 +18,7 @@ const TabsComponent = ({seriesNames,seriesViewNames,rate,genre}:{seriesNames:str
                 <Link key={index} href={`http://localhost:3000/catalog/item/${seriesNames[index]}`} className={`flex mb-3 relative custom-s:h-[13.75rem] flex-grow h-[16.25rem] w-[30rem] custom-xl2:w-[100%]`}>
                     <div className={`flex bg-[#3C3C3C] ${index >= 2 ? 'rounded-md':'rounded-b-md'} overflow-hidden relative max-w-full w-full h-full`}>
                         <div className='flex relative w-[11.5rem] custom-s:w-[9.4rem] max-w-[11.5rem] shrink-0'>
-                            <img src={`http://localhost:3001/media/images/${seriesNames[index]}/images`} className="w-full skeleton h-[100%]" />
+                            <img src={`http://localhost:3001/media/${seriesNames[index]}/images`} className="w-full skeleton h-[100%]" />
                         </div>
                         <div className='block max-w-full w-[18.5rem] custom-xl2:w-[100%] flex-grow relative text-rose-50 p-[10px] pb-0 h-full'>
                             <h1 className='uppercase text-[14px] font-semibold flex'>{seriesViewNames[index]}</h1>

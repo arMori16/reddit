@@ -40,7 +40,7 @@ const Series = ()=>{
                             <div className="flex flex-col w-[2.5rem] min-h-[3.5rem]">
                                 {Array.from({length:seriesInfo.length},(_,index)=>(
                                         <div key={index} className="flex p-1 w-[2.5rem] min-h-[3.5rem] border-b-2 border-white">
-                                            <img src={`http://localhost:3001/media/images/${seriesInfo[index].SeriesName}/images`} className="rounded-sm" alt="" />
+                                            <img src={`http://localhost:3001/media/${seriesInfo[index].SeriesName}/images`} className="rounded-sm" alt="" />
                                         </div>
                                 
                                 ))}
@@ -77,7 +77,7 @@ const Series = ()=>{
             </div>
             <div className="flex max-w-full w-full h-[3.50rem] justify-end items-center mt-5">
                 <Link href={'series/add-new-series'} className="flex h-full w-[3.50rem] overflow-hidden rounded-[50%] mr-5 bg-white">
-                    <img src={`http://localhost:3001/media/images/plus/icons`} className="flex h-full w-full" alt="" />
+                    <img src={`http://localhost:3001/media/plus/icons`} className="flex h-full w-full" alt="" />
                 </Link>
             </div>
         </div>
