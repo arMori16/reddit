@@ -74,7 +74,7 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                 <div className='flex flex-col relative bg-[#3C3C3C] p-5 w-[68rem] max-w-[96%] min-h-full text-rose-50 rounded-[20px] flex-wrap'>
                     <div className="flex w-full min-h-[22rem]">
                         <div className='flex relative mr-5 custom-image:mr-0 w-[15.62rem] max-h-[21.87rem] custom-image:h-auto'>
-                            <img className='flex max-h-full w-full rounded-[20px]' src={`http://localhost:3001/media/images/${params.seriesName}/images`} alt={data.SeriesName}/>
+                            <img className='flex max-h-full w-full rounded-[20px]' src={`http://localhost:3001/media/${params.seriesName}/images`} alt={data.SeriesName}/>
                         </div>
                         <div className='flex flex-col min-h-[22rem]'>
                             <textarea className='text-3xl custom-xs:mt-0 flex bg-transparent min-h-[2.5rem] min-w-[2rem]' defaultValue={data.SeriesViewName} {...register('SeriesViewName')}></textarea>

@@ -1,7 +1,10 @@
 "use client"
+import useCommentsCounter from "@/components/useZustand/zustandCommentsCounter";
 import usePageCounter from "@/components/useZustand/zustandPageCounter";
-import { getAllCounts, getSeries } from "@/utils/admin.logic";
+import { getAllCounts, getCommentsData, getSeries } from "@/utils/admin.logic";
+import { CommentsDto } from "@/utils/dto/adminDto/comments.dto";
 import InfiniteScroll from "@/utils/infiniteScroll";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -12,8 +15,12 @@ import { useEffect, useRef, useState } from "react";
 
 const AdminPage = ()=>{
     const {getPage,setPage} = usePageCounter();
+    const {commentPage,getCommentPage,setCommentPage} = useCommentsCounter();
     const page = getPage();
-    const divRef = useRef<HTMLDivElement>(null);
+    const seriesRef = useRef<HTMLDivElement>(null);
+    const commentRef = useRef<HTMLDivElement>(null);
+    const [commentData,setCommentData] = useState<CommentsDto[]>([]);
+    const [commentsFilteredData,setComemntsFilteredData] = useState<CommentsDto[]>([]);
     const [counts,setCounts] = useState<{
         comments:number,
         series:number,
@@ -23,10 +30,24 @@ const AdminPage = ()=>{
         SeriesName:string,
         SeriesViewName:string
     }[]>([]);
-    /* useEffect(() => {
+
+    useEffect(() => {
         console.log("Pathname or Component changed, resetting page...");
-        setPage(0); // Reset the page state
-    }, []); */
+        setPage(0); 
+        setCommentPage(0); // Reset the page state
+    }, []);
+    useEffect(()=>{
+        const fetchedData = async()=>{
+            const commentInfo = await getCommentsData(getCommentPage());
+            setCommentData(commentInfo);
+            setComemntsFilteredData((prev) => 
+                {const newSeries = [...prev, ...commentInfo];
+                // Remove duplicates by `SeriesName` (or other unique identifiers)
+                const uniqueSeries = Array.from(new Map(newSeries.map(item => [item.Id, item])).values());
+                return uniqueSeries;});
+        }
+        fetchedData()
+    },[commentPage])
     useEffect(()=>{
         const fetchedData = async()=>{
             const countsData = await getAllCounts();
@@ -49,7 +70,7 @@ const AdminPage = ()=>{
             <div className="flex max-w-fll w-full min-h-[30rem] h-[30rem]">
                 {/* SeriesInfo */}
                 <div className="flex max-w-[50%] w-[50%] h-full">
-                    <div ref={divRef} className="flex w-full max-w-full bg-[#352877] p-5 rounded-lg text-[1rem] text-rose-50 font-medium overflow-y-scroll">
+                    <div ref={seriesRef} className="flex w-full max-w-full bg-[#352877] p-5 rounded-lg text-[1rem] text-rose-50 font-medium overflow-y-scroll">
                             <div className="flex flex-col max-w-[2.5rem] w-[2.5rem] h-full items-center">
                             {Array.from({length:seriesInfo.length},(_,index)=>(
                                     <div key={index} className="flex p-1 w-[2.5rem] min-h-[3.5rem] border-b-2 border-white">
@@ -57,7 +78,7 @@ const AdminPage = ()=>{
                                     </div>
                             ))}
                             </div>
-                        <InfiniteScroll componentRef={divRef} width={`100%`} height={`100%`} fetchedData={seriesInfo}>
+                        <InfiniteScroll type="series" componentRef={seriesRef} width={`100%`} height={`100%`} fetchedData={seriesInfo}>
                             <div className="flex flex-col w-full h-full">
                                 {Array.from({length:seriesInfo.length},(_,index)=>(
                                     <div key={index} className="flex pl-2 w-full min-h-[3.5rem] items-center border-b-2 border-white">
@@ -96,8 +117,29 @@ const AdminPage = ()=>{
                             </div>
                         </button>
                     </div>
-                    <div className="flex w-full h-full bg-[#352877] rounded-lg">
-
+                    <div className="flex w-full h-full bg-[#352877] rounded-lg overflow-y-scroll" ref={commentRef}>
+                        <InfiniteScroll type="comments" fetchedData={commentData} componentRef={commentRef} width={`100%`} height={`100%`} isFlexCol={true}>
+                            {commentsFilteredData.map((item,index)=>(
+                                <div key={index} className="flex w-full h-[3rem] border-b-2 border-white text-white">
+                                <div className="flex min-w-[4rem] w-[8rem] h-full p-[6px]">
+                                    <div className="flex min-w-[2.75rem] w-[2.75rem] overflow-hidden h-full rounded-md custom-xs:min-w-[2.65rem] custom-xs:mt-[0.33rem] custom-xs:h-[2.65rem]">
+                                        <img src={`../../../../../../Sweety.jpg`} alt="" />
+                                    </div>
+                                    <div className="flex flex-col min-w-[3rem] h-full text-[12px] font-medium">
+                                        <Link href={`http://localhost:3000/admin/comments/view/${encodeURIComponent(item.UserName)}/${encodeURIComponent(String(item.createdAt))}/${encodeURIComponent(item.CommentText)}/${item.SeriesName}`} className={`flex w-full overflow-x-scroll hover:text-[#b5536d]`}>
+                                            {item.UserName}
+                                        </Link>
+                                        <div className="flex w-full text-[8px]">
+                                            {item.createdAt}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={`flex scrollbar-hide max-w-[18rem] mr-2 text-[10px] scrollbar-hide overflow-y-scroll whitespace-wrap overflow-x-scroll ${item.CommentText.length <100?'items-center justify-center':''}`}>
+                                    {item.CommentText}
+                                </div>
+                            </div>
+                            ))}
+                        </InfiniteScroll>
                     </div>
                 </div>
             </div>

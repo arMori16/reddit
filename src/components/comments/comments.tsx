@@ -45,10 +45,12 @@ const Comments = ({seriesName}:{seriesName:string})=>{
 
         fetchData();
     }, [page,updateComments]);
-    const handleCreateComment = ()=>{
-        setUpdateComments((prev)=>!prev);
+    const handleCreateComment = async()=>{
         setText('');
-        createComment(seriesName,text)
+        const newComment = await createComment(seriesName,text);
+        
+        setUpdateComments((prev)=>!prev);
+        setFilteredData((prev) => [newComment, ...prev]);
     }
     if(!commentInfo){
         return(
@@ -66,7 +68,7 @@ const Comments = ({seriesName}:{seriesName:string})=>{
                 </div>
                 
             </div>
-            <InfiniteScroll isWindow={true} componentRef={divRef} fetchedData={commentInfo} height={`100%`} width={`100%`} isFlexCol={true}>
+            <InfiniteScroll componentRef={divRef} fetchedData={commentInfo} height={`100%`} width={`100%`} isFlexCol={true}>
                 {filteredData.map((comment,index)=>(
                     <div key={index} className="block relative w-full max-w-full pt-4 mb-4 bg-[#3C3C3C] min-h-[7.5rem] border-t-[1px] border-gray-500">
                         <Link href={''} className="float-left min-w-[6.25rem] h-[6.25rem]  custom-xs:min-w-[2.65rem] custom-xs:mt-[0.33rem] custom-xs:h-[2.65rem] mr-3">

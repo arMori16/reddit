@@ -206,3 +206,32 @@ export const handleCommentDelete = async(commentId:number)=>{
         toast.error(`Couldn't delete the comment!`);
     }
 }
+export const handleUserCommentsHitory = async(userName:string,page:number)=>{
+    try{
+        const atToken = Cookies.get('accessToken');
+        const getComments = await axios.get('/comments/admin/user/history',{
+            params:{
+                userName:userName,
+                skip:page * 15
+            },
+            headers:{
+                'Authorization':`Bearer ${atToken}`
+            }
+        })
+        console.log('It is getcomments data! ',getComments.data);
+        const data = getComments.data.map((item: any) => {
+            console.log('It is item createdAt: ',item.createdAt);
+            
+            return {
+                ...item,
+                createdAt: formatDate(String(item.createdAt)), // Ensure it's a string
+            };
+        });
+        console.log('Final Formatted Data:', data);
+    
+        return data;
+    }catch(err){
+        console.error(`Error when trying to get comments data for admin! \n ${err}`);
+        
+    }
+}

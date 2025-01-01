@@ -6,22 +6,21 @@ import { useEffect, useRef, useState } from "react";
 import InfiniteScroll from "@/utils/infiniteScroll";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import useCommentsCounter from "@/components/useZustand/zustandCommentsCounter";
 
 const Comments = ()=>{
     const [data,setData] = useState<CommentsDto[]>([]);
     const [filteredData,setFilteredData] = useState<CommentsDto[]>([]);
     const divRef = useRef<HTMLDivElement>(null);
-    const {getPage,setPage} = usePageCounter();
-    const page = getPage();
+    const {getCommentPage,setCommentPage,commentPage} = useCommentsCounter();
 
     useEffect(() => {
         console.log("Pathname or Component changed, resetting page...");
-        setPage(0); // Reset the page state
+        setCommentPage(0); // Reset the page state
     }, []);
     useEffect(()=>{
-        console.log("Fetching comments for page:", getPage());
         const fetchCommentsData = async()=>{
-            const data = await getCommentsData(getPage());
+            const data = await getCommentsData(getCommentPage());
             setData(data);
             setFilteredData((prev)=>{
                 const newArray = [...prev,...data];
@@ -30,7 +29,7 @@ const Comments = ()=>{
             });
         }
         fetchCommentsData();
-    },[page]);
+    },[commentPage]);
     if(!data){
         return (
             <div className="text-3xl flex text-rose-50 w-full h-full justify-center mt-[2rem]">Loading...</div>
@@ -51,7 +50,7 @@ const Comments = ()=>{
                     Series
                 </div>
             </div>
-            <InfiniteScroll componentRef={divRef} fetchedData={data} width={`100%`} height={`100%`} isFlexCol={true}>
+            <InfiniteScroll type="comments" componentRef={divRef} fetchedData={data} width={`100%`} height={`100%`} isFlexCol={true}>
                 {filteredData.map((item,index)=>(
                     <div key={index} className="flex w-full h-[4rem] border-b-2 border-white text-white">
                         <div className="flex min-w-[8rem] w-[10rem] h-full p-[6px]">
@@ -59,7 +58,7 @@ const Comments = ()=>{
                                 <img src={`./../Sweety.jpg`} alt="" />
                             </div>
                             <div className="flex flex-col min-w-[7rem] max-w-[10rem] ml-2 h-full">
-                                <Link href={`http://localhost:3000/admin/comments/view/${encodeURIComponent(item.UserName)}/${encodeURIComponent(String(item.createdAt))}/${encodeURIComponent(item.CommentText)}`} className={`flex w-full overflow-x-scroll hover:text-[#b5536d]`}>
+                                <Link href={`http://localhost:3000/admin/comments/view/${encodeURIComponent(item.UserName)}/${encodeURIComponent(String(item.createdAt))}/${encodeURIComponent(item.CommentText)}/${item.SeriesName}`} className={`flex w-full overflow-x-scroll hover:text-[#b5536d]`}>
                                     {item.UserName}
                                 </Link>
                                 <div className="flex w-full">

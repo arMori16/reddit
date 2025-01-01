@@ -44,7 +44,7 @@ export default function RootLayout({children}:{children: React.ReactNode}){
                 ))}
             </div>
             <div className="flex flex-col h-full pt-7 flex-[1] ml-[18rem] max-w-full">
-              <div className="flex max-w-full mb-5 w-full h-[10rem]">
+              <div className="flex max-w-full mb-5 w-full h-[8rem]">
                 <div className="flex items-end w-[85%] justify-center ml-auto mr-auto flex-shrink">
                     <SearchBar/>
                 </div>

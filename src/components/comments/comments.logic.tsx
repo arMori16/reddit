@@ -19,7 +19,7 @@ export const createComment = async(seriesName:string,text:string) =>{
         }}
     )
         console.log('Comment created: ',commentPost.data);
-        
+        return commentPost.data
     }catch(err){
         console.log('Error when tyring to create a comment!');
         console.error(err)
@@ -41,7 +41,7 @@ export const getFirstComments = async(seriesName:string,page:number)=>{
         }));
         return formattedComments;
     }catch(err){
-        console.error(err)
+        console.error(err);
         /* return { createdAtArray: [], usersArray: [],commentText: [],commentId: [],userName: []}; */
     }
 }
