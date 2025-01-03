@@ -10,7 +10,8 @@ import  volumeLogic, { initializeVideoControls } from "./videoLogic";
 import { useEffect, useRef, useState } from "react";
 import SkipTimeFunction from "@/components/player/SkipTime";
 import { timePosition } from "../useZustand/zustandSaveTime";
-import numOfEpisodeStorage from "../useZustand/zustandNumOfEpisode";
+import numOfEpisodeStorage from "../useZustand/player/zustandNumOfEpisode";
+import voiceStorage from "../useZustand/player/zustandVoice";
 
 
 const Player = ({ seriesName,episode }: { seriesName: string,episode:number })=>{
@@ -19,8 +20,8 @@ const Player = ({ seriesName,episode }: { seriesName: string,episode:number })=>
     const [isSkipTime,setIsSkipTime] = useState(false);
     const [forceRender, setForceRender] = useState(false);
     /* const [numOfEpisode,setNumOfEpisode] = useState(1); */
-    const setNumOfEpisodeZustand = numOfEpisodeStorage((state)=>state.updateNumOfEpisode);
-    const getNumOfEpisode = numOfEpisodeStorage((state)=>state.getNumOfEpisode);
+    const {getNumOfEpisode,updateNumOfEpisode} = numOfEpisodeStorage();
+    const {getVoice} = voiceStorage();
     const toggleControlsVisibility = () => {
         setIsControlsVisible((prev) => !prev); // Переключаем видимость контролов
     };
@@ -68,21 +69,24 @@ const Player = ({ seriesName,episode }: { seriesName: string,episode:number })=>
     initializeVideoControls('video','.player-container');
     volumeLogic();
     return (
-    <div className={"overflow-hidden player-container max-h-[31.25rem] h-[31.25rem]  relative w-[100%] max-w-[62.5rem]"}data-volume-level={'high'}>
+    <div className={"overflow-hidden flex-col flex mt-5 player-container max-h-[34rem] relative w-[100%] max-w-[62.5rem]"}data-volume-level={'high'}>
         {isShowPlay && (
-            <div className="w-[100%] h-[100%] absolute flex items-center justify-center">
-                <button className="w-[100%] h-[100%] flex items-center justify-center  z-[100]" onClick={()=>{toggleShowPlay();toggleControlsVisibility();/* setIsLoading(true);loading() */}}>
-                    <Play  className="flex relative mytest   w-[100px] h-[100px]"/>
+            <div className="w-[100%] inset-0 absolute flex items-center justify-center">
+                <button className="w-[100%] h-full flex items-center justify-center  z-[100]" onClick={()=>{toggleShowPlay();toggleControlsVisibility();/* setIsLoading(true);loading() */}}>
+                    <Play className="flex relative mytest w-[100px] h-[100px]"/>
                 </button>
             </div>
          )}
         {isLoading && (
-            <div className="bg-black rounded-2xl  w-[100%] h-[100%] flex items-center justify-center absolute">
+            <div className="bg-black rounded-t-lg  w-[100%] h-full z-[101] inset-0 flex items-center justify-center absolute">
                 <Loader className="loading" color="white" width={50} height={50}/>
             </div>
         )}
-        <video ref={playRef} controls={false} className='w-full video h-auto max-h-full object-cover rounded-lg' src={`http://localhost:3001/catalog/${seriesName}-${getNumOfEpisode()}/1080p`}></video>
-            <div className={`flex backdrop-blur-xl controls ${isControlsVisible ? 'flex visible' : 'hidden'} bottom-[45px] relative  items-center p-3 justify-between z-2000`}>
+        <div className="flex max-w-full flex-grow overflow-hidden items-center justify-center">
+            <video ref={playRef} controls={false} className='block flex-grow w-full object-cover video relative max-h-[34rem] rounded-lg' src={`http://localhost:3001/catalog/${seriesName}/${encodeURIComponent(getVoice())}/${getNumOfEpisode()}/1080p`}></video>
+
+        </div>
+            <div className={`flex backdrop-blur-xl controls ${isControlsVisible ? 'flex visible' : 'hidden'} absolute z-[102] bottom-0 inset-x-0 flex-grow max-w-full items-center p-3 justify-between`}>
                 <div className="flex items-center">
                     <button onClick={()=>skipTime('backward')}><RotateCcw color="white"/></button>
                     <button onClick={togglePlayPause}>
@@ -90,14 +94,14 @@ const Player = ({ seriesName,episode }: { seriesName: string,episode:number })=>
                     </button>
                     <button onClick={()=>skipTime('forward')}><RotateCwIcon color="white"/></button>
                 </div>
-                <div className="duration-container flex w-[88%]  text-white items-center relative left-10">
+                <div className="duration-container flex w-[88%]  text-white items-center relative ml-5">
                     <div className="current-time relative mr-2 ml-2"></div>
                         <div className="timeline-container relative mr-auto w-[100%] flex h-2 items-center">
                             <div className="timeline flex w-[100%] relative mr-auto h-[6px] bg-white">
                                 <div className="thumb-indicator"></div>
                             </div>
                         </div>
-                    <div className="total-time relative flex mr-12 ml-2 w-auto"></div>
+                    <div className="total-time relative flex mr-5 ml-2 w-auto"></div>
                 </div>
                 <div className={`flex ml-auto  volume-container right-0 relative`}>
                     <button className="mutedBtn flex relative" >

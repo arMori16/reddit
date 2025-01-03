@@ -53,8 +53,6 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
     if (!fetchedData) {
         return <div>Ошибка при загрузке данных.</div>;
     }
-    const videoURL = `../../videos/${fetchedData.data.VideoSource}/${params.seriesName}`;
-    /* useVideo(params.seriesName); */
 
     return(
         <div className="div-main-content-container bg-[#242424]">
@@ -65,7 +63,7 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                         <img className='flex max-h-full w-full rounded-[20px]' src={`http://localhost:3001/media/${params.seriesName}/images`} alt={fetchedData.data.SeriesName}/>
                     </div>
                     <div className='flex flex-col'>
-                        <h1 className='text-3xl custom-xs:mt-0  flex'>{fetchedData.data.SeriesViewName}</h1>
+                        <h1 className='text-3xl custom-xs:mt-0 break-words flex flex-wrap'>{fetchedData.data.SeriesViewName}</h1>
                         <ul className='flex flex-col mt-3'>
                             <li>
                                 <div className='w-[6rem]'>Status:</div>
@@ -78,8 +76,8 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                                 <div className='ml-5'>{fetchedData.data.ReleaseYear}</div></li>
                             <li>
                                 <div className='w-[6rem]'>Genre:</div> 
-                                <div className='flex gap-1 ml-5'>{fetchedData.data.Genre.map((item:string,index:number)=>(
-                                    <div key={index} className='flex border-2 border-gray-500 hover:border-rose-50 rounded-md font-medium text-[0.85rem] py-[2px] px-[4px] items-center justify-center'>
+                                <div className='flex gap-1 ml-5 flex-wrap'>{fetchedData.data.Genre.map((item:string,index:number)=>(
+                                    <div key={index} className='flex border-2 border-gray-500 hover:border-rose-50 rounded-md break-words font-medium text-[0.85rem] py-[2px] px-[4px] items-center justify-center'>
                                         {item}
                                     </div>
                                     ))}
@@ -95,7 +93,7 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                             </li>
                             <li>
                                 <div className='w-[6rem]'>Voice:</div>
-                                <div className='ml-5 flex gap-1 w-[17rem] flex-wrap'>{fetchedData.data.VoiceActing.map((item:string,index:number)=>(
+                                <div className='ml-5 flex gap-1 flex-wrap'>{fetchedData.data.VoiceActing.map((item:string,index:number)=>(
                                     <div key={index} className='flex bg-[#4eb997] hover:bg-[#43a083] rounded-md font-medium text-[0.85rem] py-[2px] px-[4px] items-center justify-center'>
                                         {item}
                                     </div>

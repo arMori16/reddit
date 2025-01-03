@@ -1,14 +1,32 @@
 'use client'
 
+import axios from "@/components/api/axios";
+import { getVoices } from "@/components/player/player.logic";
 import { getDataView, updateSeries } from "@/utils/admin.logic";
 import { SeriesInfo } from "@/utils/dto/adminDto/seriesInfo.dto";
-import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { useEffect, useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 const ViewSeries = ({params}:{params:{seriesName:string}})=>{
+    const divRef = useRef<HTMLDivElement>(null); 
+    const mainRef = useRef<HTMLDivElement>(null); 
     const [data,setData] = useState<SeriesInfo>();
+    const [voices,setVoices] = useState<any[]>([]);
     const [genreItems,setGenreItems] = useState<number>(0);
+    const [isShow,setIsShow] = useState<boolean>(false);
+    const [isShowEpisode,setIsShowEpisode] = useState<boolean>(false);
     const [voiceItem,setVoiceItems] = useState<number>(0);
+    const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+    const [pickedVoice,setPickedVoice] = useState<any>(voices[0]);
+    const [episode,setEpisode] = useState<any>(1);
+    const [file, setFile] = useState<File | null>(null);
+
+    const handleFileChange = (e:any) => {
+        const selectedFile = e.target.files[0] || null;
+        setFile(selectedFile);
+    }; 
 
     const {register,handleSubmit,reset,watch,getValues} = useForm<SeriesInfo>({
         defaultValues:{
@@ -27,6 +45,35 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
         }
     })
     
+    const handleUploadFile = async()=>{
+        if(!file){
+            toast.info('Please select a file!');
+            return;
+        }
+        try{
+            const formData = new FormData();
+            const atToken = Cookies.get('accessToken');
+            formData.append('file',file);
+            formData.append('seriesName',params.seriesName);
+            formData.append('voice',pickedVoice);
+            formData.append('episode',episode);
+            const post = await axios.post('/catalog/upload/video',formData,{
+                headers:{
+                    'Authorization':`Bearer ${atToken}`,
+                    "Content-Type": "multipart/form-data",
+                },
+                onUploadProgress: (progressEvent)=> {
+                    if(!progressEvent.total) return;
+                    const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    setUploadProgress(progress); // Update progress
+                },
+            })
+            toast.success('Video uploaded successfully!');
+        }catch(err){
+            console.error(`Couldn't upload!Error: ${err}`);
+            toast.error(`Couldn't upload the video!`)
+        }
+    }
     
     const handleDataSubmit = (data:SeriesInfo)=>{
         console.log(`DATA submit: `,data);
@@ -54,12 +101,47 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
             
         }
     };
-    const formValues = watch(); 
+    useEffect(()=>{
+        const fetchData = async()=>{
+            const data = await getVoices(params.seriesName);
+            setVoices(data);
+            setPickedVoice(data[0]);
+        }
+        fetchData();
+    },[]);
+    
+    const toggleAnimation = () => {
+        if (divRef.current && mainRef.current) {
+          if (isShow) {
+            divRef.current.classList.add("animate-slideVoiceIn");
+            setIsShow(false);
+            setTimeout(() => {
+              divRef.current?.classList.remove("flex");
+              mainRef.current?.classList.remove("rounded-b-none","rounded-t-lg","border-b-none");
+              mainRef.current?.classList.add("rounded-lg");
+              divRef.current?.classList.add("hidden");
+
+              divRef.current?.classList.remove("animate-slideVoiceIn");
+            }, 600);
+          } else {
+            divRef.current.classList.remove("hidden");
+            mainRef.current.classList.remove("rounded-lg")
+            mainRef.current.classList.add("rounded-b-none","rounded-t-lg","border-b-none")
+            divRef.current.classList.add("flex","animate-slideVoiceOut");
+            setIsShow(true);
+    
+            setTimeout(() => {
+              divRef.current?.classList.remove("animate-slideVoiceOut");
+            }, 600);
+          }
+        }
+      };
     useEffect(()=>{
         const fetchData = async()=>{
 
             const data = await getDataView(params.seriesName);
             setData(data);
+            
         }
         fetchData()
     },[params.seriesName])
@@ -69,9 +151,9 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
         )
     }
     return(
-        <div className="flex max-w-full w-full min-h-full">
-            <form onSubmit={handleSubmit(handleDataSubmit)} className="flex max-w-full w-full min-h-full">
-                <div className='flex flex-col relative bg-[#3C3C3C] p-5 w-[68rem] max-w-[96%] min-h-full text-rose-50 rounded-[20px] flex-wrap'>
+        <div className="flex flex-col max-w-full w-full min-h-full">
+            <form onSubmit={handleSubmit(handleDataSubmit)} className="flex max-w-full w-full max-h-full">
+                <div className='flex flex-col relative bg-[#3C3C3C] p-5 w-[68rem] max-w-[96%] max-h-full text-rose-50 rounded-lg flex-wrap'>
                     <div className="flex w-full min-h-[22rem]">
                         <div className='flex relative mr-5 custom-image:mr-0 w-[15.62rem] max-h-[21.87rem] custom-image:h-auto'>
                             <img className='flex max-h-full w-full rounded-[20px]' src={`http://localhost:3001/media/${params.seriesName}/images`} alt={data.SeriesName}/>
@@ -98,7 +180,7 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                                     <div className='w-[6rem]'>Genre:</div> 
                                     <div className='flex gap-1 ml-5 w-[24rem] flex-wrap'>{data.Genre.map((item:string,index:number)=>(
                                         <div key={index} className="flex border-2 border-gray-500 bg-transparent rounded-md px-1 pl-[6px]">
-                                            <textarea defaultValue={item}  {...register(`Genre.${index}`)} className={`flex outline-none bg-transparent hover:border-rose-50 rounded-md font-medium min-w-[2.5rem] text-[0.85rem] py-[2px] items-center mr-1 justify-center`}>
+                                            <textarea defaultValue={item}  {...register(`Genre.${index}`)} className={`flex outline-none bg-transparent hover:border-rose-50 rounded-md font-medium min-w-[2.5rem] max-w-[12rem] break-words text-[0.85rem] py-[2px] items-center mr-1 justify-center`}>
                                                 
                                             </textarea>
                                             <div className="flex justify-center items-center">
@@ -122,7 +204,7 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                                     <div className='w-[6rem]'>Studio:</div> 
                                     <div className='flex gap-1 ml-5 w-[24rem] flex-wrap'>{data.Studio.map((item:string,index:number)=>(
                                         <div key={index} className="flex bg-[#402D9F] rounded-md px-1 pl-[6px]">
-                                            <textarea defaultValue={item}  {...register(`Studio.${index}`)} className={`flex outline-none bg-transparent hover:border-rose-50 rounded-md font-medium min-w-[2.5rem] text-[0.85rem] mr-1 py-1`}>
+                                            <textarea defaultValue={item}  {...register(`Studio.${index}`)} className={`flex outline-none max-w-[12rem] break-words bg-transparent hover:border-rose-50 rounded-md font-medium min-w-[2.5rem] text-[0.85rem] mr-1 py-1`}>
                                                 
                                             </textarea>
                                             <div className="flex justify-center items-center">
@@ -150,7 +232,7 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                                     <div className='w-[6rem]'>Voice:</div>
                                     <div className='ml-5 flex gap-1 w-[17rem] flex-wrap'>{data.VoiceActing.map((item:string,index:number)=>(
                                         <div key={index} className="flex items-center bg-[#4eb997] hover:bg-[#43a083] rounded-md px-1 pl-[6px]">
-                                            <textarea defaultValue={item} {...register(`VoiceActing.${index}`)} className='flex outline-none h-[1.50rem] min-w-[2.5rem] bg-transparent rounded-md font-medium text-[0.85rem] py-[2px] px-[2px] items-center justify-center'>
+                                            <textarea defaultValue={item} {...register(`VoiceActing.${index}`)} className='flex max-w-[12rem] break-words outline-none h-[1.50rem] min-w-[2.5rem] bg-transparent rounded-md font-medium text-[0.85rem] py-[2px] px-[2px] items-center justify-center'>
                                                 
                                             </textarea>
                                             <div className="flex justify-center items-center">
@@ -204,6 +286,70 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                     </div>
                 </div>
             </form>
+            {/* VoiceActing */}
+            <div className="flex flex-col w-[68rem] max-w-[96%] min-h-[15rem] mt-5 p-5 bg-gray-300 rounded-lg">
+                <div className="flex w-full h-[3rem]">
+                    <div ref={mainRef} className={`flex flex-col rounded-lg box-border h-[1.75rem] relative w-[15rem] bg-gray-100 border-gray-600 border-[1px] font-normal mb-2 text-white text-[0.9rem] px-2`}>
+                        <button onClick={toggleAnimation} className="flex h-[1.75rem] relative box-border w-full flex-grow items-center justify-between">
+                            <div className="flex h-full items-center w-full flex-grow">
+                                Voice {pickedVoice}
+                            </div>
+                            <span className="flex w-[0.1rem] h-[60%] justify-center mr-2 bg-white py-[2px]"></span><img src={`http://localhost:3001/media/down-arrow/icons`} className={`flex w-[1.25rem] transform ${isShow ? 'rotate-[180deg]' : 'rotate-0'} h-[1.25rem] ${isShow ?'animate-downArrowRotateUp':'animate-downArrowRotateDown'}`} />
+                        </button>
+                        <div className="hidden max-w-[15rem] w-[15rem] left-[-1px] mr-0 box-border max-h-[12rem] absolute p-0 m-0 top-full px-2 bg-gray-100 border-gray-600 border-t-0 rounded-b-lg border-[1px] z-10 overflow-y-scroll" ref={divRef}>
+                            <div className="flex flex-col w-full gap-y-2">
+                                {voices.map((item,index)=>(
+                                    <button key={index} onClick={()=>{toggleAnimation();setPickedVoice(item)}} className={`flex w-full ${pickedVoice === item?'text-gray-300':''}`}>
+                                        Voice {item}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <div className={`flex ml-4 flex-col ${isShowEpisode?'rounded-b-none rounded-t-lg':'rounded-lg'} box-border h-[1.75rem] relative w-[15rem] bg-gray-100 border-gray-600 border-[1px] font-normal mb-2 text-white text-[0.9rem] px-2`}>
+                        <button onClick={()=>setIsShowEpisode((prev)=>!prev)} className="flex h-[1.75rem] relative box-border w-full flex-grow items-center justify-between">
+                            <div className="flex h-full items-center w-full flex-grow">
+                                Episode {episode}
+                            </div>
+                            <span className="flex w-[0.1rem] h-[60%] justify-center mr-2 bg-white py-[2px]"></span><img src={`http://localhost:3001/media/down-arrow/icons`} className={`flex w-[1.25rem] transform ${isShowEpisode ? 'rotate-[180deg]' : 'rotate-0'} ${isShowEpisode ?'animate-downArrowRotateUp':'animate-downArrowRotateDown'}`} />
+                        </button>
+                        <div className={`${isShowEpisode?'flex':'hidden'} max-w-[15rem] w-[15rem] left-[-1px] mr-0 box-border max-h-[12rem] absolute p-0 m-0 top-full px-2 bg-gray-100 border-gray-600 border-t-0 rounded-b-lg border-[1px] z-10 overflow-y-scroll`}>
+                            <div className="flex flex-col w-full gap-y-2">
+                                {Array.from({length:data.AmountOfEpisode},(item:number,index)=>(
+                                    <button key={index} onClick={()=>{setIsShowEpisode((prev)=>!prev);setEpisode(index + 1)}} className={`flex w-full ${ index + 1 === episode?'text-gray-300':''}`}>
+                                        Episode {index + 1}
+                                    </button>
+                                
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="flex max-w-full h-full bg-gray-100 border-gray-600 border-[1px] rounded-[0.25rem]">
+                    <label htmlFor="file-upload"  className="inline-flex flex-grow max-w-full h-full items-center justify-center">
+                        {file && (
+                            <div>
+                                <p className="text-[1rem] font-medium text-rose-50">{file.name}</p>
+                            </div>
+                        )}
+                        <div className={`flex flex-col items-center justify-center ${file?'hidden':''}`}>
+                            <img src={`http://localhost:3001/media/upload-icon/icons`} className="flex w-[3.2rem] h-[3.2rem]" alt="" />
+                            <p className="flex text-[1rem] font-medium text-rose-50">Upload a video for {pickedVoice} for the {episode} Episode</p>
+                        </div>
+                    </label>
+                    <input type="file" accept="video/*" className="hidden" onChange={handleFileChange} id="file-upload"/>
+                </div>
+                {uploadProgress === null?(<></>):(
+                    <div className="flex w-full h-[1.75rem] text-white">
+                        <span>{uploadProgress}%</span>
+                    </div>
+                )}
+                <div className="flex h-[2.5rem] mt-3 max-w-full justify-end">
+                    <button onClick={handleUploadFile} className="flex h-full max-w-[8rem] w-full rounded-md text-[0.8rem] bg-green-400 mr-4 font-medium text-rose-50 items-center justify-center">
+                        Add episode
+                    </button>
+                </div>
+            </div>
         </div>
     )
 }

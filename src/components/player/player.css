@@ -49,6 +49,14 @@
     transform: scaleX(0);
   }
 } */
+.video .fullscreen{
+  min-height: 90%;
+}
+.player-container .fullscreen{
+  min-height: 90%;
+  max-height: none;
+}
+
 .player-container:not(:hover):not(.paused) .controls {
   selector{cursor:none;}
   animation: hideControls 0.5s ease 5s forwards; /* Запускаем анимацию скрытия через 5 секунд после убирания курсора */
