@@ -11,12 +11,12 @@ const NavbarLogin = ()=>{
         setAuthWindow(false);
         console.log('xuiiiii');
     
-        document.removeEventListener('mousedown',handleClickOutside);
+        document.removeEventListener('click',handleClickOutside);
     }
     }
     const handleClick = ()=>{ 
         setAuthWindow(true);
-        document.addEventListener('mousedown',handleClickOutside);
+        document.addEventListener('click',handleClickOutside);
     }
     return(
         <>

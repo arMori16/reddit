@@ -10,8 +10,8 @@ const TabsComponent = ({seriesNames,seriesViewNames,rate,genre}:{seriesNames:str
     console.log('ITS ARRAY OF NUMBRES: ',rate);
     return(
         <div className='flex relative flex-wrap max-w-[61.25rem] h-auto'>
-            <div className="flex flex-col relative border-b-[#FFD04B] border-b-[3px] bg-[#3C3C3C] rounded-t-2xl min-w-[3rem] w-full text-rose-50 p-2">
-                Catalog
+            <div className="flex flex-col relative border-b-[#FFD04B] text-[1.25rem] font-medium border-b-[3px] bg-[#3C3C3C] rounded-t-lg min-w-[3rem] w-full text-rose-50 p-2 pl-4">
+                What's new on the site
             </div>
             <div className='flex relative flex-wrap w-[100%] gap-x-5'>
                 {Array.from({length:seriesNames.length},(_,index)=>(
@@ -20,9 +20,9 @@ const TabsComponent = ({seriesNames,seriesViewNames,rate,genre}:{seriesNames:str
                         <div className='flex relative w-[11.5rem] custom-s:w-[9.4rem] max-w-[11.5rem] shrink-0'>
                             <img src={`http://localhost:3001/media/${seriesNames[index]}/images`} className="w-full skeleton h-[100%]" />
                         </div>
-                        <div className='block max-w-full w-[18.5rem] custom-xl2:w-[100%] flex-grow relative text-rose-50 p-[10px] pb-0 h-full'>
-                            <h1 className='uppercase text-[14px] font-semibold flex'>{seriesViewNames[index]}</h1>
-                            <p>Genre: {genre[index]?.join(', ')}</p>
+                        <div className='block overflow-auto max-w-full w-[18.5rem] custom-xl2:w-[100%] relative text-rose-50 p-[10px] pb-0 h-full'>
+                            <h1 className='inline-block uppercase absolute ml-[10px] left-0 right-0 text-[14px] max-w-full font-semibold truncated-text'>{seriesViewNames[index]}</h1>
+                            <p className='flex flex-wrap relative mt-5'>Genre: {genre[index]?.join(', ')}</p>
                             <p>Rate: {rate[index]}</p>
                         </div>
                     </div>

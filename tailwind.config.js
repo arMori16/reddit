@@ -1,19 +1,16 @@
 /** @type {import('tailwindcss').Config} */
+const colors = require('./tailwind/tailwind.color')
 module.exports = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    './src/**/*.{js,ts,jsx,tsx}'
   ],
   theme: {
     extend: {
       colors: {
-        green:"#B3DCC5",
-        "green-400":'#5DC090',
-        "gray-600":'#7A7A7A',
-        "gray-300":"#3C3C3C",
-        "gray-200":'#242424',
-        "gray-100":'#222222'
+        ...colors
       },
       keyframes: {
         slideIn: {
@@ -44,8 +41,8 @@ module.exports = {
       animation: {
         slideIn: 'slideIn 1s ease-in-out',
         slideOut: 'slideOut 1s ease-in-out',
-        slideVoiceIn: 'slideVoiceIn 0.6s forwards ease-in-out',
-        slideVoiceOut: 'slideVoiceOut 0.6s forwards ease-in-out',
+        slideVoiceIn: 'slideVoiceIn 0.4s forwards ease-in-out',
+        slideVoiceOut: 'slideVoiceOut 0.4s forwards ease-in-out',
         downArrowRotateUp:'downArrowRotateUp 0.3s ease-in-out',
         downArrowRotateDown:'downArrowRotateDown 0.3s ease-in-out',
       },
@@ -66,9 +63,10 @@ module.exports = {
           raw:"(orientation:landscape)"
         }
       },
-      fontFamily:{
-      }
+      fontFamily: {
+        inknut: ['Inknut Antiqua', 'serif'], // The name you used in @font-face
+      },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/line-clamp')],
 };

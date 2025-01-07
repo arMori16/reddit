@@ -2,25 +2,33 @@
 
 import axios from "@/components/api/axios";
 import { getVoices } from "@/components/player/player.logic";
-import { getDataView, updateSeries } from "@/utils/admin.logic";
+import voiceStorage from "@/components/useZustand/player/zustandVoice";
+import menuStorage from "@/components/useZustand/zustandMenu";
+import { getDataView, handleDeleteEpisode, updateSeries } from "@/utils/admin.logic";
 import { SeriesInfo } from "@/utils/dto/adminDto/seriesInfo.dto";
+import YesNoButton from "@/utils/handleYesNoButton";
+import useOutsideCommon from "@/utils/hooks/useOutsideCommon";
 import Cookies from "js-cookie";
 import { useEffect, useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 const ViewSeries = ({params}:{params:{seriesName:string}})=>{
+    const {getEpisodes,setEpisodes,getVoice,setVoice} = voiceStorage();
     const divRef = useRef<HTMLDivElement>(null); 
-    const mainRef = useRef<HTMLDivElement>(null); 
+/*     const {} = useOutsideCommon(divRef);
+ */    const mainRef = useRef<HTMLDivElement>(null); 
+    const {getIsShow,updateIsShow,getShowVoices,updateShowVoices,showVoices} = menuStorage();
+    const [typeOfDelete,setTypeOfDelete] = useState<boolean>();
     const [data,setData] = useState<SeriesInfo>();
     const [voices,setVoices] = useState<any[]>([]);
-    const [genreItems,setGenreItems] = useState<number>(0);
     const [isShow,setIsShow] = useState<boolean>(false);
+    const [showSubmit,setShowSubmit] = useState(false);
+    const [submitState,setSubmitState] = useState(false);
     const [isShowEpisode,setIsShowEpisode] = useState<boolean>(false);
-    const [voiceItem,setVoiceItems] = useState<number>(0);
     const [uploadProgress, setUploadProgress] = useState<number | null>(null);
-    const [pickedVoice,setPickedVoice] = useState<any>(voices[0]);
     const [episode,setEpisode] = useState<any>(1);
+    const [uploadedEpisodes,setUploadedEpisodes] = useState<[]>([]);
     const [file, setFile] = useState<File | null>(null);
 
     const handleFileChange = (e:any) => {
@@ -44,7 +52,23 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
             VideoSource: data?.VideoSource,
         }
     })
-    
+
+    useEffect(() => {
+        if (submitState) {
+            if(typeOfDelete){
+                handleDeleteEpisode(params.seriesName, getVoice());
+            }
+            else{
+                handleDeleteEpisode(params.seriesName, getVoice(), episode);
+            }
+        }
+    }, [submitState]);
+    useEffect(()=>{
+        if(!showVoices){
+            toggleAnimation();
+
+        }
+    },[showVoices])
     const handleUploadFile = async()=>{
         if(!file){
             toast.info('Please select a file!');
@@ -55,7 +79,7 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
             const atToken = Cookies.get('accessToken');
             formData.append('file',file);
             formData.append('seriesName',params.seriesName);
-            formData.append('voice',pickedVoice);
+            formData.append('voice',getVoice());
             formData.append('episode',episode);
             const post = await axios.post('/catalog/upload/video',formData,{
                 headers:{
@@ -81,8 +105,7 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
     }
     const handleClear = ()=>{
         reset();
-        setGenreItems(0);
-        setVoiceItems(0);
+        
     }
     const deleteItem = (type: keyof SeriesInfo, index: number) => {
         // Ensure 'data' exists and that 'type' is an array
@@ -104,8 +127,10 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
     useEffect(()=>{
         const fetchData = async()=>{
             const data = await getVoices(params.seriesName);
-            setVoices(data);
-            setPickedVoice(data[0]);
+            setVoices(data?.voices);
+            setVoice(data?.voices[0]);
+            setUploadedEpisodes(data?.episodes);
+            setEpisodes(data?.episodes[0]);
         }
         fetchData();
     },[]);
@@ -290,20 +315,21 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
             <div className="flex flex-col w-[68rem] max-w-[96%] min-h-[15rem] mt-5 p-5 bg-gray-300 rounded-lg">
                 <div className="flex w-full h-[3rem]">
                     <div ref={mainRef} className={`flex flex-col rounded-lg box-border h-[1.75rem] relative w-[15rem] bg-gray-100 border-gray-600 border-[1px] font-normal mb-2 text-white text-[0.9rem] px-2`}>
-                        <button onClick={toggleAnimation} className="flex h-[1.75rem] relative box-border w-full flex-grow items-center justify-between">
+                        <button onClick={()=>{updateShowVoices(true);toggleAnimation();}} className="flex h-[1.75rem] relative box-border w-full flex-grow items-center justify-between">
                             <div className="flex h-full items-center w-full flex-grow">
-                                Voice {pickedVoice}
+                                Voice {getVoice()}
                             </div>
                             <span className="flex w-[0.1rem] h-[60%] justify-center mr-2 bg-white py-[2px]"></span><img src={`http://localhost:3001/media/down-arrow/icons`} className={`flex w-[1.25rem] transform ${isShow ? 'rotate-[180deg]' : 'rotate-0'} h-[1.25rem] ${isShow ?'animate-downArrowRotateUp':'animate-downArrowRotateDown'}`} />
                         </button>
+                        
                         <div className="hidden max-w-[15rem] w-[15rem] left-[-1px] mr-0 box-border max-h-[12rem] absolute p-0 m-0 top-full px-2 bg-gray-100 border-gray-600 border-t-0 rounded-b-lg border-[1px] z-10 overflow-y-scroll" ref={divRef}>
                             <div className="flex flex-col w-full gap-y-2">
                                 {voices.map((item,index)=>(
-                                    <button key={index} onClick={()=>{toggleAnimation();setPickedVoice(item)}} className={`flex w-full ${pickedVoice === item?'text-gray-300':''}`}>
+                                    <button key={index} onClick={()=>{toggleAnimation();setVoice(item);setEpisodes(uploadedEpisodes[index])}} className={`flex w-full ${getVoice() === item?'text-gray-300':''}`}>
                                         Voice {item}
                                     </button>
                                 ))}
-                            </div>
+                            </div>       
                         </div>
                     </div>
                     <div className={`flex ml-4 flex-col ${isShowEpisode?'rounded-b-none rounded-t-lg':'rounded-lg'} box-border h-[1.75rem] relative w-[15rem] bg-gray-100 border-gray-600 border-[1px] font-normal mb-2 text-white text-[0.9rem] px-2`}>
@@ -316,7 +342,7 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                         <div className={`${isShowEpisode?'flex':'hidden'} max-w-[15rem] w-[15rem] left-[-1px] mr-0 box-border max-h-[12rem] absolute p-0 m-0 top-full px-2 bg-gray-100 border-gray-600 border-t-0 rounded-b-lg border-[1px] z-10 overflow-y-scroll`}>
                             <div className="flex flex-col w-full gap-y-2">
                                 {Array.from({length:data.AmountOfEpisode},(item:number,index)=>(
-                                    <button key={index} onClick={()=>{setIsShowEpisode((prev)=>!prev);setEpisode(index + 1)}} className={`flex w-full ${ index + 1 === episode?'text-gray-300':''}`}>
+                                    <button key={index} onClick={()=>{setIsShowEpisode((prev)=>!prev);setEpisode(index > getEpisodes() + 1? 1 : index + 1)}} className={`flex w-full ${ index > getEpisodes()?'pointer-events-none cursor-not-allowed text-[#c35c6a]':''} ${ index + 1 === episode?'text-gray-300':''}`}>
                                         Episode {index + 1}
                                     </button>
                                 
@@ -334,17 +360,26 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                         )}
                         <div className={`flex flex-col items-center justify-center ${file?'hidden':''}`}>
                             <img src={`http://localhost:3001/media/upload-icon/icons`} className="flex w-[3.2rem] h-[3.2rem]" alt="" />
-                            <p className="flex text-[1rem] font-medium text-rose-50">Upload a video for {pickedVoice} for the {episode} Episode</p>
+                            <p className="flex text-[1rem] font-medium text-rose-50">Upload a video for {getVoice()} for the {episode} Episode</p>
                         </div>
                     </label>
                     <input type="file" accept="video/*" className="hidden" onChange={handleFileChange} id="file-upload"/>
                 </div>
                 {uploadProgress === null?(<></>):(
                     <div className="flex w-full h-[1.75rem] text-white">
-                        <span>{uploadProgress}%</span>
+                        <span>{uploadProgress}%  - You need to wait until the message shows!</span>
                     </div>
                 )}
                 <div className="flex h-[2.5rem] mt-3 max-w-full justify-end">
+                    <button onClick={()=>{updateIsShow(true);setTypeOfDelete(true)}} className="flex h-full max-w-[8rem] w-full rounded-md text-[0.8rem] bg-red-button mr-4 font-medium text-rose-50 items-center justify-center">
+                        delete voice
+                    </button>
+                    {getIsShow() && (
+                        <YesNoButton setState={setSubmitState}/>
+                    )}
+                    <button onClick={()=>{updateIsShow(true);setTypeOfDelete(false)}} className="flex h-full max-w-[8rem] w-full rounded-md text-[0.8rem] bg-red-button mr-4 font-medium text-rose-50 items-center justify-center">
+                        delete episode
+                    </button>
                     <button onClick={handleUploadFile} className="flex h-full max-w-[8rem] w-full rounded-md text-[0.8rem] bg-green-400 mr-4 font-medium text-rose-50 items-center justify-center">
                         Add episode
                     </button>

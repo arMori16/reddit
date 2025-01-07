@@ -29,7 +29,7 @@ export default function RootLayout({children}:{children: React.ReactNode}){
       <body className="min-w-full min-h-screen bg-[#242424]">
       <ToastContainer position="bottom-right"/>
       <ClientRefreshToken/>
-        <div className="flex w-full min-h-[100vh] h-[100vh] bg-[#242424]">
+        <div className="flex w-full min-h-screen bg-[#242424]">
             <div className="flex flex-col break-words fixed flex-shrink-0 h-full bg-[#2C2C2C] font-medium text-[1.25rem] text-rose-50 p-5 bg-opacity-50 w-[18rem] max-w-[18rem]">
                 <div className="flex font-bold ml-5 mb-3 text-[1.50rem] ">
                     Admin

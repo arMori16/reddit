@@ -5,6 +5,7 @@ import axios from '../../api/axios';
 import { useDispatch } from 'react-redux';
 import { logout } from '@/components/redux/userSlice';
 import Cookies from 'js-cookie';
+import Link from 'next/link';
 
 const Avatar = ()=> {
     const [profile,setProfile] = useState(false);
@@ -40,12 +41,12 @@ const Avatar = ()=> {
     }
     return (
         <div className="flex relative w-[3rem] h-auto">
-            <button onClick={handleAvatarClick} className='w-[3rem] h-[3rem] overflow-hidden border-[#B3DCC5] border-[3px] rounded-[50%] z-[1000]'>
+            <button onClick={handleAvatarClick} className='w-[3rem] h-[3rem] overflow-hidden border-[#B3DCC5] border-[1px] rounded-[50%] z-[1000]'>
                 <img className='rounded-[50%]' src='/Sweety.jpg'/>
             </button>
             {profile===true && (
-                    <div className='profile-container' ref={divRef}>
-                        <a href='/users/:userId' className='profile'>
+                    <div className='absolute top-[3.5rem] right-0 flex flex-col text-white w-[16rem] h-[10rem] rounded-lg bg-gray-400' ref={divRef}>
+                        <Link href='/users/:userId' className='profile'>
                             <span className='profile-item'>
                                 <span className='span-img'> 
                                     <img className='rounded-[50%]' src='/Sweety.jpg'/>
@@ -54,7 +55,7 @@ const Avatar = ()=> {
                                     View Profile
                                 </span>
                             </span>
-                        </a>
+                        </Link>
                         <button onClick={handleLogout} className='profile-2'>
                             <span className='profile-item'>
                                 <span className='span-img-2'>

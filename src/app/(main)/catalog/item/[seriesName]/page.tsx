@@ -55,10 +55,10 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
     }
 
     return(
-        <div className="div-main-content-container bg-[#242424]">
+        <div className="flex flex-col items-center justify-center w-full h-full bg-[#242424]">
             {/* <ClientRefresh /> */}
-            <div className='w-[68rem] max-w-full flex flex-col items-center  h-full'>
-                <div className='flex relative p-5 w-[68rem] max-w-[96%] mt-9 h-auto bg-[#3C3C3C] text-rose-50 rounded-[20px] flex-wrap'>
+            <div className='w-[68rem] max-w-full flex flex-col items-center  h-full shadow-[0px_0px_12px_black]'>
+                <div className='flex relative p-5 w-[68rem] max-w-[96%] mt-[3rem]  h-auto bg-[#3C3C3C] text-rose-50 rounded-[20px] flex-wrap'>
                     <div className='flex relative mr-5 custom-image:mr-0 w-[15.62rem] max-h-[21.87rem] custom-image:h-auto'>
                         <img className='flex max-h-full w-full rounded-[20px]' src={`http://localhost:3001/media/${params.seriesName}/images`} alt={fetchedData.data.SeriesName}/>
                     </div>

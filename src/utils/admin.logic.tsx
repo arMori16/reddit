@@ -235,3 +235,25 @@ export const handleUserCommentsHitory = async(userName:string,page:number)=>{
         
     }
 }
+
+
+export const handleDeleteEpisode = async(seriesName:string,voice:string,episode?:number)=>{
+    const atToken = Cookies.get('accessToken');
+    try{
+        const deleteEpisode = await axios.delete('/catalog/item/episode/delete',{
+            headers:{
+                'Authorization':`Bearer ${atToken}`
+            },
+            params:{
+                seriesName:seriesName,
+                voice:voice,
+                episode:episode
+            }
+        });
+        toast.success('Deleted successfully');
+        return deleteEpisode.data;
+    }catch(err){
+        console.error(`Cannot delete episode! ${err}`);
+        toast.error(`Couldn't delete the episode`);
+    }
+}

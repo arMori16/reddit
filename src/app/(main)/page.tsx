@@ -19,7 +19,7 @@ export default async function Home({searchParams}:{searchParams:{page:number}}) 
     notFound()
   }
   return (
-      <div className='max-w-full relative min-h-[100vh] h-auto bg-[#242424]'>
+      <div className='max-w-full relative min-h-[100vh] h-auto bg-[#242424] shadow-[0px_-2px_10px_black]'>
         <div className='flex relative flex-col items-center mx-2'>
           <div className='flex'>
             <CarouselWrapper/>
