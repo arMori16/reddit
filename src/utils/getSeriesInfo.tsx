@@ -2,7 +2,6 @@ import axios from "@/components/api/axios";
 import { SeriesInfo } from "./dto/adminDto/seriesInfo.dto";
 
 const getSeriesInfo = async(page:number)=>{
-    console.log('PAGE: ',page);
     
    try{
     const req = await axios.get('/catalog/getCatalog',{
@@ -10,7 +9,6 @@ const getSeriesInfo = async(page:number)=>{
             skip:page*16
         }
     })
-    console.log('This is new get page data: ',req.data);
     const seriesNames = req.data.map((item:{SeriesName:string}) => item.SeriesName);
     const seriesViewNames = req.data.map((item:{SeriesViewName:string}) => item.SeriesViewName);
     const rate = req.data.map((item:{Rate:number[]}) => item.Rate);
@@ -60,7 +58,6 @@ export const getSeasonedCatalog = async()=>{
             a:7
         }
     });
-    console.log('GETFIRSTPAGE: ',getFirstPageCatalog.data);
     const seriesViewNames = getFirstPageCatalog.data.map((item:{SeriesViewName:string}) => item.SeriesViewName);
     const seriesNames = getFirstPageCatalog.data.map((item:{SeriesName:string}) => item.SeriesName);
     return {

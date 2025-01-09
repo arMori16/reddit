@@ -1,8 +1,8 @@
 export interface SeriesInfo{
+    AlternitiveNames:string[]
     SeriesName:string,
     Description:string,
     SeriesViewName:string,
-    Rate:number,
     Status:string,
     Type:string,
     ReleaseYear:string,
@@ -10,5 +10,4 @@ export interface SeriesInfo{
     Studio:string[],
     AmountOfEpisode:number,
     VoiceActing:string[],
-    VideoSource:string,
 }

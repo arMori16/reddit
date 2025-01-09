@@ -11,5 +11,6 @@ module.exports = {
     "gray-100":'#222222',
     'gray-0':'#292929',
     "red-button":'#B32C25',
-    "red-400":'#F54F4F'
+    "red-400":'#F54F4F',
+    "orange-200":'#FFE600'
 }

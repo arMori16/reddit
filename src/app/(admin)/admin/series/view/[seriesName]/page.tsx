@@ -38,10 +38,10 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
 
     const {register,handleSubmit,reset,watch,getValues} = useForm<SeriesInfo>({
         defaultValues:{
+            AlternitiveNames: data?.AlternitiveNames,
             SeriesName: data?.SeriesName,
             Description: data?.Description,
             SeriesViewName: data?.SeriesViewName,
-            Rate: data?.Rate,
             Status: data?.Status,
             Type: data?.Type,
             ReleaseYear: data?.ReleaseYear,
@@ -49,7 +49,6 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
             Studio: data?.Studio,
             AmountOfEpisode: data?.AmountOfEpisode,
             VoiceActing: data?.VoiceActing,
-            VideoSource: data?.VideoSource,
         }
     })
 
@@ -120,8 +119,6 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
     
             // Optionally, reset the form with the updated 'data'
             reset({ ...currentData, [type]: newArray });
-            console.log('GOOD NIGHT!');
-            
         }
     };
     useEffect(()=>{
@@ -181,11 +178,40 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                 <div className='flex flex-col relative bg-[#3C3C3C] p-5 w-[68rem] max-w-[96%] max-h-full text-rose-50 rounded-lg flex-wrap'>
                     <div className="flex w-full min-h-[22rem]">
                         <div className='flex relative mr-5 custom-image:mr-0 w-[15.62rem] max-h-[21.87rem] custom-image:h-auto'>
-                            <img className='flex max-h-full w-full rounded-[20px]' src={`http://localhost:3001/media/${params.seriesName}/images`} alt={data.SeriesName}/>
+                            <img className='flex max-h-full w-full rounded-lg' src={`http://localhost:3001/media/${params.seriesName}/images`} alt={data.SeriesName}/>
                         </div>
                         <div className='flex flex-col min-h-[22rem]'>
                             <textarea className='text-3xl custom-xs:mt-0 flex bg-transparent min-h-[2.5rem] min-w-[2rem]' defaultValue={data.SeriesViewName} {...register('SeriesViewName')}></textarea>
-                            <ul className='flex flex-col gap-y-1 mt-3'>
+                            <ul className='flex flex-col gap-y-1 mt-1'>
+                            <li className="flex">
+                                    <div className='flex gap-1 w-[24rem] flex-wrap'>{data.AlternitiveNames?.map((item:string,index:number)=>(
+                                        <div key={index} className="flex bg-gray-100 rounded-xl px-1 pl-2">
+                                            <textarea defaultValue={item}  {...register(`AlternitiveNames.${index}`)} className={`flex outline-none max-w-[16rem] break-words bg-transparent hover:border-rose-50 rounded-md font-medium min-w-[2.5rem] text-[0.85rem] mr-1 py-1`}>
+                                                
+                                            </textarea>
+                                            <div className="flex justify-center items-center">
+                                                <button onClick={()=>deleteItem("AlternitiveNames",index)} type="button" className="flex text-[0.85rem] rounded-[50%] hover:bg-rose-50 hover:text-[#3C3C3C] h-[1rem] w-[1rem] items-center justify-center">
+                                                        ×
+                                                </button>
+                                            </div>
+                                        </div>
+                                        ))}
+                                         <button type="button" onClick={()=>{
+                                            const currentValues = getValues();
+                                            if(currentValues.AlternitiveNames === undefined){
+                                                setData((prev) => (prev?{...data,AlternitiveNames:['']}:undefined));
+                                                reset({...currentValues,AlternitiveNames:['']});
+                                            }
+                                            else{
+                                                const updatedAlternitiveNames:string[] = [...currentValues.AlternitiveNames,""];
+                                                setData((prev) => (prev?{...data,AlternitiveNames:updatedAlternitiveNames}:undefined));
+                                                reset({...currentValues,AlternitiveNames:updatedAlternitiveNames});
+                                            }
+                                        }} className="flex h-[1.75rem] text-white rounded-md px border-gray-500 border-2  px-[6px] items-center justify-center">
+                                            +
+                                        </button>
+                                    </div>
+                                </li>
                                 <li className="flex">
                                     <div className="w-[6rem]">
                                         SeriesName:
@@ -281,16 +307,6 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                                             +
                                         </button>
                                     </div>
-                                </li>
-                                <li className="flex">
-                                    <div className='w-[6rem]'>Rate:</div> 
-                                    <textarea className='flex bg-transparent ml-5 min-w-[2rem]' defaultValue={data.Rate} {...register('Rate')}></textarea>
-                                </li>
-                                <li className="flex">
-                                    <div className="w-[6rem]">
-                                        VideoSource:
-                                    </div>
-                                    <textarea defaultValue={data.VideoSource} {...register('VideoSource')} className="bg-transparent min-w-[2rem] ml-5"></textarea>
                                 </li>
                             </ul>
                         </div>

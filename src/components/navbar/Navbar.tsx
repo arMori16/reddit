@@ -14,7 +14,7 @@ const Navbar = ({user}:{user:any}) => {
             <div className='flex fixed top-0 left-0 w-full max-w-full h-[14rem] z-[-1]'>
                 <img src="http://localhost:3001/media/main3.jpeg/images" className='object-cover w-full h-[22rem]' alt="" />
             </div>
-            <div className='flex absolute w-[80%] bottom-[-2rem] custom-xs:justify-between gap-x-2 border-y-2 border-[#B3DCC5] z-20 rounded-lg bg-gray-300'>
+            <div className='flex absolute w-[80%] bottom-[-2rem] custom-xs:justify-between gap-x-2 shadow-[0px_3px_10px_black] z-20 rounded-lg bg-gray-300'>
                 <div className='flex ml-5 relative h-[3.50rem] items-center'>
                     <div className='flex relative justify-items-center items-center h-full'>
                         <div className='flex relative w-[2.50rem] h-[2.50rem]'>

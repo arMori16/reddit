@@ -12,8 +12,8 @@ import { ToastContainer } from "react-toastify";
 export default async function RootLayout({ children }:any) {
   const userState = await getStateFromCookiesStorage();
   return (
-      <html lang="en" className="min-h-[100vw]">
-        <body className="min-h-[100vw] pt-[14rem] overflow-x-hidden overflow-y-scroll bg-[#242424] relative">
+      <html lang="en" className="min-h-screen">
+        <body className="min-h-screen pt-[14rem] overflow-x-hidden overflow-y-scroll bg-[#242424] relative">
         <ClientRefreshToken/>
         <ToastContainer position="bottom-right"/>
           <Navbar user={userState}/>

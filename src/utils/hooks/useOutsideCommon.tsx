@@ -6,7 +6,7 @@ const useOutsideCommon = (/* componentRef:RefObject<HTMLDivElement> */)=>{
     const componentRef = useRef<HTMLDivElement>(null);
     const {getIsShow,updateIsShow,updateShowVoices} = menuStorage();
     const handleClickOutside = (e:MouseEvent)=>{
-        if(componentRef.current && !componentRef.current.contains(e.target as Node)){
+        if(componentRef.current && getIsShow() && !componentRef.current.contains(e.target as Node)){
             updateIsShow(false);
             updateShowVoices(false);
             console.log('SET SHOW FALSE! ');

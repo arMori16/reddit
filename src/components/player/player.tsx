@@ -72,7 +72,7 @@ const Player = ({ seriesName,episode }: { seriesName: string,episode:number })=>
     <div className={"overflow-hidden flex-col flex mt-5 player-container max-h-[34rem] relative w-[100%] max-w-[62.5rem]"}data-volume-level={'high'}>
         {isShowPlay && (
             <div className="w-[100%] inset-0 absolute flex items-center justify-center">
-                <button className="w-[100%] h-full flex items-center justify-center  z-[100]" onClick={()=>{toggleShowPlay();toggleControlsVisibility();/* setIsLoading(true);loading() */}}>
+                <button className="w-[100%] h-full flex items-center justify-center  z-20" onClick={()=>{toggleShowPlay();toggleControlsVisibility();/* setIsLoading(true);loading() */}}>
                     <Play className="flex relative mytest w-[100px] h-[100px]"/>
                 </button>
             </div>

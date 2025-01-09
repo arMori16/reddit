@@ -28,7 +28,7 @@ export async function middleware(request: NextRequest) {
       }
     } catch (error) {
       console.error('Error verifying admin access:', error);
-      return NextResponse.redirect(new URL('/error', request.url));
+      return NextResponse.redirect(new URL('/404', request.url));
     }
   }
 

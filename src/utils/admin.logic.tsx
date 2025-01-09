@@ -108,10 +108,10 @@ export const getDataView = async(seriesName:string):Promise<SeriesInfo>=>{
         })
         console.log('This is getdata for viewpage: ',getData.data);
         return{
+            AlternitiveNames:getData.data.AlternitiveNames,
             SeriesName:getData.data.SeriesName,
             Description:getData.data.Description,
             SeriesViewName:getData.data.SeriesViewName,
-            Rate:getData.data.Rate,
             Status:getData.data.Status,
             Type:getData.data.Type,
             ReleaseYear:getData.data.ReleaseYear,
@@ -119,15 +119,14 @@ export const getDataView = async(seriesName:string):Promise<SeriesInfo>=>{
             Studio:getData.data.Studio,
             AmountOfEpisode:getData.data.AmountOfEpisode,
             VoiceActing:getData.data.VoiceActing,
-            VideoSource:getData.data.VideoSource
         }
     }catch(err){
         console.error('Cannot getData for the admin view page');
         return{
+            AlternitiveNames:[''],
             SeriesName:'',
             Description:'',
             SeriesViewName:'',
-            Rate:0,
             Status:'',
             Type:'',
             ReleaseYear:'',
@@ -135,12 +134,12 @@ export const getDataView = async(seriesName:string):Promise<SeriesInfo>=>{
             Studio:[''],
             AmountOfEpisode:0,
             VoiceActing:[''],
-            VideoSource:''
         }
     }
 }
 export const updateSeries = async(data:SeriesInfo,seriesName:string)=>{
     console.log('SeriesName for the admin view page: ',seriesName);
+    console.log('ITS DTAA: ',data);
     
     try{
         const atToken = Cookies.get('accessToken');
