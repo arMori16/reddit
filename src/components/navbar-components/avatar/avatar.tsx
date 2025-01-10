@@ -7,7 +7,7 @@ import { logout } from '@/components/redux/userSlice';
 import Cookies from 'js-cookie';
 import Link from 'next/link';
 
-const Avatar = ()=> {
+const Avatar = ({user}:{user:any})=> {
     const [profile,setProfile] = useState(false);
     const divRef = useRef<HTMLDivElement>(null);
     const handleClickOutside = (event:MouseEvent)=>{
@@ -45,25 +45,21 @@ const Avatar = ()=> {
                 <img className='rounded-[50%]' src='/Sweety.jpg'/>
             </button>
             {profile===true && (
-                    <div className='absolute top-[3.5rem] right-0 flex flex-col text-white w-[16rem] h-[10rem] rounded-lg bg-gray-400' ref={divRef}>
-                        <Link href='/users/:userId' className='profile'>
-                            <span className='profile-item'>
-                                <span className='span-img'> 
-                                    <img className='rounded-[50%]' src='/Sweety.jpg'/>
-                                </span>
-                                <span className='view-profile-text'>
-                                    View Profile
-                                </span>
-                            </span>
+                    <div className='absolute top-[3.5rem] right-0 flex flex-col px-4 py-1 gap-y-1 text-white w-[16rem] shadow-[0px_1px_8px_black] rounded-lg bg-gray-400' ref={divRef}>
+                        <Link href={`/users/${user?.id}`} onClick={()=>{document.removeEventListener('mousedown',handleClickOutside);setProfile(false)}} className='flex w-full h-[3rem] mt-1  hover:text-green-400 duration-500 ease-in-out items-center'>
+                            <div className='w-[2.5rem] h-[2.5rem] '>
+                                <img src="/Sweety.jpg" className='w-full h-full rounded-[50%]' alt="" />
+                            </div>
+                            <div className='flex h-full ml-2 font-medium items-center'>
+                                <span>{user?.firstName}</span>
+                            </div>
                         </Link>
-                        <button onClick={handleLogout} className='profile-2'>
-                            <span className='profile-item'>
-                                <span className='span-img-2'>
-                                    <img src="/enter.png" />
-                                </span>
-                                <span className='view-profile-text-2'>
-                                    Log Out
-                                </span>
+                        <button onClick={handleLogout} className='flex w-full h-[2rem] mb-3 items-center '>
+                            <div className='flex h-[1rem] w-[1rem] ml-3'>
+                                <img src="http://localhost:3001/media/logout.svg/icons" className='w-full h-full'/>
+                            </div>
+                            <span className='view-profile-text-2'>
+                                Log Out
                             </span>
                         </button>
                     </div>

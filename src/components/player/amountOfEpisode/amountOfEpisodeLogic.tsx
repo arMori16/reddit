@@ -1,6 +1,6 @@
 'use client'
 
-import useVideo from "@/components/mainPageComponent/videoFormatter";
+import useVideo from "@/components/player/videoFormatter";
 import numOfEpisodeStorage from "@/components/useZustand/player/zustandNumOfEpisode";
 import { EnumPlayerQuality } from "../types/player.type";
 import { useEffect, useState } from "react";

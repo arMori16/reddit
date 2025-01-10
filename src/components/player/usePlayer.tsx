@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { EnumPlayerQuality, HTMLCustomVideoElement } from "./types/player.type";
-import useVideo from "../mainPageComponent/videoFormatter";
+import useVideo from "./videoFormatter";
 import Hls from "hls.js";
 import axios from "../api/axios";
 import { timePosition } from "../useZustand/zustandSaveTime";
 import playbackPosition, { State } from "../useZustand/zustandStorage";
 import numOfEpisodeStorage from "../useZustand/player/zustandNumOfEpisode";
 import voiceStorage from "../useZustand/player/zustandVoice";
+import Cookies from "js-cookie";
 const SKIP_TIME_SECONDS = 10;
 const usePlayer =({seriesName}:any)=>{   
     const [isPlaying,setIsPlaying] = useState(false);
@@ -73,6 +74,14 @@ const usePlayer =({seriesName}:any)=>{
         if(isShowPlay){
             spaceButton();
             togglePlayPause();
+            axios.post('/user/lastViewedSeries',{
+                seriesName:seriesName,
+                episode:getNumOfEpisode()
+            },{
+                headers:{
+                    'Authorization':`Bearer ${Cookies.get('accessToken')}`
+                }
+            })
             /* postSeriesData(seriesName,quality); */
             console.log('Here is url in usePlayer: ',seriesName);
             

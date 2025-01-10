@@ -6,19 +6,27 @@ import Avatar from '../navbar-components/avatar/avatar';
 import NavbarLogin from './navbar-login';
 import SearchBar from '../navbar-components/search-bar/search-bar';
 import Link from 'next/link';
+import axios from '../api/axios';
+import { cookies } from 'next/headers';
 
 
-const Navbar = ({user}:{user:any}) => {
+const Navbar = async({user}:{user:any}) => {
+    const userFirstName = await axios.get('/user/firstname',{
+        headers:{
+            'Authorization':`Bearer ${cookies().get('accessToken')?.value}`
+        }
+    }).catch((err)=>{
+        console.error(err);
+    });
     return (
         <nav className='flex relative flex-col items-center bg-gray-300'>
-            <div className='flex fixed top-0 left-0 w-full max-w-full h-[14rem] z-[-1]'>
-                <img src="http://localhost:3001/media/main3.jpeg/images" className='object-cover w-full h-[22rem]' alt="" />
+            <div className='flex fixed top-0 left-0 w-full h-[80%] bg-[url("http://localhost:3001/media/main3.jpeg/images")] bg-cover z-[-1]' style={{ backgroundPosition: "center -14rem",aspectRatio: "12/4" }}>
             </div>
             <div className='flex absolute w-[80%] bottom-[-2rem] custom-xs:justify-between gap-x-2 shadow-[0px_3px_10px_black] z-20 rounded-lg bg-gray-300'>
                 <div className='flex ml-5 relative h-[3.50rem] items-center'>
                     <div className='flex relative justify-items-center items-center h-full'>
                         <div className='flex relative w-[2.50rem] h-[2.50rem]'>
-                            <Link href="/"> <img src="/leaf2.png"/> </Link>
+                            <Link href="/"> <img src={`http://localhost:3001/media/leafsvg.svg/icons`}/> </Link>
                         </div>
                         <div className='flex relative items-center text-[1.75rem] font-inknut ml-3 font-bold'>
                             <Link href='/' className='text-rose-50'>AniMori</Link>
@@ -37,7 +45,7 @@ const Navbar = ({user}:{user:any}) => {
                 <div className='flex items-center'>
                     {user === 'registered' ? 
                     <div className='relative mr-7'>
-                        <Avatar/>
+                        <Avatar user={userFirstName?.data}/>
                     </div>:<NavbarLogin/>
                     }
                 </div>

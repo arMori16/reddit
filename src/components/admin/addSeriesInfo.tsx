@@ -34,15 +34,14 @@ const NewSeries = ()=>{
             SeriesName:'',
             Description:'',
             SeriesViewName:'',
-            Rate:0,
+            AlternitiveNames:[''],
             Status:'',
-            Type:[''],
+            Type:'',
             ReleaseYear:0,
             Genre:[''],
             Studio:[''],
             AmountOfEpisode:0,
             VoiceActing:[''],
-            VideoSource:''
         }
     })
 
@@ -50,7 +49,7 @@ const NewSeries = ()=>{
     'SeriesName',
     'Description',
     'SeriesViewName',
-    'Rate',
+    'AlternitiveNames',
     'Status',
     'Type',
     'ReleaseYear',
@@ -58,7 +57,6 @@ const NewSeries = ()=>{
     'Studio',
     'AmountOfEpisode',
     'VoiceActing',
-    'VideoSource',
     ]
     const submitHandler = async(data:newSeries)=>{
         await addSeries(data)

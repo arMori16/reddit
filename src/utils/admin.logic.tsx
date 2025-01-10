@@ -62,6 +62,7 @@ export const addSeries = async(data:any)=>{
     try{
         const atToken = Cookies.get('accessToken');
         if(!atToken) throw new Error('Cannot find access token!');
+        data.AlternitiveNames = data.AlternitiveNames.split(',').map((AlternitiveNames:any) => AlternitiveNames.trim());
         data.Genre = data.Genre.split(',').map((genre:any) => genre.trim());
         data.Studio = data.Studio.split(',').map((studio:any) => studio.trim());
         data.VoiceActing = data.VoiceActing.split(',').map((voiceActing:any) => voiceActing.trim());
@@ -169,16 +170,13 @@ export const getCommentsData = async(page:number)=>{
                 'Authorization':`Bearer ${atToken}`
             }
         })
-        console.log('It is getcomments data! ',getComments.data);
         const data = getComments.data.map((item: any) => {
-            console.log('It is item createdAt: ',item.createdAt);
             
             return {
                 ...item,
                 createdAt: formatDate(String(item.createdAt)), // Ensure it's a string
             };
         });
-        console.log('Final Formatted Data:', data);
     
         return data;
     }catch(err){
@@ -217,16 +215,12 @@ export const handleUserCommentsHitory = async(userName:string,page:number)=>{
                 'Authorization':`Bearer ${atToken}`
             }
         })
-        console.log('It is getcomments data! ',getComments.data);
         const data = getComments.data.map((item: any) => {
-            console.log('It is item createdAt: ',item.createdAt);
-            
             return {
                 ...item,
                 createdAt: formatDate(String(item.createdAt)), // Ensure it's a string
             };
         });
-        console.log('Final Formatted Data:', data);
     
         return data;
     }catch(err){

@@ -1,6 +1,6 @@
 
 import axios from "../api/axios";
-import { EnumPlayerQuality } from "../player/types/player.type";
+import { EnumPlayerQuality } from "./types/player.type";
 
 /* 
 export const postSeriesData = async(seriesName:any,numOfEpisode:number)=>{

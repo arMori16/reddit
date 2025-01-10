@@ -55,7 +55,7 @@ export const getPageCount = async()=>{
 export const getSeasonedCatalog = async()=>{
     const getFirstPageCatalog = await axios.get('/catalog/getCatalog',{
         params:{
-            a:7
+            take:7
         }
     });
     const seriesViewNames = getFirstPageCatalog.data.map((item:{SeriesViewName:string}) => item.SeriesViewName);
