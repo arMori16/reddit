@@ -1,4 +1,4 @@
-
+'use server'
 import AuthWindow from '../auth-window/auth-window';
 import "@/components/navbar/Navbar.css"
 import "@/components/auth-window/auth-window.css"
@@ -7,17 +7,10 @@ import NavbarLogin from './navbar-login';
 import SearchBar from '../navbar-components/search-bar/search-bar';
 import Link from 'next/link';
 import axios from '../api/axios';
-import { cookies } from 'next/headers';
 
 
-const Navbar = async({user}:{user:any}) => {
-    const userFirstName = await axios.get('/user/firstname',{
-        headers:{
-            'Authorization':`Bearer ${cookies().get('accessToken')?.value}`
-        }
-    }).catch((err)=>{
-        console.error(err);
-    });
+const Navbar = async({user,userFirstName}:{user:any,userFirstName?:string | null}) => {
+    
     return (
         <nav className='flex relative flex-col items-center bg-gray-300'>
             <div className='flex fixed top-0 left-0 w-full h-[80%] bg-[url("http://localhost:3001/media/main3.jpeg/images")] bg-cover z-[-1]' style={{ backgroundPosition: "center -14rem",aspectRatio: "12/4" }}>
@@ -36,16 +29,10 @@ const Navbar = async({user}:{user:any}) => {
                 <div className='flex w-[80%] relative ml-auto items-center justify-center custom-xs:hidden'>
                     <SearchBar/>
                 </div>
-                {/* <div className='text-align'>
-                    <ul className='flex relative custom-s:hidden'>
-                        <li id="nav-element"><a href='/about' className='text-rose-50'>About</a></li>
-                        <li id="nav-element"><a href='/contact' className='text-rose-50'>Contact</a></li>
-                    </ul>
-                </div> */}
                 <div className='flex items-center'>
                     {user === 'registered' ? 
                     <div className='relative mr-7'>
-                        <Avatar user={userFirstName?.data}/>
+                        <Avatar user={userFirstName}/>
                     </div>:<NavbarLogin/>
                     }
                 </div>

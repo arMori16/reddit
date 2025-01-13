@@ -9,7 +9,7 @@ import numOfEpisodeStorage from "../useZustand/player/zustandNumOfEpisode";
 import voiceStorage from "../useZustand/player/zustandVoice";
 import Cookies from "js-cookie";
 const SKIP_TIME_SECONDS = 10;
-const usePlayer =({seriesName}:any)=>{   
+const usePlayer =(seriesName:string,seriesViewName:string)=>{   
     const [isPlaying,setIsPlaying] = useState(false);
     const [isShowPlay,setIsShowPlay] = useState(true);
     const [isLoading,setIsLoading] = useState(false);
@@ -76,6 +76,7 @@ const usePlayer =({seriesName}:any)=>{
             togglePlayPause();
             axios.post('/user/lastViewedSeries',{
                 seriesName:seriesName,
+                seriesViewName:seriesViewName,
                 episode:getNumOfEpisode()
             },{
                 headers:{

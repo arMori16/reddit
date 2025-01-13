@@ -77,7 +77,7 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                         <p className='flex items-center'>{seriesData.data.Description}</p>
                     </div>
                 </div>
-                    <MediaPlayerSection AmountOfEpisode={seriesData.data.AmountOfEpisode} seriesName={params.seriesName}/>
+                    <MediaPlayerSection AmountOfEpisode={seriesData.data.AmountOfEpisode} seriesName={params.seriesName} seriesViewName={seriesData.data.SeriesViewName}/>
                 <div className='bg-[#242424] h-[100px]'>
 
                 </div>

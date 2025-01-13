@@ -14,9 +14,9 @@ import numOfEpisodeStorage from "../useZustand/player/zustandNumOfEpisode";
 import voiceStorage from "../useZustand/player/zustandVoice";
 
 
-const Player = ({ seriesName,episode }: { seriesName: string,episode:number })=>{
+const Player = ({ seriesViewName,seriesName,episode }: { seriesName: string,seriesViewName: string,episode: number })=>{
     const [isControlsVisible, setIsControlsVisible] = useState(false); // Состояние видимости контролов
-    const {playRef,isLoading,choosedEpisode,setIsLoading,togglePlayPause,changeQuality,toggleFullScreen,setIsPlaying,quality,isPlaying,isShowPlay,setIsShowPlay,toggleShowPlay,skipTime} = usePlayer({seriesName});
+    const {playRef,isLoading,choosedEpisode,setIsLoading,togglePlayPause,changeQuality,toggleFullScreen,setIsPlaying,quality,isPlaying,isShowPlay,setIsShowPlay,toggleShowPlay,skipTime} = usePlayer(seriesName,seriesViewName);
     const [isSkipTime,setIsSkipTime] = useState(false);
     const [forceRender, setForceRender] = useState(false);
     /* const [numOfEpisode,setNumOfEpisode] = useState(1); */

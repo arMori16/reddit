@@ -10,18 +10,20 @@ type TokenRefreshContextType = {
   };
 class TokenManager {
     private timerId: NodeJS.Timeout | null = null;
-        refreshToken = async(rt:string)=>{
+        refreshToken = async(rt?:string,optional?:boolean)=>{
             try{
+                
                 console.log('getItem(refreshtoken): '+ rt);
-                const {data} = await axios.post('/refresh',rt,{
+                const {data} = await axios.post('/refresh',optional?Cookies.get('refreshToken'):rt,{
                     headers: {
-                        'Authorization': `Bearer ${rt}`, // Добавляем токен в заголовок
+                        'Authorization': `Bearer ${optional?Cookies.get('refreshToken'):rt}`, // Добавляем токен в заголовок
                     }
                 })
                 console.log('post sdelan');
                 console.log(data);
-                
-                Cookies.set('accessToken',data.access_token,{expires:Date.now() + 15 *60*1000});
+                const fifteenMinutes = 15 * 60 * 1000;
+                const expirationDate = new Date(Date.now() + fifteenMinutes);
+                Cookies.set('accessToken',data.access_token,{expires:expirationDate});
                 Cookies.set('refreshToken',data.refresh_token,{expires:28});
                 console.log('New RT:'+data.refresh_token);
                 
@@ -54,7 +56,7 @@ class TokenManager {
                 if(timeToRefresh>0){
                     console.log('xuyaka');
                     
-                    setTimeout(async()=>{
+                    this.timerId = setTimeout(async()=>{
                         try{
                             console.log('vizvan refresh Token');
                             await this.refreshToken(rtToken);

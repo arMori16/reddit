@@ -1,7 +1,10 @@
+
 import axios from "axios";
 import Cookies from "js-cookie";
 
+
 axios.defaults.baseURL = 'http://localhost:3001';
+axios.defaults.withCredentials = true;
 axios.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -9,13 +12,17 @@ axios.interceptors.response.use(
       const refreshToken = Cookies.get('refreshToken');
       if (refreshToken) {
         try {
+          console.log('IT IS CLIENT AXIOS!');
+          
           // Attempt to refresh token
           const tokens = await axios.post('/refresh',refreshToken,{
             headers:{
                 'Authorization':`Bearer ${refreshToken}`
             }
           });
-          Cookies.set('accessToken', tokens.data.access_token, { expires: 15 / (60 * 24) }); // 15 minutes
+          const fifteenMinutes = 15 * 60 * 1000;
+          const expirationDate = new Date(Date.now() + fifteenMinutes);
+          Cookies.set('accessToken', tokens.data.access_token, { expires: expirationDate }); // 15 minutes
           Cookies.set('refreshToken', tokens.data.refresh_token, { expires: 28 }); // 28 days
           
           // Retry the failed request with the new access token
@@ -30,4 +37,5 @@ axios.interceptors.response.use(
     return Promise.reject(`EROR::: ${error}`);
   }
 );
+
 export default axios;

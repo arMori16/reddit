@@ -105,7 +105,7 @@ const Rating = ({ initialRate, initialUserRate,seriesName}: { initialRate: numbe
                 </div>
             )}
             <div className="flex ml-[6px] h-[80%] rounded-md w-[3.5rem] items-center justify-center text-[1.25rem] text-white font-medium bg-orange-yellow">
-                {(rate ?? 0).toFixed(2)}
+                {(typeof rate === "number" ? rate : 0).toFixed(2)}
             </div>
             {userRate && (
                 <div className='flex ml-2 w-[3rem] h-[1.25rem] items-center'>

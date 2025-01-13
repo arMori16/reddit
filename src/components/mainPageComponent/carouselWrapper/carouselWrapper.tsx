@@ -16,11 +16,11 @@ const CarouselWrapper = async()=>{
             {Array.from({length:7},(_,index)=>(
               <Link key={index} href={`catalog/item/${seriesInfo?.seriesName[index]}`} className='flex relative flex-none overflow-hidden flex-col max-w-[11.5rem] h-full'>
                 <img src={`http://localhost:3001/media/${seriesInfo?.seriesName[index]}/images`} alt="" className='flex w-[11.5rem] h-full'/>
-                <span className='block absolute text-white left-0 h-[3.15rem] bottom-0 bg-[rgba(0,0,0,0.6)] text-center py-[5px] px-1 w-full overflow-hidden text-ellipsis'>
+                <div className='block absolute text-white left-0 h-[3.15rem] bottom-0 bg-[rgba(0,0,0,0.6)] text-center py-[5px] px-1 w-full overflow-hidden text-ellipsis'>
                   <span className="line-clamp-2">
                       {seriesInfo?.seriesViewName[index]}
                   </span>
-                </span>
+                </div>
               </Link>
             ))}
           </div>

@@ -33,7 +33,7 @@ const Avatar = ({user}:{user:any})=> {
             Cookies.remove('refreshToken');
             setProfile(false);
             Cookies.remove('state');
-            window.location.reload();
+            window.location.href = '/'
         }catch(err){
             console.log(err);
             
@@ -46,7 +46,7 @@ const Avatar = ({user}:{user:any})=> {
             </button>
             {profile===true && (
                     <div className='absolute top-[3.5rem] right-0 flex flex-col px-4 py-1 gap-y-1 text-white w-[16rem] shadow-[0px_1px_8px_black] rounded-lg bg-gray-400' ref={divRef}>
-                        <Link href={`/users/${user?.id}`} onClick={()=>{document.removeEventListener('mousedown',handleClickOutside);setProfile(false)}} className='flex w-full h-[3rem] mt-1  hover:text-green-400 duration-500 ease-in-out items-center'>
+                        <Link prefetch={true} href={`/users/${user?.id}`} onClick={()=>{document.removeEventListener('mousedown',handleClickOutside);setProfile(false)}} className='flex w-full h-[3rem] mt-1  hover:text-green-400 duration-500 ease-in-out items-center'>
                             <div className='w-[2.5rem] h-[2.5rem] '>
                                 <img src="/Sweety.jpg" className='w-full h-full rounded-[50%]' alt="" />
                             </div>
