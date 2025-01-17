@@ -1,5 +1,7 @@
 'use server'
 import axios from '@/components/api/axios';
+import { list } from '@/components/catalog/item/item.logic';
+import ProfileUserList from '@/components/navbar-components/profile/profile';
 import { formatDate } from '@/utils/formattDate';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
@@ -32,7 +34,7 @@ const fetchData = async (userId: number) => {
             <div className='flex w-[90%] h-[2rem] shadow-[0px_5px_8px_black] rounded-t-lg bg-[url("http://localhost:3001/media/profile-bg/images")] relative bg-repeat-x bg-auto overflow-hidden'>
                 <span className='absolute top-0 left-[1rem] text-white font-semibold text-[1.25rem]'>Profile</span>
             </div>
-            <div className='flex h-[28rem] w-[87%] bg-gray-2E p-5'>
+            <div className='flex h-[28rem] w-[87%] rounded-b-md bg-gray-2E p-5'>
                 <label htmlFor="file-upload" className='flex w-[10rem] cursor-pointer flex-shrink-0 h-[10rem] rounded-md overflow-hidden'>
                     <img src="/Sweety.jpg" className='w-full h-full' alt="" />
                     <input type="file" accept='image/*' className="hidden" id='file-upload'/>
@@ -70,6 +72,7 @@ const fetchData = async (userId: number) => {
                     )}
                 </div>
             </div>
+            <ProfileUserList />
         </div>
     )
 }

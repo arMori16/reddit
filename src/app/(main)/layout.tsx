@@ -1,5 +1,6 @@
 "use server"
 import  "@/app/globals.css";
+import '@fortawesome/fontawesome-free/css/all.css';
 import { tokenManager } from "@/components/api/setup-token";
 import ClientRefreshToken from "@/components/api/clientRefreshToken";
 import Navbar from "@/components/navbar/Navbar"

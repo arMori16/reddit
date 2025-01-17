@@ -5,14 +5,15 @@ import { cookies, headers } from "next/headers";
 import { formatDate } from "@/utils/formattDate";
 
 
-export const createComment = async(seriesName:string,text:string) =>{
+export const createComment = async(seriesName:string,text:string,parentId?:number) =>{
     try{
         const cookiesStore = cookies();
         const accessToken = cookiesStore.get('accessToken')?.value
         if(!accessToken) return console.error('Unathorized exception!');
         const commentPost = await axios.post('comments/create',{
             seriesName:seriesName,
-            commentText:text
+            commentText:text,
+            parentId:parentId
         },
         {headers:{
             'Authorization':`Bearer ${accessToken}`
@@ -34,12 +35,18 @@ export const getFirstComments = async(seriesName:string,page:number)=>{
                 skip:page*15
             }
         });
-        console.log('FirstCooment: ',firstComments.data);
         const formattedComments = firstComments.data.map((comment: any) => ({
             ...comment,
             createdAt: formatDate(comment.createdAt),
-        }));
-        return formattedComments;
+        })).filter((item:any)=> !item.ParentId);
+        console.log('FirstCooment: ',formattedComments);
+        const childComments = firstComments.data.map((comment: any) => ({
+            ...comment,
+            createdAt: formatDate(comment.createdAt),
+        })).filter((comment:any)=> comment.ParentId);
+        console.log('This is child comment: ',childComments);
+        
+        return {formattedComments:formattedComments,childComments:childComments};
     }catch(err){
         console.error(err);
         /* return { createdAtArray: [], usersArray: [],commentText: [],commentId: [],userName: []}; */

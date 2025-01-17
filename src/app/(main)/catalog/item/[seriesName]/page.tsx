@@ -1,15 +1,19 @@
 
 import '@/app/(main)/catalog/item/[seriesName]/page.css'
 import axios from '@/components/api/axios';
+import defaultAxios from "axios";
 import { getSeriesData, getSeriesRate, getUserRate } from '@/components/catalog/item/item.logic';
 import Rating from '@/components/catalog/item/rating';
+import UserList from '@/components/catalog/item/userList';
 import Comments from '@/components/comments/comments';
 import MediaPlayerSection from '@/components/player/MediaPlayerSection/MediaPlayerSection';
 import { cookies } from 'next/headers';
 
 const ItemPage = async({params}:{params:{seriesName:string}})=>{
-    const seriesData = await getSeriesData(params.seriesName);
     const atToken = cookies().get('accessToken')?.value;
+    const seriesData = await getSeriesData(params.seriesName,atToken);
+    console.log('SeriesData: ',seriesData);
+    
     const userRate = atToken ? await getUserRate(params.seriesName,atToken) : undefined;
     if(!seriesData){
         return(
@@ -18,12 +22,15 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
             </div>
         )
     }
+    const shikimoriRating = await defaultAxios.get(`https://shikimori.one/api/animes?search=${params.seriesName}`);
+    
     return(
         <div className="flex flex-col items-center justify-center w-full h-full bg-[#242424]">
             <div className='w-[68rem] max-w-full flex flex-col items-center  h-full shadow-[0px_0px_12px_black]'>
                 <div className='flex relative p-5 w-[68rem] max-w-[96%] mt-[3rem] h-auto bg-gray-300 text-rose-50 rounded-lg flex-wrap'>
-                    <div className='flex relative mr-5 custom-image:mr-0 w-[15.62rem] max-h-[21.87rem] custom-image:h-auto'>
-                        <img className='flex max-h-full w-full rounded-lg' src={`http://localhost:3001/media/${params.seriesName}/images`} alt={seriesData.data.SeriesName}/>
+                    <div className='flex flex-col shadow-image rounded-br-md rounded-bl-md relative mr-5 custom-image:mr-0 w-[15.62rem] max-h-[24rem] custom-image:h-auto'>
+                        <img className='flex max-h-[21.87rem] w-full rounded-t-lg' src={`http://localhost:3001/media/${params.seriesName}/images`} alt={seriesData.data.SeriesName}/>
+                        <UserList seriesName={params.seriesName} seriesViewName={seriesData.data.SeriesViewName} userList={seriesData.userListItem}/>
                     </div>
                     <div className='flex flex-col'>
                         <h1 className='text-3xl custom-xs:mt-0 break-words flex flex-wrap'>{seriesData?.data.SeriesViewName}</h1>
@@ -34,7 +41,13 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                                 </div>
                             ))}
                         </div>
-                        <Rating seriesName={params.seriesName} initialRate={seriesData?.seriesRate ? seriesData.seriesRate : 0} initialUserRate={userRate}/>
+                        <div className='flex items-center border-y-[1px] border-gray-400'>
+                            <Rating seriesName={params.seriesName} initialRate={seriesData?.seriesRate ? seriesData.seriesRate : 0} initialUserRate={userRate}/>
+                            <div className='flex items-center justify-center font-medium min-w-[4rem] bg-white text-black h-[76%] rounded-md p-1'>
+                                <img src={`${process.env.NEXT_PUBLIC_API}/media/shikimori-svg.svg/icons`} className='w-[1rem] h-[1rem] mr-1' alt="" />
+                                {shikimoriRating?.data[0].score}
+                            </div>
+                        </div>
                         <ul className='flex flex-col mt-3'>
                             <li>
                                 <div className='w-[6rem]'>Status:</div>

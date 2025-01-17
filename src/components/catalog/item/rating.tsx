@@ -5,7 +5,7 @@ import { deleteUserRate, getSeriesRate, getUserRate, setSeriesRate } from './ite
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 
-const Rating = ({ initialRate, initialUserRate,seriesName}: { initialRate: number,seriesName: string,initialUserRate: number }) => {
+const Rating = ({ initialRate, initialUserRate,seriesName}: { initialRate: number,seriesName: string,initialUserRate: number}) => {
     const [isShow, setIsShow] = useState<boolean>(false);
     const [trigger,setTrigger] = useState<boolean>(false);
     const [rate, setRate] = useState<number>(initialRate);
@@ -70,7 +70,7 @@ const Rating = ({ initialRate, initialUserRate,seriesName}: { initialRate: numbe
         setIsShow(false)
     }
     return (
-        <div className="flex h-[2.25rem] max-w-full border-y-[1px] border-gray-400 items-center">
+        <div className="flex h-[2.35rem] max-sw-full items-center">
             <button onClick={handleRateClick} className="flex w-[1.25rem] h-[1.25rem]">
                 <img
                     src={`http://localhost:3001/media/star.svg/icons`}
@@ -104,11 +104,12 @@ const Rating = ({ initialRate, initialUserRate,seriesName}: { initialRate: numbe
                     </div>
                 </div>
             )}
-            <div className="flex ml-[6px] h-[80%] rounded-md w-[3.5rem] items-center justify-center text-[1.25rem] text-white font-medium bg-orange-yellow">
+            <div className="flex ml-[6px] mr-2 h-[76%] rounded-md w-[3.5rem] items-center justify-center text-[1.25rem] text-white font-medium bg-orange-yellow">
                 {(typeof rate === "number" ? rate : 0).toFixed(2)}
+    
             </div>
             {userRate && (
-                <div className='flex ml-2 w-[3rem] h-[1.25rem] items-center'>
+                <div className='flex w-[3rem] h-[1.25rem] items-center'>
                     <img
                             src={`http://localhost:3001/media/star.svg/icons`}
                             className="flex w-[30%] h-[60%]"

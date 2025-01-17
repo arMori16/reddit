@@ -99,15 +99,67 @@ export const deleteUserRate = async(seriesName:string)=>{
         
     }
 }
-export const getSeriesData = async(seriesName:string)=>{
+export const getSeriesData = async(seriesName:string,atToken?:string)=>{
     try{
+        
         const res = await axios.get('/catalog/item',{
             params:{
                 seriesName:seriesName
         }});
         const seriesRate = await getSeriesRate(seriesName);
-        return {data:res.data,seriesRate:seriesRate};
+        const userListItem = atToken? await axios.get('/user/userList/item',{
+            params:{
+                seriesName:seriesName
+            },
+            headers:{
+                'Authorization':`Bearer ${atToken}`
+            }
+        }) : null
+        return {data:res.data,seriesRate:seriesRate,userListItem:userListItem?.data};
     }catch(err){
         console.error(`Couldn't get series data: ${err}`);
+        return null;
     }
 }
+export const updateUserList = (seriesName:string,userListItem:string,seriesViewName:string)=>{
+    try{
+        const atToken = Cookies.get('accessToken');
+        const updateUSerListItem = axios.post('/user/userList/item',{
+            seriesName:seriesName,
+            userListItem:userListItem,
+            seriesViewName:seriesViewName
+        },{
+            headers:{
+                'Authorization':`Bearer ${atToken}`
+            }
+        })
+        toast.success(`Added to ${userListItem}`)
+    }catch(err){
+        toast.error('Something goes wrong :(')
+        console.error(err);
+        
+    }
+}
+
+export const deleteUserListItem = async(seriesName:string)=>{
+    try{
+        const deleteItem = await axios.patch('/user/userList/delete/item',{
+            seriesName:seriesName
+        },{
+            headers:{
+                'Authorization':`Bearer ${Cookies.get('accessToken')}`
+            }
+        })
+    }catch(err){
+        console.error(err);
+        toast.error(`Couldn't delete item :(`)
+    }
+}
+
+export const list = [
+    {key:'Watching',value:'eye',color:'#DC27C4'},
+    {key:'Planned',value:'calendar-days',color:'#F0D62C'},
+    {key:'Completed',value:'flag-checkered',color:'#2CF09B'},
+    {key:'On Hold',value:'clock',color:'#465DF3'},
+    {key:'Dropped',value:'eye-slash',color:'#F34669'}
+]

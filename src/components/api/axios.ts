@@ -12,8 +12,6 @@ axios.interceptors.response.use(
       const refreshToken = Cookies.get('refreshToken');
       if (refreshToken) {
         try {
-          console.log('IT IS CLIENT AXIOS!');
-          
           // Attempt to refresh token
           const tokens = await axios.post('/refresh',refreshToken,{
             headers:{

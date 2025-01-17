@@ -4,7 +4,6 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
-  console.log('Cookies in Request:', request.cookies.getAll());
   const accessToken = request.cookies.get('accessToken')?.value;
   const refreshToken = request.cookies.get('refreshToken')?.value;
   const { pathname } = request.nextUrl;
@@ -17,13 +16,10 @@ export async function middleware(request: NextRequest) {
         headers: { Authorization: `Bearer ${refreshToken}` },
       });
 
-
       const res = NextResponse.next();
       const fifteenMinutes = 15 * 60;
       const expirationDate = new Date(Date.now() + fifteenMinutes);
 
-      console.log("UTC Expiration Time:", expirationDate.toISOString()); // UTC time
-      console.log("Local Expiration Time:", expirationDate.toString()); // Local time
       res.cookies.set('accessToken', response.data.access_token, { maxAge: fifteenMinutes,expires:expirationDate });
       res.cookies.set('refreshToken', response.data.refresh_token, { maxAge: 28 * 24 * 60 * 60 });
 

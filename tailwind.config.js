@@ -12,6 +12,9 @@ module.exports = {
       colors: {
         ...colors
       },
+      boxShadow:{
+        'image':'0px -1px 8px rgba(143, 143, 143, 0.3)',
+      },
       keyframes: {
         slideIn: {
           '0%': { transform: 'translateY(100%)', opacity: '0' },
@@ -37,12 +40,22 @@ module.exports = {
           '0%': { transform: 'rotate(180deg)' },
           '100%': { transform: 'rotate(0deg)' },
         },
+        slideCommentsOut:{
+          '0%': {maxHeight:'0px',overflow:'hidden'},
+          '100%': {maxHeight:'1000px',overflow: 'hidden'},
+        },
+        slideCommentsIn: {
+          '0%': { maxHeight:'1000px',overflow: 'hidden'},
+          '100%': { maxHeight:'0px' ,overflow: 'hidden'},
+        },
       },
       animation: {
         slideIn: 'slideIn 1s ease-in-out',
         slideOut: 'slideOut 1s ease-in-out',
         slideVoiceIn: 'slideVoiceIn 0.4s forwards ease-in-out',
         slideVoiceOut: 'slideVoiceOut 0.4s forwards ease-in-out',
+        slideCommentsOut: 'slideCommentsOut 0.5s forwards ease-in-out',
+        slideCommentsIn: 'slideCommentsIn 0.5s forwards ease-in-out',
         downArrowRotateUp:'downArrowRotateUp 0.3s ease-in-out',
         downArrowRotateDown:'downArrowRotateDown 0.3s ease-in-out',
       },
