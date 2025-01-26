@@ -1,8 +1,5 @@
 'use client'
 
-import { useRef, useState } from "react";
-import usePlayer from "./usePlayer";
-import { State } from "../useZustand/zustandStorage";
 import { HTMLCustomVideoElement } from "./types/player.type";
 import playbackPosition from "../useZustand/zustandStorage";
 export function initializeVideoControls(videoSelector:string, playerContainerSelector:string) {
@@ -90,14 +87,6 @@ export function initializeVideoControls(videoSelector:string, playerContainerSel
         timeLineContainer?.style.setProperty("--progress-position",String(percent));
         currentTimeElement.textContent = formatDuration(video.currentTime);
         const currentTime = String(video.currentTime);
-        let isCurrentTimeExists = Number(localStorage.getItem('currentTime'));
-        if(!isNaN(isCurrentTimeExists)){
-            isCurrentTimeExists = Number(currentTime);
-            localStorage.setItem('currentTime', String(isCurrentTimeExists));
-        }else{
-            isCurrentTimeExists = Number(currentTime);
-            localStorage.setItem('currentTime', String(isCurrentTimeExists));
-        }
         
     })
     // Когда видео воспроизводится, удалить класс paused
@@ -161,9 +150,6 @@ const volumeLogic = ()=>{
     const video = document.querySelector('video') as HTMLVideoElement;
     const playContainer = document.querySelector('.player-container') as HTMLDivElement;
     const volumeSlider = document.querySelector('.volume-slider') as HTMLDivElement;
-    const myTest = document.querySelector('.mytest');
-    console.log('IM HEREE');
-    const customRange = document.querySelector('input') as HTMLInputElement;
     
     
     muteBtn?.addEventListener("click",toggleMute);
@@ -174,7 +160,6 @@ const volumeLogic = ()=>{
         video.muted = Number(target?.value) === 0;
     }) 
     volumeSlider?.addEventListener('input', e => {
-        console.log('SEICAHS VOLUMECHANGE');
         const target = e.target as HTMLInputElement;
         if (!video) return;
         

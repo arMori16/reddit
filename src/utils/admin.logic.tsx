@@ -62,10 +62,13 @@ export const addSeries = async(data:any)=>{
     try{
         const atToken = Cookies.get('accessToken');
         if(!atToken) throw new Error('Cannot find access token!');
-        data.AlternitiveNames = data.AlternitiveNames.split(',').map((AlternitiveNames:any) => AlternitiveNames.trim());
-        data.Genre = data.Genre.split(',').map((genre:any) => genre.trim());
-        data.Studio = data.Studio.split(',').map((studio:any) => studio.trim());
-        data.VoiceActing = data.VoiceActing.split(',').map((voiceActing:any) => voiceActing.trim());
+        const ensureArray = (value: any) =>
+            Array.isArray(value) ? value : typeof value === 'string' ? value.split(',').map((item: string) => item.trim()) : [''];
+    
+        data.AlternitiveNames = ensureArray(data.AlternitiveNames);
+        data.Genre = ensureArray(data.Genre);
+        data.Studio = ensureArray(data.Studio);
+        data.VoiceActing = ensureArray(data.VoiceActing);
         console.log('Data: \n',data);
         const postSeries = await axios.post('/catalog/item',data,{
             headers:{
@@ -100,8 +103,6 @@ export const deleteSeries = async(seriesName:string)=>{
 
 export const getDataView = async(seriesName:string):Promise<SeriesInfo>=>{
     try{
-        console.log('LOG!!!!!!!!!:   ',seriesName);
-        
         const getData = await axios.get('/catalog/item',{
             params:{
                 seriesName

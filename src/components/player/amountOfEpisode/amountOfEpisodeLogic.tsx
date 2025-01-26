@@ -1,30 +1,23 @@
 'use client'
 
-import useVideo from "@/components/player/videoFormatter";
 import numOfEpisodeStorage from "@/components/useZustand/player/zustandNumOfEpisode";
 import { EnumPlayerQuality } from "../types/player.type";
-import { useEffect, useState } from "react";
-import usePlayer from "../usePlayer";
-import { getVoices } from "../player.logic";
 import voiceStorage from "@/components/useZustand/player/zustandVoice";
+import usePlayer from "../usePlayer";
 
-const Episodes = ({AmountOfEpisode,seriesName}:{AmountOfEpisode:number,seriesName:string})=>{
-    const {getEpisodes} = voiceStorage();
+const Episodes = ({seriesName}:{seriesName:string})=>{
+    const {getEpisodes,getVoice} = voiceStorage();
     const {updateNumOfEpisode,getNumOfEpisode} = numOfEpisodeStorage();
-    useEffect(()=>{
-        const fetchData = async()=>{
-            const data = await getVoices(seriesName);
-
-        }
-        fetchData();
+    const {playRef,setIsPlaying} = usePlayer(seriesName);
+    const handleEpisodeClick = (index: number) => {
         if(typeof window === "undefined") return;
-        const currentEpisode = localStorage.getItem('')
-    },[])
-
-    const {setIsShowPlay,toggleShowPlay,setIsPlaying,isPlaying} = usePlayer(seriesName);
-    const handleEpisodeClick = async (index: number) => {
+        const video = document.querySelector('video');
+        if(!video) return;
+        setIsPlaying(false);
+        video.src = `http://localhost:3001/catalog/${seriesName}/${encodeURIComponent(getVoice())}/${getNumOfEpisode()}/720p`;
+        console.log(`THIS IS NEW PLAYREF SRC! `,video.currentSrc);
+        
         updateNumOfEpisode(index + 1);
-        await setEpisode(index + 1, seriesName); // Затем вызываем асинхронную функцию
       };
     return(
         <div className='flex overflow-x-scroll w-full gap-2 relative scrollbar-hide z-2'>
@@ -35,17 +28,5 @@ const Episodes = ({AmountOfEpisode,seriesName}:{AmountOfEpisode:number,seriesNam
             ))}
         </div>
     )
-}
-
-export const setEpisode = async(numOfEpisode:number,seriesName:string)=>{
-    if(typeof window === "undefined") return;
-    const episode = document.querySelector('.episodes-div') as HTMLDivElement;
-    const video = document.querySelector('video') as HTMLVideoElement;
-    if(!video) return;
-    
-    const defaultQuality:EnumPlayerQuality = EnumPlayerQuality['1080p'];
-    localStorage.setItem('episode',`${numOfEpisode}`)
-    episode.classList.add('current-episode');
-    video.pause();
 }
 export default Episodes;

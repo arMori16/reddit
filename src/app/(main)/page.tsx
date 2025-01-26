@@ -21,7 +21,7 @@ export default async function Home({searchParams}:{searchParams:{page:number}}) 
   return (
       <div className='max-w-full relative min-h-[100vh] h-auto bg-[#242424] shadow-[0px_-2px_10px_black]'>
         <div className='flex relative flex-col items-center mx-2'>
-          <div className='flex'>
+          <div className='block w-full flex-grow max-w-[1300px]'>
             <CarouselWrapper/>
           </div>
           <div className='flex relative justify-center h-[15rem] max-w-[60rem]'>

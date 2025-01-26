@@ -1,63 +1,54 @@
 "use client"
 
 import React, { useEffect,useState } from 'react';
-import { signupScheme,loginScheme } from './auth-validation-scheme';
+import { signupScheme,loginScheme, signupScheme1 } from './auth-validation-scheme';
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from 'yup';
 import { useForm, SubmitHandler } from "react-hook-form";
-import {  saveTokensToCookies,backHandleLogin, getEmailCode } from './auth-window-logic';
+import {  saveTokensToCookies,backHandleLogin, getEmailCode, isUserEmailExists } from './auth-window-logic';
 import errorStorage from '../useZustand/zustandErrorStorage';
+import { toast } from 'react-toastify';
+import { Loader } from 'lucide-react';
 
 
 interface FormData{
-    email:string,
-    password:string,
+    email?:string,
+    password?:string,
     firstName?:string
 }
 
 export default function AuthWindow(){ 
 
     /* <useStateVariables> */
-    const [email,setEmail] = useState<string>('');
-    const [pass,setPass] = useState<string>('');
+    const [userEmail,setUserEmail] = useState<string | undefined>('');
+    const [userPassword,setUserPassword] = useState<string | undefined>('');
+    const [userFirstName,setUserFirstName] = useState<string | undefined>();
+
     const [userEmailCode,setUserEmailCode] = useState<String>('');
     const [isEmailCode,setIsEmailCode] = useState<String>('');
     const [view,setView] = useState('login');
-    const [emailView,setEmailView] = useState('')
+    const [emailView,setEmailView] = useState(false);
     const [isLoading,setIsLoading] = useState(false);
-    const getServerError = errorStorage((state)=>state.getServerError);
-    const setServerError = errorStorage((state) => state.setServerError);
+    const {serverError,setServerError} = errorStorage();
 
-    const scheme = view === 'signup-2' ? signupScheme : loginScheme;
+    const scheme = yup.lazy((data) => {
+        if (view === 'login') return loginScheme;
+        if (view === 'signup') return signupScheme1;
+        if (view === 'signup-2') return signupScheme;
+        return yup.object();
+      });
+      
     /* </useStateVariables> */
-
-    /* <ChangeView> */
-    const changeView = async (view:string,userEmail?:string)=>{
-        setView(view);
-        clearErrors();
-        if(view === 'emailCode'){
-            try{
-                console.log('YEEAH ITS AN EMAIL VIEW!!!!!!!');
-                
-                /* if(email === undefined) return console.error('Email is undefined changeView'); */
-                console.log('HIIEA');
-                
-                const emailCode = await getEmailCode(String(userEmail));
-                console.log('Email CODE: ',emailCode);
-                
-                if(emailCode === undefined) return console.error('Email is undefined changeView');
-                setIsEmailCode(String(emailCode));
-
-            }catch(err){
-                console.error('There is an error!');
-                
-            }
-        }
-    }
     /* </ChangeView> */
 
     /* Clear setServerError either closing tab or switching view */
     useEffect(() => {
+        if(view === 'signup-2'){
+            if(typeof window === "undefined") return;
+            console.log('URA');
+            const element = document.querySelector('.selector') as HTMLTextAreaElement;
+            element.value = '';
+        }
         return () => {
             // Очистка сообщения об ошибке при размонтировании компонента или изменении view
             console.log('setServerError is cleared!');
@@ -70,193 +61,125 @@ export default function AuthWindow(){
     /* <Validation> */
     const {register,handleSubmit,getValues,watch,reset,formState:{errors},trigger,clearErrors} = useForm<FormData>({
         defaultValues:{
-            email:'',
-            password:'',
+            email:view === 'signup-2'?userEmail:'',
+            password:view === 'signup'?undefined:'',
             firstName:view === 'signup-2' ? '' : undefined
         },
         resolver:yupResolver(scheme),
     });
-    const handleEmailValidationAndContinue = async (signupEmail:string) => {
-        const isEmailValid = await trigger('email'); // Запускаем валидацию email
-        if (isEmailValid) {
-          // Если email валиден, переходим на следующий шаг
-            setView('emailCode');
-            setEmailView('signup-2');
-            try{
-                console.log('YEEAH ITS AN EMAIL VIEW!!!!!!!');
-                
-                if(email === undefined) return console.error('Email is undefined changeView');
-                console.log('EMAIL!! ',signupEmail);
-                
-                const emailCode = await getEmailCode(signupEmail);
-                console.log('Email CODE: ',signupEmail);
-                
-                if(emailCode === undefined) return console.error('Email is undefined changeView');
-                setIsEmailCode(String(emailCode));
-
-            }catch(err){
-                console.error('There is an error!');
-                
+    const handleUserEmailCode = async() => {
+        if(userEmailCode === isEmailCode && userEmailCode !== ''){   
+            if(view === 'login-email'){
+                const data = {
+                    email:userEmail,
+                    password:userPassword,
+                    firstName:userFirstName
+                }
+                await backHandleLogin(view === 'login-email'? 'login':'signup',data,setServerError,true);
+                window.location.reload();
+            }else{
+                setEmailView(false);
+                setView('signup-2');
             }
-        } else {
-          // Если email не валиден, показываем ошибку
-          console.log('Email is invalid');
+        }else{
+            toast.error('You passed the wrong email code :(')
         }
       };
     /* </Validation> */
 
     /* <Handles> */
-    const handleEmailCode = async(code:string,view?:string)=>{
-        if(isEmailCode === code){
-            try{
-                if(view === 'login'){
-                    console.log('ITS handleEmailCode');
-                    const data = {
-                        email:email,
-                        password:pass,
-                        firstName:'null'
-                    }
-                    await backHandleLogin('login',data,setServerError,true);
 
-                }else{
-                    changeView('signup-2');
-                }
-            }catch(err){
-                console.error('Error when trying to handle Email code ! ',err);
+    const handleEmailCode = async()=>{
+        try{
+            setIsLoading(true);
+            if(view === 'signup'){
+                const isExist = await isUserEmailExists(String(getValues('email')));
+                console.log('ISEXIST?? ::: ',isExist);
                 
+                if(isExist){
+                    console.log('SERVEREROR:::');
+                    return setServerError('User with this email already exists!')
+                }
             }
+            setEmailView(true);
+            setUserEmail(getValues('email'));
+            setUserEmailCode(String(await getEmailCode(String(getValues('email')))));
+            console.log('This is emailView: ',emailView);
+            view === 'signup'?reset():'';
+            setView(`${view}-email`);
+            setIsLoading(false)
+            console.log('ITS handleEmailCode',isEmailCode);
+        }catch(err){
+            console.error('Error when trying to handle Email code ! ',err);
+            
         }
     }
-    const handleEmailSubmit = async(data:Partial<FormData>)=>{
-        setEmail(data.email || '');
-    }
-
-    const handleSignup:SubmitHandler<FormData> = async (data:Partial<FormData>)=>{
-        const finalData:any = {email,...data}
-        setIsLoading(true);
-        const isSuccess = await backHandleLogin(view === 'login'? 'login':'signup',finalData,setServerError,true);
-
-
-        setIsLoading(false);
-        console.log('Onsubmit checked');
+    const handleSignup:SubmitHandler<FormData> = async (data:FormData)=>{
+        const dataForSignUp2 = {...data,email:userEmail};
+        
+        const isSuccess = await backHandleLogin(view === 'login'? 'login':'signup',view==='login'?data:dataForSignUp2,setServerError,view === 'login'?false:true);
+        
         if(isSuccess){
+            view === 'login' ? (handleEmailCode(),setIsLoading(true)):'';
+            setUserEmail(data.email);
+            setUserPassword(data.password);
+            setUserFirstName(data.firstName);
             reset();
         }
     }
     /* </Handles> */
-    
-    if(getServerError()){
+    const handleNewToAniMori = ()=>{
+        setView('signup');
+        reset();
+    }
+
+    /* if(getServerError()){
         console.log('GETSERVERERROR!');
         
-    }
+    } */
     return(
-        <>
-            <div className='relative flex flex-col w-[368px] mx-[60px] mt-[40px]'>
-                {view === 'login' && (
-                <div className='flex flex-col w-[100%] h-[100%]'>
-                    <slot className='slot-container'>
-                        <h1 className='login-container'>Log In</h1>
-                        <p className='p-login'>By continuing,you agree to our <a href='/user/agreement' className='a-login'>User Agreement</a> and 
-                    acknowledge tha you understand the <a href="/policies/privacy-policy" className='a-login'>Privacy Policy</a></p>
-                    </slot>
-                    <div className='flex relative h-[100px]'>
-
-                    </div>
-                    <form className='flex relative h-[60%] flex-col w-[100%]' onSubmit={handleSubmit(async (data)=> {const isSuccess =await backHandleLogin('login',{email:data.email,password:data.password,firstName:'null'},setServerError);
-                            isSuccess && changeView('emailCode',data.email);
-                            setEmail(data.email);
-                            setEmailView('login');
-                            setPass(data.password);
-                        })}>
-                        <div className={`relative ${errors.email  || getServerError() ? '':'mb-4'} flex h-[56px] w-[100%]`}>  
-                            <input className={`input-label bg-[#B3DCC5] h-[100%] w-[100%] p-[10px] border-[2px] border-[#B3DCC5] rounded-[20px] ${errors.email || getServerError() ? 'input-error':''}`}  placeholder='Enter your email' {...register('email')} /* value={email} onChange={(e)=>{setEmail(e.target.value)}} */ ></input>
-                
-                        </div>
-                        {(getServerError() || errors.email) && <div className='error-email'>{errors.email?.message || getServerError()}</div>}
-                        <div className='relative h-[56px] w-[100%]'>    
-                            <input className={`text-[16px] flex outline-none relative bg-[#B3DCC5] h-[100%] w-[100%] p-[10px] border-[2px] border-[#B3DCC5] rounded-[20px] ${errors.password || getServerError() ? 'input-error':''}`}  placeholder='Password' {...register('password')} /* value={password} onChange={(p)=>{setPassword(p.target.value)}} */ ></input>
-                        </div>
-                        {(getServerError() || errors.password) && <div className='error-password'>{errors.password?.message || getServerError()}</div>}
-                        <button className='flex mt-2 relative text-[#B3DCC5]' onClick={()=>{changeView('signup')}}>New to Mori?</button>
-
-                        {/* login */}
-                        <div className='relative mt-auto flex h-12 w-[100%]'>
-                            <button className='rounded-[30px] bg-[#B3DCC5] transition-colors background-color 0.5s ease flex w-[100%] h-[100%] items-center justify-center' type='submit' onClick={()=>{console.log('clicked');
-                            }}>
-                                Log In
-                            </button>
-                        </div>
-                    </form>
-                </div>
+    
+            <div className='flex px-[5rem] h-full text-white flex-col w-full'>
+                <p className='text-green-400 text-[1.75rem] font-semibold'>{view === 'login'?'Log In' : view === 'signup'?'Sign Up':emailView === true?'Email verification':'Create your username and password'}</p>
+                {view === 'signup-2' ? (
+                    <p className='text-white text-[0.9rem] break-words'>AniMori is anonymous, so your username is what you'll go by here. Choose wisely—because once you get a name, you can't change it.</p>
+                ):(
+                    <p className='text-white text-[0.9rem] break-words'>By continuing,you agree to our <a href='/user/agreement' className='a-login'>User Agreement</a> and acknowledge tha you understand the <a href="/policies/privacy-policy" className='a-login'>Privacy Policy</a></p>
                 )}
-                {view === 'signup' && (
-                    <div className='flex flex-col w-[100%] h-[100%]'>
-                        <slot className='slot-container'>
-                            <h1 className='login-container'>Sign Up</h1>
-                            <p className='p-login'>By continuing,you agree to our <a href='/user/agreement' className='a-login'>User Agreement</a> and 
-                        acknowledge tha you understand the <a href="/policies/privacy-policy" className='a-login'>Privacy Policy</a></p>
-                        </slot>
-                        <div className='flex relative h-[100px]'>
-
-                        </div>
-                        <form className='flex relative h-[60%] flex-col w-[100%]' onSubmit={handleSubmit(handleEmailSubmit)}>
-                            <div className={`relative flex h-[56px] w-[100%]`}>
-                                <input className={`input-label bg-[#B3DCC5] h-[100%] w-[100%] p-[10px] border-[2px] border-[#B3DCC5] rounded-[20px] ${errors.email ? 'input-error':''}`} placeholder='Enter your email'  {...register('email')}></input>
-                            </div>
-                            {errors.email && <div className='error-email'>{errors.email.message}</div>}
-                            <button className='flex mt-2 relative text-[#B3DCC5]' onClick={()=>{changeView('login')}}>Already have an account?</button>
-
-                            {/* login */}
-                            <div className='relative mt-auto flex h-12 w-[100%]'>
-                                <button className='rounded-[30px] bg-[#B3DCC5] transition-colors background-color 0.5s ease flex w-[100%] h-[100%] items-center justify-center' type='submit' onClick={()=>handleEmailValidationAndContinue(getValues('email'))}>Continue</button>
-                            </div>
-                        </form>
+                {isLoading && (
+                    <div className='flex pointer-events-none flex-col-reverse items-center justify-center absolute inset-0 rounded-md z-20 bg-black bg-opacity-40'>
+                        <p className='font-semibold text-[1.5rem] ml-2 text-white'>Loading...</p>
+                        <img src={`${process.env.NEXT_PUBLIC_API}/media/goose.gif/images`} className='flex w-[2.75rem] h-[2.75rem] rounded-xl' alt="" />
                     </div>
                 )}
-                {view === 'signup-2' && (
-                    <div className='flex flex-col w-[100%] h-[100%]'>
-                        <slot className='slot-container'>
-                            <h1 className='login-container'>Create your username and password</h1>
-                            <p className='p-login'>Reddit is anonymous, so your username is what you'll go by here. Choose wisely—because once you get a name, you can't change it.</p>
-                        </slot>
-                        <form className='flex mt-5 relative h-[60%] flex-col w-[100%]' onSubmit={handleSubmit(handleSignup)}>
-                            <div className={`relative ${errors.firstName ? '':'mb-4'} flex h-[56px] w-[100%]`}>
-                                <input className={`input-label bg-[#B3DCC5] h-[100%] w-[100%] p-[10px] border-[2px] border-[#B3DCC5] rounded-[20px] ${errors.firstName ? 'input-error':''}`} placeholder='Enter your username' {...register('firstName')}></input>
-                            </div>
-                            {errors.firstName && <div className='error-firstname'>{errors.firstName.message}</div>}
-                            <div className='relative h-[56px] w-[100%]'>    
-                                <input className={`text-[16px] flex outline-none relative bg-[#B3DCC5] h-[100%] w-[100%] p-[10px] border-[2px] border-[#B3DCC5] rounded-[20px] ${errors.password ? 'input-error':''}`}  placeholder='Password' {...register('password')} /* value={password} onChange={(p)=>{setPassword(p.target.value)}} */ ></input>
-                            </div>
-                            {errors.password && <div className='error-password'>{errors.password.message}</div>}
-                            <div className='relative mt-auto flex h-12 w-[100%]'>
-                                <button className='rounded-[30px] bg-[#B3DCC5] transition-colors background-color 0.5s ease flex w-[100%] h-[100%] items-center justify-center' type='submit'>Continue</button>
-                            </div>
-                        </form>
+                <form onSubmit={handleSubmit((data)=>{
+                    view === 'login' || view === 'signup-2'?handleSignup(data):view === 'signup'?(trigger('email'),handleEmailCode()):''
+                    })} className={`flex flex-col h-full w-full ${view === 'login'?'mt-[9rem]':'mt-5'}`}>
+                    <div className='flex flex-col w-full p-2 h-[3.5rem] bg-gray-300 rounded-md'>
+                        <textarea className='w-full selector h-full bg-transparent outline-none flex py-2 overflow-x-scroll overflow-y-hidden whitespace-nowrap scrollbar-hide' placeholder={`${view === 'login' ||view === 'signup'?'Enter your email':view === 'signup-2'?'Enter your username':'Enter your code'}`}
+                        {...(emailView ===false?register(view === 'login' || view === 'signup'?'email':view === 'signup-2'?'firstName':'email'):{})}
+                        onChange={(e:any)=>{emailView && setIsEmailCode(e.target.value)}}
+                        ></textarea>
                     </div>
-                )}
-                {view === 'emailCode' && (
-                    <div className='flex flex-col w-[100%] h-[100%]'>
-                    <slot className='slot-container'>
-                        <h1 className='login-container'>Verify Email</h1>
-                        <p className='p-login'>Reddit is anonymous, so your username is what you'll go by here. Choose wisely—because once you get a name, you can't change it.</p>
-                    </slot>
-                    <div className='flex mt-5 relative h-[60%] flex-col w-[100%]'>
-                        <div className={`relative flex h-[56px] w-[100%]`}>
-                            <input className={`input-label bg-[#B3DCC5] h-[100%] w-[100%] p-[10px] border-[2px] border-[#B3DCC5] rounded-[20px]`} value={String(userEmailCode)} onChange={(e)=>{setUserEmailCode(e.target.value);console.log('Input changed:', e.target.value);}} placeholder='Enter your Code'></input>
+                    {(serverError || errors.email || errors.firstName) && <div className='flex text-[14px] text-[#E93055] relative ml-2 my-1'>{errors.email?.message || serverError}</div>}
+                    {(view === 'login' || view === 'signup-2') && (
+                        <div className='flex flex-col'>
+                            <div className={`flex w-full ${serverError || errors.email?'':'mt-4'} p-2 h-[3.5rem] bg-gray-300 rounded-md`}>
+                                <textarea className='w-full h-full bg-transparent outline-none flex py-2 overflow-x-scroll overflow-y-hidden whitespace-nowrap scrollbar-hide' placeholder={`${'Enter your password'}`} {...register('password')}></textarea>
+                            </div>
+                            {(serverError || errors.password) && <div className='flex text-[14px] text-[#E93055] relative ml-2 mt-1'>{errors.password?.message || serverError}</div>}
                         </div>
-                        <div className='relative mt-auto flex h-12 w-[100%]'>
-                            <button className='rounded-[30px] bg-[#B3DCC5] transition-colors background-color 0.5s ease flex w-[100%] h-[100%] items-center justify-center' type='button' onClick={()=>{
-                                emailView === 'login'? handleEmailCode(String(userEmailCode),'login'):handleEmailCode(String(userEmailCode));
-
-                                }
-                            }>
-                                Continue
-                            </button>
-                        </div>
+                        
+                    )}
+                    {view==='login' && (
+                        <button type="button" onClick={handleNewToAniMori} className='flex text-green-400 mt-3 w-[8rem]'>New to <span className='ml-1 font-inknut font-semibold'>AniMori?</span></button>
+                    )}
+                    <div className='flex mt-[2.75rem] w-full h-[2.5rem] justify-center'>
+                        <button type={`${emailView?"button":"submit"}`} onClick={()=>emailView && (handleUserEmailCode())} className='flex bg-green-400 items-center justify-center w-[90%] h-full rounded-md'>
+                            {view === 'login' || view === 'signup'?'Continue':view === 'signup-2' || 'email'?'Submit':''}
+                        </button>
                     </div>
-                </div>
-                )}
+                </form>
             </div>
-        </>
     )
 }

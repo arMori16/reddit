@@ -4,12 +4,12 @@ import useVideo from "./videoFormatter";
 import Hls from "hls.js";
 import axios from "../api/axios";
 import { timePosition } from "../useZustand/zustandSaveTime";
-import playbackPosition, { State } from "../useZustand/zustandStorage";
+import playbackPosition from "../useZustand/zustandStorage";
 import numOfEpisodeStorage from "../useZustand/player/zustandNumOfEpisode";
 import voiceStorage from "../useZustand/player/zustandVoice";
 import Cookies from "js-cookie";
 const SKIP_TIME_SECONDS = 10;
-const usePlayer =(seriesName:string,seriesViewName:string)=>{   
+const usePlayer =(seriesName:string,seriesViewName?:string)=>{   
     const [isPlaying,setIsPlaying] = useState(false);
     const [isShowPlay,setIsShowPlay] = useState(true);
     const [isLoading,setIsLoading] = useState(false);
@@ -18,88 +18,95 @@ const usePlayer =(seriesName:string,seriesViewName:string)=>{
     const [quality,setQuality] = useState(EnumPlayerQuality['1080p']);
     const {getNumOfEpisode,updateNumOfEpisode} = numOfEpisodeStorage();
     const {getVoice,setVoice} = voiceStorage();
-    const updateCurrentTime = playbackPosition((state)=>state.updateCurrentTime)
+    const {updateCurrentTime,getCurrentTime} = playbackPosition();
     
     useEffect(() => {
         if(typeof window === "undefined") return;
-        const currentLocalTime = localStorage.getItem('currentTime');
         const video = document.querySelector('video');
-        if (video) {
-            const handleTimeUpdate = () => {
-                if (isPlaying) { // Условие для активации
-                    const currentTime = String(currentLocalTime);
-                    const newState: State = { currentTime };
-                    
-                    // Обновление состояния
-                    updateCurrentTime(newState);
-                    
-                }
-            };
-
-            video.addEventListener("timeupdate", handleTimeUpdate);
-
-            const handleClick = () => {
-                togglePlayPause();
-            };
-            
-            playRef.current?.addEventListener("click", handleClick);
-            // Очистка события
-            return () => {
-                video.removeEventListener("timeupdate", handleTimeUpdate);
-                playRef.current?.removeEventListener("click", handleClick);
-            };
-        }
-    }, [isPlaying, updateCurrentTime]);
-    if(isShowPlay){
-        console.log('isShowPlay TRUE!!');
+        const atToken = Cookies.get('accessToken');
+        const handleClick = () => {
+            togglePlayPause();
+        };
         
-    }
+        playRef.current?.addEventListener("click", handleClick);
+        const handleTimeUpdate = () => {
+            if (isPlaying && playRef.current) {
+                updateCurrentTime(String(playRef.current.currentTime));
+            }
+        };
+        playRef.current?.addEventListener("timeupdate",handleTimeUpdate);
+
+        // Очистка события
+        return () => {
+            playRef.current?.removeEventListener("timeupdate",handleTimeUpdate);
+            playRef.current?.removeEventListener("click", handleClick);
+        };
+    }, [isPlaying, updateCurrentTime]);
+      
     const togglePlayPause = ()=>{
         if(typeof window === "undefined") return;
-        const currentLocalTime = localStorage.getItem('currentTime')
         if(isPlaying){
+            const atToken = Cookies.get('accessToken');
             playRef.current?.pause();
+            if (atToken && seriesViewName) {
+                console.log(`ITS HEREEEEEE!!!!!!!!!!!!!!`);
+                
+                axios.put(
+                    '/user/lastViewedSeries',
+                    {
+                        seriesName:seriesName,
+                        episode: getNumOfEpisode(),
+                        timeStopped: getCurrentTime(),
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${atToken}`,
+                        },
+                    }
+                )
+            }
         }
         else{
             if(!playRef.current) return;
-            playRef.current.currentTime = Number(currentLocalTime);
-            console.log(`PLAYREF CURRENT SRC: `,playRef.current.src);
-            
             playRef.current?.play();
         }
         setIsPlaying(!isPlaying);
     }
-    const toggleShowPlay = ()=>{
+    const toggleShowPlay = async()=>{
         if(typeof window === "undefined") return;
+        if(!playRef.current) return;
         if(isShowPlay){
             spaceButton();
+            const atToken = Cookies.get('accessToken');
+            if(atToken){
+                axios.post('/user/lastViewedSeries',{
+                    seriesName:seriesName,
+                    seriesViewName:seriesViewName,
+                    episode:getNumOfEpisode()
+                },{
+                    headers:{
+                        'Authorization':`Bearer ${atToken}`
+                    }
+                });
+                const lastTime = await axios.get('/user/series/timeStopped',{
+                    params:{
+                        seriesName:seriesName,
+                        episode:getNumOfEpisode()
+                    },
+                    headers:{
+                        'Authorization':`Bearer ${atToken}`
+                    }
+                })
+                playRef.current.currentTime = Number(lastTime.data.TimeStopped) || 0;
+                console.log(`Last time data: `,lastTime.data);
+                
+            }
             togglePlayPause();
-            axios.post('/user/lastViewedSeries',{
-                seriesName:seriesName,
-                seriesViewName:seriesViewName,
-                episode:getNumOfEpisode()
-            },{
-                headers:{
-                    'Authorization':`Bearer ${Cookies.get('accessToken')}`
-                }
-            })
-            /* postSeriesData(seriesName,quality); */
-            console.log('Here is url in usePlayer: ',seriesName);
-            
         }
         
         setIsShowPlay(!isShowPlay);
     }
 
-    const choosedEpisode = ()=>{
-        if (typeof window === "undefined") return;
-        const currentEpisode = localStorage.getItem('episode');
-        if(!currentEpisode){
-            localStorage.setItem('episode','1');
-        }
-        if(!playRef.current) return;
-        playRef.current.src = `http://localhost:3001/catalog/${seriesName}/${encodeURIComponent(getVoice())}/${getNumOfEpisode()}/${quality}`;
-    }
     const isFocusableElement = (element: HTMLElement | null): boolean => {
         if (!element) return false;
         const focusableTags = ["INPUT", "TEXTAREA"];
@@ -227,7 +234,6 @@ const usePlayer =(seriesName:string,seriesViewName:string)=>{
     return{
         changeQuality,
         setIsPlaying,
-        choosedEpisode,
         isLoading,
         setIsLoading,
         toggleShowPlay,

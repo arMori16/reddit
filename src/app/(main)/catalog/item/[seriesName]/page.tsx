@@ -12,7 +12,7 @@ import { cookies } from 'next/headers';
 const ItemPage = async({params}:{params:{seriesName:string}})=>{
     const atToken = cookies().get('accessToken')?.value;
     const seriesData = await getSeriesData(params.seriesName,atToken);
-    console.log('SeriesData: ',seriesData);
+    console.log('SeriesData: ',seriesData?.data.VoiceActing);
     
     const userRate = atToken ? await getUserRate(params.seriesName,atToken) : undefined;
     if(!seriesData){
@@ -36,7 +36,7 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                         <h1 className='text-3xl custom-xs:mt-0 break-words flex flex-wrap'>{seriesData?.data.SeriesViewName}</h1>
                         <div className='flex my-1'>
                             {seriesData.data.AlternitiveNames?.map((item:string,index:number)=>(
-                                <div key={index} className='flex rounded-lg h-[1.75rem] font-light py-[2px] px-2 bg-gray-100 items-center justify-center'>
+                                <div key={index} className='flex rounded-lg min-h-[1.75rem] font-light py-[2px] px-2 bg-gray-100 items-center justify-center'>
                                     {item}
                                 </div>
                             ))}
@@ -77,12 +77,14 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                             </li>
                             <li>
                                 <div className='w-[6rem]'>Voice:</div>
-                                <div className='ml-5 flex gap-1 flex-wrap'>{seriesData.data.VoiceActing.map((item:string,index:number)=>(
-                                    <div key={index} className='flex bg-[#4eb997] hover:bg-[#43a083] rounded-md font-medium text-[0.85rem] py-[2px] px-[4px] items-center justify-center'>
-                                        {item}
+                                {seriesData.data.VoiceActing && (
+                                    <div className='ml-5 flex gap-1 flex-wrap'>{seriesData.data.VoiceActing.map((item:string,index:number)=>(
+                                        <div key={index} className='flex bg-[#4eb997] hover:bg-[#43a083] rounded-md font-medium text-[0.85rem] py-[2px] px-[4px] items-center justify-center'>
+                                            {item}
+                                        </div>
+                                        ))}
                                     </div>
-                                    ))}
-                                </div>
+                                )}
                             </li>
                         </ul>
                     </div>

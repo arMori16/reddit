@@ -28,11 +28,12 @@ axios.interceptors.response.use(
           return axios(error.config);
         } catch (refreshError) {
           console.error('Token refresh failed', refreshError);
+          return Promise.reject(refreshError);
           // Optionally redirect user to login or handle token expiration
         }
       }
     }
-    return Promise.reject(`EROR::: ${error}`);
+    return Promise.reject(error);
   }
 );
 

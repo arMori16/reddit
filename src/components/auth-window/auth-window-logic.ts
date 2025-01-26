@@ -1,7 +1,7 @@
 "use client"
 import Cookies from "js-cookie";
 import axios from "../api/axios";
-import origAxios from 'axios';
+import origAxios, { AxiosError } from 'axios';
 import { tokenManager } from "../api/setup-token";
 import { toast } from "react-toastify";
 
@@ -52,7 +52,6 @@ export const backHandleLogin = async (action:string,data:any,setServerError:(err
     }catch(error:any){
         if (origAxios.isAxiosError(error) && error.response) {
             const serverError = String(error.response.data.message);
-            console.log('SERVER ERROR');
             
             setServerError(serverError);
             console.log('THI IS SETSERVER ERROR',serverError);
@@ -79,3 +78,22 @@ export const getEmailCode = async(email:string)=>{
         
     }
 } 
+export const isUserEmailExists = async(email:string)=>{
+    try{
+        const isExist = await axios.get('/user/exist',{
+            params:{
+                email:email
+            }
+        })
+        console.log('THIS IS EMAIL:: ',email);
+        
+        console.log('THIS IS EXIST DATA: ',isExist.data);
+        
+        if(isExist.data){
+            return true;
+        }
+        return false;
+    }catch(err){
+        console.error(err);
+    }
+}

@@ -1,71 +1,26 @@
 'use client'
-
-
-import { EnumPlayerQuality, HTMLCustomVideoElement } from "./types/player.type";
 import { SelectQuality } from "./selectQuality";
 import usePlayer from "./usePlayer";
 import '@/components/player/player.css'
 import { Loader, LucideVolumeOff, Maximize, Pause, Play, PlaySquare, RotateCcw, RotateCwIcon, Video, Volume1, Volume2 } from "lucide-react";
 import  volumeLogic, { initializeVideoControls } from "./videoLogic";
 import { useEffect, useRef, useState } from "react";
-import SkipTimeFunction from "@/components/player/SkipTime";
-import { timePosition } from "../useZustand/zustandSaveTime";
 import numOfEpisodeStorage from "../useZustand/player/zustandNumOfEpisode";
 import voiceStorage from "../useZustand/player/zustandVoice";
+import playbackPosition from "../useZustand/zustandStorage";
 
 
 const Player = ({ seriesViewName,seriesName,episode }: { seriesName: string,seriesViewName: string,episode: number })=>{
     const [isControlsVisible, setIsControlsVisible] = useState(false); // Состояние видимости контролов
-    const {playRef,isLoading,choosedEpisode,setIsLoading,togglePlayPause,changeQuality,toggleFullScreen,setIsPlaying,quality,isPlaying,isShowPlay,setIsShowPlay,toggleShowPlay,skipTime} = usePlayer(seriesName,seriesViewName);
-    const [isSkipTime,setIsSkipTime] = useState(false);
-    const [forceRender, setForceRender] = useState(false);
-    /* const [numOfEpisode,setNumOfEpisode] = useState(1); */
+    const {playRef,isLoading,setIsLoading,togglePlayPause,changeQuality,toggleFullScreen,setIsPlaying,quality,isPlaying,isShowPlay,setIsShowPlay,toggleShowPlay,skipTime} = usePlayer(seriesName,seriesViewName);
     const {getNumOfEpisode,updateNumOfEpisode} = numOfEpisodeStorage();
+    const {getCurrentTime,updateCurrentTime} = playbackPosition();
     const {getVoice} = voiceStorage();
     const toggleControlsVisibility = () => {
         setIsControlsVisible((prev) => !prev); // Переключаем видимость контролов
     };
-    useEffect(()=>{
-        if(isShowPlay){
-            setIsControlsVisible(false);
-        }
-
-    },[isShowPlay])
-    /* const loading = ()=>{
-        setTimeout(()=>{
-            setIsLoading(false);
-            toggleShowPlay();
-            toggleControlsVisibility();
-        },4000)
-    } */
-    const handleStart = () => {
-        setIsPlaying(false);  // Скрыть кнопку и показать контроллеры
-        togglePlayPause();
-        setIsShowPlay(false);    // Начать воспроизведение
-    };
-    const skipTimeInitialized = useRef(false); // Используем useRef для отслеживания инициализаци
-    const skipTimeKeyboard = () => {
-        console.log("Skip time function called!");
-        SkipTimeFunction();
-    };
-
-    useEffect(() => {
-        setIsPlaying(false);
-        playRef.current?.pause();
-        if(playRef.current?.paused){
-            console.log('ITS PAUSED!!!!!!!!!');
-            
-        }
-        choosedEpisode();
-        setIsShowPlay(true);
-    }, [seriesName, episode]);
-    useEffect(()=>{
-        if (!skipTimeInitialized.current) {
-            skipTimeKeyboard(); // Выполняем функцию только один раз
-            skipTimeInitialized.current = true; // Устанавливаем флаг, что функция была выполнена
-        }
-        
-    },[])
+    
+    
     initializeVideoControls('video','.player-container');
     volumeLogic();
     return (
@@ -86,39 +41,39 @@ const Player = ({ seriesViewName,seriesName,episode }: { seriesName: string,seri
             <video ref={playRef} controls={false} className='block flex-grow w-full object-cover video relative max-h-[34rem] rounded-lg' src={`http://localhost:3001/catalog/${seriesName}/${encodeURIComponent(getVoice())}/${getNumOfEpisode()}/1080p`}></video>
 
         </div>
-            <div className={`flex backdrop-blur-xl controls ${isControlsVisible ? 'flex visible' : 'hidden'} absolute z-[102] bottom-0 inset-x-0 flex-grow max-w-full items-center p-3 justify-between`}>
+            <div className={`flex backdrop-blur-xl ${isShowPlay ? 'hidden' : 'visible'} controls ${isControlsVisible ? 'flex visible' : 'hidden'} absolute z-[102] custom-xs:p-[6px] bottom-0 inset-x-0 flex-grow max-w-full items-center p-3 justify-between`}>
                 <div className="flex items-center">
-                    <button onClick={()=>skipTime('backward')}><RotateCcw color="white"/></button>
+                    <button onClick={()=>skipTime('backward')} className="custom-xs:hidden"><RotateCcw color="white"/></button>
                     <button onClick={togglePlayPause}>
-                        {isPlaying ? <Pause className="pause-icon" color="white"/> : <Play color="white"/>}
+                        {isPlaying ? <Pause className="pause-icon custom-xs:w-[0.85rem] custom-xs:h-[0.85rem]" color="white"/> : <Play className="custom-xs:w-[0.85rem] custom-xs:h-[0.85rem]" color="white"/>}
                     </button>
-                    <button onClick={()=>skipTime('forward')}><RotateCwIcon color="white"/></button>
+                    <button onClick={()=>skipTime('forward')} className="custom-xs:hidden"><RotateCwIcon color="white"/></button>
                 </div>
-                <div className="duration-container flex w-[88%]  text-white items-center relative ml-5">
-                    <div className="current-time relative mr-2 ml-2"></div>
+                <div className="duration-container flex w-[88%]  text-white items-center custom-xs:ml-1 relative ml-5">
+                    <div className="current-time relative mr-2 ml-2 custom-xs:text-[0.75rem]"></div>
                         <div className="timeline-container relative mr-auto w-[100%] flex h-2 items-center">
                             <div className="timeline flex w-[100%] relative mr-auto h-[6px] bg-white">
                                 <div className="thumb-indicator"></div>
                             </div>
                         </div>
-                    <div className="total-time relative flex mr-5 ml-2 w-auto"></div>
+                    <div className="total-time relative flex ml-2 mr-5 custom-xs:mr-1 w-auto custom-xs:text-[0.75rem]"></div>
                 </div>
-                <div className={`flex ml-auto  volume-container right-0 relative`}>
-                    <button className="mutedBtn flex relative" >
+                <div className={`flex ml-auto volume-container right-0 relative`}>
+                    <button className="mutedBtn flex relative custom-xs:w-[1.5rem] custom-xs:h-[1.5rem]" >
                         <Volume2 color="white" className="flex mr-2 volume-high-icon"/>
                         <Volume1 color="white" className="flex mr-2 volume-low-icon"/>
                         <LucideVolumeOff color="white" className="flex mr-2 volume-muted-icon"/>
                     </button>
                     <div className="flex relative slider-range items-center">
                         <div className="flex relative volume-slider">
-                            <input className="flex custom-range mr-1  relative " type="range"  min='0' max='1' step='any'/>
+                            <input className="flex custom-range mr-1 hover:custom-xs:w-[2rem] relative " type="range"  min='0' max='1' step='any'/>
                         </div>
                     </div>
                 </div>
                 <div className="flex quality-maximize-btn right-0 relative justify-between">
                     <SelectQuality currentValue={quality} onChange={changeQuality}/>
                     <button onClick={toggleFullScreen} className="full-screen-btn">
-                        <Maximize color="white"/>
+                        <Maximize color="white" className="custom-xs:w-[0.75rem] custom-xs:h-[0.75rem]"/>
                     </button>
                 </div>
             </div>

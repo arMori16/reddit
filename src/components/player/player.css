@@ -150,6 +150,11 @@
     width: 80px;
     transform: scaleX(1);
   }
+  @media (max-width: 36.25rem) {
+    .volume-container:hover .custom-range{
+      width: 2rem;
+    }
+  }
   .timeline-container:hover .timeline{
     height:100%;
   }

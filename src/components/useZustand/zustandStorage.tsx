@@ -2,17 +2,19 @@
 
 import { create } from "zustand";
 
-export type State={
+type State={
     currentTime:string
 }
 
 type Action = {
-    updateCurrentTime:(currentTime:State) =>void
+    updateCurrentTime:(currentTime:string) =>void
+    getCurrentTime:()=>string
 }
 
-const playbackPosition = create<State & Action>((set:any)=>({
+const playbackPosition = create<State & Action>((set:any,get:any)=>({
     currentTime:'0',
-    updateCurrentTime:(currentTime:State)=>set(()=>({currentTime:currentTime}))
+    updateCurrentTime:(time:string)=>set(()=>({currentTime:time})),
+    getCurrentTime:()=>get().currentTime
 }))
 
 export default playbackPosition;

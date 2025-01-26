@@ -22,17 +22,13 @@ export function SelectQuality({currentValue,onChange}:Props){
     const handleButtonClick = () => {
         setIsShow(prev => !prev);
     };
-    /* const handleVisible = ()=>{
-        setIsVisible(prev => !prev)
-    }
-    const [isVisible,setIsVisible] = useState(false); */
     return(
         <div className="relative quality-container">
-            <button className='flex text-white relative' onClick={handleButtonClick/* ();handleVisible()} */} ref={buttonRef}>{currentValue} 
+            <button className='flex items-center text-white relative custom-xs:text-[0.85rem]' onClick={handleButtonClick/* ();handleVisible()} */} ref={buttonRef}>{currentValue} 
                 {isShow ? (
-                    <ChevronUp color="white"/>
+                    <ChevronUp color="white" className="custom-xs:w-[0.85rem] custom-xs:h-[0.85rem]"/>
                     ):(
-                    <ChevronDown color="white"/>
+                    <ChevronDown color="white" className="custom-xs:w-[0.85rem] custom-xs:h-[0.85rem]"/>
                 )}
             </button>
                     {isShow && (
@@ -43,8 +39,8 @@ export function SelectQuality({currentValue,onChange}:Props){
                                     <button 
                                         onClick={()=>{onChange(quality) 
                                                     setIsShow(false)}}
-                                                    className="flex items-center">
-                                            {currentValue === quality && <Dot/>}{quality}
+                                                    className="flex items-center custom-xs:text-[0.85rem]">
+                                            {currentValue === quality && <Dot className="custom-xs:w-[0.75rem] custom-xs:h-[0.75rem]"/>}{quality}
                                     </button>
                                 </li>
                             ))}

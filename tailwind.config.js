@@ -48,8 +48,16 @@ module.exports = {
           '0%': { maxHeight:'1000px',overflow: 'hidden'},
           '100%': { maxHeight:'0px' ,overflow: 'hidden'},
         },
+        rotate:{
+          '0%': { transform : `rotate(0deg)`},
+          '100%': { transform : `rotate(360deg)`}
+        }
+      },
+      transitionProperty: {
+        'left': 'left',  // Добавим свойство transition для left
       },
       animation: {
+        rotate: `rotate 3s linear infinite`,
         slideIn: 'slideIn 1s ease-in-out',
         slideOut: 'slideOut 1s ease-in-out',
         slideVoiceIn: 'slideVoiceIn 0.4s forwards ease-in-out',

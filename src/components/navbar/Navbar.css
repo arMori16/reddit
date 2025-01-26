@@ -80,7 +80,7 @@ li{
     z-index: 1000;
     
 }
-.model-content{
+/* .model-content{
     background-color: white;
     padding: 20px;
     border-radius: 20px;
@@ -91,7 +91,7 @@ li{
     display: flex;
     overflow-y: auto;
     position: relative;
-}
+} */
 .loading-bar {
     position: fixed;
     top: 0;

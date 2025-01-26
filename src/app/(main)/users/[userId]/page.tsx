@@ -52,8 +52,6 @@ const fetchData = async (userId: number) => {
                             <div className='flex mt-2 ml-2 gap-x-2 w-full h-full'>
                                 {lastViewed.userLastViewedSeries.map((item:any,index:number)=>{
                                 const itemRate = lastViewed.rates?.find((seriesName:any) => seriesName.SeriesName === item.SeriesName);
-                                console.log('LOG:::',itemRate ? itemRate._avg.Value : 0);
-                                
                                 return(
                                     <a href={`http://localhost:3000/catalog/item/${item.SeriesName}`} key={index} className='flex relative flex-col w-[10rem] transition-transform hover:scale-105 duration-500 ease-in-out overflow-hidden'>
                                         <img src={`http://localhost:3001/media/${item?.SeriesName}/images`} className='w-full h-[15rem] rounded-md' alt="" />

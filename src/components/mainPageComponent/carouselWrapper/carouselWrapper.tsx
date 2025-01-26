@@ -1,34 +1,135 @@
-
+'use client'
 
 import getSeriesInfo, { getSeasonedCatalog } from '@/utils/getSeriesInfo';
+import { debounce } from 'lodash';
+import "@/components/mainPageComponent/carouselWrapper/carousel.css"
+import { ChevronLeft, ChevronRight, Loader } from 'lucide-react';
 import Link from 'next/link';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import useEmblaCarousel from 'embla-carousel-react'
+
+
+
 /* import { useEffect, useState } from 'react'; */
 
 
-const CarouselWrapper = async()=>{
-    const seriesInfo = await getSeasonedCatalog();
-    return(
-        <div className='flex flex-col h-full w-full relative mt-[3rem]'>
-          <div className='flex rounded-t-lg justify-center items-center max-w-full h-[2.25rem] bg-[#3C3C3C] text-rose-50'>
-              SEASON'S ANIME
-          </div>
-          <div className='flex max-w-full h-[16.25rem] overflow-hidden'>
-            {Array.from({length:7},(_,index)=>(
-              <Link key={index} href={`catalog/item/${seriesInfo?.seriesName[index]}`} className='flex relative flex-none overflow-hidden flex-col max-w-[11.5rem] h-full'>
-                <img src={`http://localhost:3001/media/${seriesInfo?.seriesName[index]}/images`} alt="" className='flex w-[11.5rem] h-full'/>
-                <div className='block absolute text-white left-0 h-[3.15rem] bottom-0 bg-[rgba(0,0,0,0.6)] text-center py-[5px] px-1 w-full overflow-hidden text-ellipsis'>
-                  <span className="line-clamp-2">
-                      {seriesInfo?.seriesViewName[index]}
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
-            <div className="tabs-content">
+const CarouselWrapper = ()=>{
+  /* const currentIndex = useRef(0); */
+  const [seriesInfo, setSeriesInfo] = useState<{
+    seriesName: string[];
+    seriesViewName: string[];
+  }>({
+    seriesName: [''],
+    seriesViewName: [''],
+  });
+  const [isFocused,setIsFocused] = useState(false);
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true, // Бесконечный скролл
+    align: 'start', // Элементы выравниваются по левому краю
+    dragFree: false, // Свободное перетаскивание отключено
+    duration: 45,
+  });
 
-            </div>
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getSeasonedCatalog();
+      setSeriesInfo(data);
+    };
+    fetchData();
+  }, []);
+  // Прокрутка назад
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) {
+      const currentIndex = emblaApi.selectedScrollSnap(); // Текущий индекс
+      console.log(`Current index: `,currentIndex);
+      
+      const viewportWidth = emblaApi.rootNode().getBoundingClientRect().width; // Ширина видимой области
+      console.log(`viewportWidth: `,viewportWidth);
+  
+      const slidesToScroll = Math.floor(viewportWidth / 184) // Сколько слайдов видно
+      console.log('Slide to scroll: ',slidesToScroll);
+      
+      const newIndex = currentIndex - slidesToScroll; // Новый индекс (не меньше 0)
+  
+      emblaApi.scrollTo(newIndex); // Скроллим к новому индексу
+    }
+  }, [emblaApi])
+  
+  const scrollNext = useCallback(() => {
+    if (emblaApi) {
+      const currentIndex = emblaApi.selectedScrollSnap(); // Текущий индекс
+      console.log(`Current index: `,currentIndex);
+      
+      const viewportWidth = emblaApi.rootNode().getBoundingClientRect().width; // Ширина видимой области
+      console.log(`viewportWidth: `,viewportWidth);
+      const emblaSlide = document.querySelectorAll(`.embla__slide`);
+      const slidesToScroll = (viewportWidth / 184) % 1 >= 0.94 ? Math.ceil(viewportWidth / 184):Math.floor(viewportWidth / 184) // Сколько слайдов видно
+      console.log('Slide to scroll: ',slidesToScroll);
+      
+      const newIndex = currentIndex + slidesToScroll;
+      emblaApi.scrollTo(newIndex); // Скроллим к новому индексу
+    }
+  }, [emblaApi]);
+  const scrollNextRef = useRef(scrollNext);
+
+  useEffect(() => {
+    scrollNextRef.current = scrollNext; // Update ref when scrollNext changes
+  }, [scrollNext]);
+
+  useEffect(() => {
+    if(!isFocused){
+      const interval = setInterval(() => {
+        scrollNextRef.current(); // Always use the latest scrollNext
+      }, 8000);
+
+      return () => clearInterval(interval); // Cleanup interval on unmount
+    }
+  }, [isFocused]);
+
+  const handleMouseEnter = () => setIsFocused(true); // Фокус на элементе
+  const handleMouseLeave = () => setIsFocused(false); // Снимаем фокус
+
+  
+  return(
+      <div className='block h-full w-full relative mt-[3rem] max-w-[80.469rem] embla'>
+        <div className='flex rounded-t-lg justify-center items-center max-w-[80.469rem] h-[2.25rem] bg-[#3C3C3C] text-rose-50'>
+            SEASON'S ANIME
         </div>
-    )
+        {seriesInfo.seriesName.length <= 1? (
+           <div className='flex bg-gray-2E w-full items-center justify-center h-[16.25rem]'>
+              <Loader className='w-[2rem] h-[2rem] transition-transform animate-rotate' color='white'/>
+           </div>
+        ) : (
+          <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className={`flex group carousel-wrapper w-full relative`} /* style={{ transform: `translateX(${-currentIndex}px)` }} */>
+           <div className='embla__buttons'>
+             <button onClick={scrollPrev} className='flex pr-1 embla__button embla__button--prev left items-center justify-center absolute rounded-r-md opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out left-0 top-[45%] bg-gray-2E z-10 w-[1.25rem] h-[2.25rem]'>
+               <ChevronLeft color='white' className='w-[0.9rem] h-[1rem]'/>
+             </button>
+             <button onClick={scrollNext} className='flex embla__button embla__button--next pl-1 right items-center justify-center absolute rounded-l-md opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out right-0 top-[45%] bg-gray-2E z-10 w-[1.25rem] h-[2.25rem]'>
+               <ChevronRight color='white' className='w-[0.9rem] h-[1rem]'/>
+             </button>
+           </div>
+               <div className='w-full h-[16.25rem] overflow-hidden' ref={emblaRef}>
+                 <div className='flex'>
+                   {seriesInfo?.seriesName.map((item:string,index:number)=>(
+                     <div key={index} className='flex embla__slide carousel-cell h-[16.25rem] relative flex-none overflow-hidden bg-red-950 flex-col w-[11.5rem]'>
+                       <Link href={`catalog/item/${seriesInfo?.seriesName[index]}`} className='flex relative flex-none overflow-hidden bg-red-950 flex-col w-full h-full'>
+                         <img src={`http://localhost:3001/media/${seriesInfo?.seriesName[index]}/images`} alt="" className='flex w-[11.5rem] h-full'/>
+                         <div className='block absolute text-white left-0 h-[3.15rem] bottom-0 bg-[rgba(0,0,0,0.6)] text-center py-[5px] px-1 w-full overflow-hidden text-ellipsis'>
+                           <span className="line-clamp-2">
+                               {seriesInfo?.seriesViewName[index]}
+                           </span>
+                         </div>
+                       </Link>
+                     </div>
+                   ))}
+                 </div>
+               </div>
+           </div>
+        )}
+     
+      </div>
+  )
 }
 
 
