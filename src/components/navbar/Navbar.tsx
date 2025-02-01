@@ -27,14 +27,14 @@ const Navbar = async({user,userFirstName}:{user:any,userFirstName?:string | null
                         </div>
                     </div>
                 </div>
-                <div className='flex w-[80%] relative ml-auto items-center justify-center custom-xs:hidden'>
+                <div className='flex w-[80%] relative ml-auto items-center justify-center custom-md-lg:hidden'>
                     <SearchBar/>
                 </div>
-                <div className='flex h-full mr-[2rem] gap-x-4'>
+                <div className='flex h-full mr-[2rem] gap-x-4 custom-s-200:hidden'>
                     <div className='flex h-full mx-2 gap-x-4 items-center text-[1rem] font-medium text-white uppercase'>
                         <Link href={`/`} className='flex items-center hover:text-green-400 duration-300 ease-in-out'><i className="fa fa-home text-[0.85rem] mr-1" aria-hidden="true"></i>Home</Link>
                     </div>
-                    <div className='flex h-full mx-2 gap-x-4 items-center text-[1rem] font-medium text-white uppercase'>
+                    <div className='flex h-full mx-2 gap-x-4 items-center text-[1rem] font-medium text-white uppercase custom-md:hidden'>
                         <Link href={`/catalog`} className='flex items-center hover:text-green-400 duration-300 ease-in-out'><i className="fa-solid fa-newspaper pt-[2px] text-[0.85rem] mr-1" aria-hidden="true"></i>Catalog</Link>
                     </div>
                 </div>

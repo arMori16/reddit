@@ -2,13 +2,17 @@
 
 import { HTMLCustomVideoElement } from "./types/player.type";
 import playbackPosition from "../useZustand/zustandStorage";
-export function initializeVideoControls(videoSelector:string, playerContainerSelector:string) {
+import usePlayer from "./usePlayer";
+import { Socket } from "socket.io-client";
+/* const {setIsPlaying} = usePlayer(); */
+export function initializeVideoControls(videoSelector:string, playerContainerSelector:string,socketRef: React.MutableRefObject<Socket | null>,setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>) {
     if(typeof window === "undefined") return;
 
     const video = document.querySelector(videoSelector) as HTMLCustomVideoElement;
     const currentTimeElement = document.querySelector('.current-time');
     const totalTimeElement = document.querySelector('.total-time');
     const controls = document.querySelector('.controls')
+    const multiplayerButton = document.querySelector('.toggle-button');
     const fullScreenBtn = document.querySelector('.full-screen-btn');
     const timeLineContainer = document.querySelector('.timeline-container') as HTMLDivElement
     const playerContainer = document.querySelector(playerContainerSelector) as HTMLDivElement;
@@ -19,7 +23,7 @@ export function initializeVideoControls(videoSelector:string, playerContainerSel
 
     let timeout:NodeJS.Timeout | null;
     
-    video.addEventListener('mousemove',(e:MouseEvent)=>{
+    playerContainer.addEventListener('mousemove',(e:MouseEvent)=>{
         if (timeout) {
             clearTimeout(timeout);
         }
@@ -27,12 +31,14 @@ export function initializeVideoControls(videoSelector:string, playerContainerSel
         // Показать курсор, если он был скрыт
         (playerContainer as HTMLDivElement).style.cursor = 'default';
         (controls as HTMLDivElement).style.visibility = 'visible';
+        (multiplayerButton as HTMLDivElement).style.visibility = 'visible';
         // Перезапускаем таймер
-        if(playerContainer.classList.contains("paused")) return;
+        if(video.paused) return;
         
         timeout = setTimeout(() => {
             // Если курсор не двигался в течение 5 секунд, скрыть его
             (playerContainer as HTMLDivElement).style.cursor = 'none';
+            (multiplayerButton as HTMLButtonElement).style.visibility = 'hidden';
             (controls as HTMLDivElement).style.visibility = 'hidden';
 
         }, 5000);
@@ -57,11 +63,22 @@ export function initializeVideoControls(videoSelector:string, playerContainerSel
         isScrubbing = (e.buttons & 1) === 1;
         video.classList.toggle("scrubbing",isScrubbing)
         if(isScrubbing){
-            wasPaused = video.paused;
             video.pause();
         }else{
+            console.log(`HAHAHHASAISAHSOAI`);
+            
             video.currentTime = percent * video.duration
-            if(!wasPaused)video.play();
+            if(!socketRef.current){
+                if(!video.paused){
+                    video.play();
+                }else{
+                    video.pause();
+                };
+
+            }else{
+                setIsPlaying(false);
+                video.pause();
+            }
         }
         handleTimeLineUpdate(e);
     }

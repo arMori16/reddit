@@ -4,7 +4,8 @@ import { create } from "zustand";
 type State = {
     isShow:boolean,
     showVoices:boolean,
-    showRate:boolean
+    showRate:boolean,
+    showSearch:boolean
 }
 
 type Action={
@@ -14,18 +15,23 @@ type Action={
     getShowVoices:()=>boolean,
     updateShowRate:(isShow:boolean)=>void,
     getShowRate:()=>boolean,
+    updateShowSearch:(isShow:boolean)=>void,
+    getShowSearch:()=>boolean,
 }
 
 const menuStorage = create<State & Action>((set:any,get:any)=>({
     isShow:false,
     showRate:false,
     showVoices:false,
+    showSearch:false,
     updateIsShow:(isShow:boolean)=>set({isShow}),
     getIsShow:()=>get().isShow,
     updateShowVoices:(showVoices:boolean)=>set({showVoices}),
     getShowVoices:()=>get().showVoices,
     updateShowRate:(showrate:boolean)=>set({showrate}),
-    getShowRate:()=>get().showrate
+    getShowRate:()=>get().showrate,
+    updateShowSearch:(search:boolean)=>set({search}),
+    getShowSearch:()=>get().search
 }))
 
 export default menuStorage;

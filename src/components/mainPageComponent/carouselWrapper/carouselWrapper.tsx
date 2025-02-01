@@ -46,7 +46,7 @@ const CarouselWrapper = ()=>{
       const viewportWidth = emblaApi.rootNode().getBoundingClientRect().width; // Ширина видимой области
       console.log(`viewportWidth: `,viewportWidth);
   
-      const slidesToScroll = Math.floor(viewportWidth / 184) // Сколько слайдов видно
+      const slidesToScroll = (viewportWidth / 184) % 1 >= 0.94 ? Math.ceil(viewportWidth / 184):Math.floor(viewportWidth / 184)
       console.log('Slide to scroll: ',slidesToScroll);
       
       const newIndex = currentIndex - slidesToScroll; // Новый индекс (не меньше 0)

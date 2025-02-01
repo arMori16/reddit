@@ -75,8 +75,10 @@ module.exports = {
       },
       screens: {
         'custom-s':{max:'26rem'},
+        'custom-s-200':{max:'29.4rem'},
         'custom-md': { max: '40.5rem' }, // 648px breakpoint
         'custom-xs': { max: '36.25rem' },
+        'custom-md-lg': { max: '53.125rem' },
         'custom-lg': { max: '59.125rem' },
         'custom-65':{ max: ''},
         'custom-image':{max:'21.62rem'},

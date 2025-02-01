@@ -1,22 +1,21 @@
-"use client"
+"use server"
 import "@/app/globals.css"
+import axios from "@/components/api/axios";
 import ClientRefreshToken from "@/components/api/clientRefreshToken";
 import Avatar from "@/components/navbar-components/avatar/avatar";
 import SearchBar from "@/components/navbar-components/search-bar/search-bar";
-import usePageCounter from "@/components/useZustand/zustandPageCounter";
+
+import { cookies, headers } from "next/headers";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 
-export default function RootLayout({children}:{children: React.ReactNode}){
-  const {setPage} = usePageCounter();
-  const pathName = usePathname();
-  useEffect(()=>{
-    console.log('IT IS WORKING!');
-    
-    setPage(0);
-  },[pathName])
+export default async function RootLayout({children}:{children: React.ReactNode}){
+  const pathName = headers().get("next-url") || "/";
+  const userFirstname =  await axios.get('/user/firstname',{
+    headers:{
+        'Authorization':`Bearer ${cookies().get('accessToken')?.value}`
+    }
+  })
   const items= [
     'Dashboard',
     'Users',
@@ -35,7 +34,7 @@ export default function RootLayout({children}:{children: React.ReactNode}){
                     Admin
                 </div>
                 {Array.from({length:items.length},(_,index)=>(
-                    <Link key={index} href={`${items[index] === 'Dashboard'? `http://localhost:3000/admin`:`http://localhost:3000/admin/${items[index].toLowerCase()}`}`} className={`flex mt-2 items-center ${isActive(items[index] === 'Dashboard' ? '/admin' : `/admin/${items[index].toLowerCase()}`) 
+                    <Link key={index} href={`${items[index] === 'Dashboard'? `${process.env.NEXT_PUBLIC_FRONT_API}/admin`:`${process.env.NEXT_PUBLIC_FRONT_API}/admin/${items[index].toLowerCase()}`}`} className={`flex mt-2 items-center ${isActive(items[index] === 'Dashboard' ? '/admin' : `/admin/${items[index].toLowerCase()}`) 
                       ? 'bg-[#373737]' 
                       : ''}
                    rounded-xl pl-8 hover:bg-[#373737] duration-500 transition ease-in-out max-w-full w-full h-[4rem]`}>
@@ -46,10 +45,10 @@ export default function RootLayout({children}:{children: React.ReactNode}){
             <div className="flex flex-col h-full pt-7 flex-[1] ml-[18rem] max-w-full">
               <div className="flex max-w-full mb-5 w-full h-[8rem]">
                 <div className="flex items-end w-[85%] justify-center ml-auto mr-auto flex-shrink">
-                    <SearchBar/>
+                    <SearchBar isAdmin={true}/>
                 </div>
                 <div className="flex flex-col w-[6rem] items-center relative">
-                    <Avatar/>
+                    <Avatar user={userFirstname?.data}/>
                     <span className="flex text-[#D98C8C] font-semibold text-[1.25rem]">Admin</span>
                 </div>
               </div>

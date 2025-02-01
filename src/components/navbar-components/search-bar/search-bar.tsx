@@ -9,10 +9,10 @@ import { debounce } from 'lodash';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-const SearchBar = ()=>{
+const SearchBar = ({isAdmin}:{isAdmin?:boolean})=>{
     const [isFocus,setIsFocus] = useState(false);
     const [text,setText] = useState('');
-    const {getPage,page} = usePageCounter();
+    const {getSearchPage,searchPage} = usePageCounter();
     const {componentRef} = useOutsideCommon();
     const {getIsShow,updateIsShow,isShow} = menuStorage();
     const [result,setResult] = useState<any[]>([]);
@@ -42,7 +42,7 @@ const SearchBar = ()=>{
                 const req = await axios.get('/catalog/item/search',{
                     params:{
                         seriesName:text,
-                        skip:getPage()
+                        skip:getSearchPage()
                     }
                 });
                 setResult(req.data);
@@ -72,7 +72,7 @@ const SearchBar = ()=>{
                         <div className='flex absolute top-[1.75rem] left-0 w-full max-h-[15rem] rounded-b-lg overflow-hidden overflow-y-scroll flex-col bg-gray-400' ref={componentRef}>
                             <InfiniteScroll fetchedData={result} componentRef={componentRef} width={`100%`} height={`100%`} isFlexCol={true}>
                                 {result.map((item,index)=>(
-                                    <Link onClick={()=>updateIsShow(false)} href={`http://localhost:3000/catalog/item/${item.SeriesName}`} key={index} className='flex cursor-pointer w-full h-[3rem] font-medium bg-gray-400 items-center border-b-[1px] border-gray-700'>
+                                    <Link onClick={()=>updateIsShow(false)} href={isAdmin ? `${process.env.NEXT_PUBLIC_FRONT_API}/admin/series/view/${item.SeriesName}` :`${process.env.NEXT_PUBLIC_FRONT_API}/catalog/item/${item.SeriesName}`} key={index} className='flex cursor-pointer w-full h-[3rem] font-medium bg-gray-400 items-center border-b-[1px] border-gray-700'>
                                         <div className='flex w-full h-full ml-1 hover:shadow-[-5px_0_0] duration-700 transition-shadow ease-in-out hover:shadow-green-400'>
                                             <div className='flex w-[1.8rem] h-full py-1 mr-1'>
                                                 <img src={`http://localhost:3001/media/${result[index].SeriesName}/images`} className='flex w-full h-full' alt="" />

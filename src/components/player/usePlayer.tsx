@@ -9,7 +9,7 @@ import numOfEpisodeStorage from "../useZustand/player/zustandNumOfEpisode";
 import voiceStorage from "../useZustand/player/zustandVoice";
 import Cookies from "js-cookie";
 const SKIP_TIME_SECONDS = 10;
-const usePlayer =(seriesName:string,seriesViewName?:string)=>{   
+const usePlayer =(seriesName?:string,seriesViewName?:string)=>{   
     const [isPlaying,setIsPlaying] = useState(false);
     const [isShowPlay,setIsShowPlay] = useState(true);
     const [isLoading,setIsLoading] = useState(false);
@@ -21,9 +21,6 @@ const usePlayer =(seriesName:string,seriesViewName?:string)=>{
     const {updateCurrentTime,getCurrentTime} = playbackPosition();
     
     useEffect(() => {
-        if(typeof window === "undefined") return;
-        const video = document.querySelector('video');
-        const atToken = Cookies.get('accessToken');
         const handleClick = () => {
             togglePlayPause();
         };
@@ -43,42 +40,46 @@ const usePlayer =(seriesName:string,seriesViewName?:string)=>{
         };
     }, [isPlaying, updateCurrentTime]);
       
-    const togglePlayPause = ()=>{
+    const togglePlayPause = (socket?:boolean)=>{
         if(typeof window === "undefined") return;
-        if(isPlaying){
-            const atToken = Cookies.get('accessToken');
-            playRef.current?.pause();
-            if (atToken && seriesViewName) {
-                console.log(`ITS HEREEEEEE!!!!!!!!!!!!!!`);
+        setIsPlaying(prev => {
+            if (prev) {
+                // If was playing, now we pause
+                playRef.current?.pause();
                 
-                axios.put(
-                    '/user/lastViewedSeries',
-                    {
-                        seriesName:seriesName,
-                        episode: getNumOfEpisode(),
-                        timeStopped: getCurrentTime(),
-                    },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${atToken}`,
+                const atToken = Cookies.get('accessToken');
+                if (atToken && seriesViewName && !socket) {
+                    axios.put(
+                        '/user/lastViewedSeries',
+                        {
+                            seriesName: seriesName,
+                            episode: getNumOfEpisode(),
+                            timeStopped: getCurrentTime(),
                         },
-                    }
-                )
+                        {
+                            headers: {
+                                Authorization: `Bearer ${atToken}`,
+                            },
+                        }
+                    )
+                }
+            } else {
+                
+                if (!playRef.current) return prev;
+                
+                playRef.current?.play();
             }
-        }
-        else{
-            if(!playRef.current) return;
-            playRef.current?.play();
-        }
-        setIsPlaying(!isPlaying);
+    
+            return !prev; // Toggle state based on previous value
+        });
     }
-    const toggleShowPlay = async()=>{
+    const toggleShowPlay = async(socket?:boolean)=>{
         if(typeof window === "undefined") return;
         if(!playRef.current) return;
         if(isShowPlay){
             spaceButton();
             const atToken = Cookies.get('accessToken');
-            if(atToken){
+            if(atToken && !socket){
                 axios.post('/user/lastViewedSeries',{
                     seriesName:seriesName,
                     seriesViewName:seriesViewName,
@@ -97,11 +98,10 @@ const usePlayer =(seriesName:string,seriesViewName?:string)=>{
                         'Authorization':`Bearer ${atToken}`
                     }
                 })
-                playRef.current.currentTime = Number(lastTime.data.TimeStopped) || 0;
-                console.log(`Last time data: `,lastTime.data);
+                playRef.current.currentTime = Number(lastTime.data.TimeStopped) || 0
                 
             }
-            togglePlayPause();
+            togglePlayPause(socket && true);
         }
         
         setIsShowPlay(!isShowPlay);
@@ -215,7 +215,7 @@ const usePlayer =(seriesName:string,seriesViewName?:string)=>{
             }
             setIsLoading(true);
             controls.classList.add('disabled-controls');
-            playRef.current.src = `http://localhost:3001/catalog/${seriesName}/${encodeURIComponent(getVoice())}/${getNumOfEpisode()}/${quality}`;
+            playRef.current.src = `${process.env.NEXT_PUBLIC_API}/catalog/${seriesName}/${encodeURIComponent(getVoice())}/${getNumOfEpisode()}/${quality}`;
             setTimeout(()=>{
                 if(!playRef.current) return;
                 playRef.current.currentTime = Number(currentLocalTime);

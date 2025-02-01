@@ -7,10 +7,8 @@ export const getStateFromCookiesStorage = ():string=>{
         const cookiesStore = cookies();
         const userState = cookiesStore.get('state');
         const atToken = cookiesStore.get('accessToken')
-        if(userState && atToken !== undefined){
-            console.log('RETURNING USERSTATE VALUE: ',userState.value);
-            
-            return userState.value;
+        if(atToken){
+            return 'registered';
         }
         else{
             return 'unregistered'

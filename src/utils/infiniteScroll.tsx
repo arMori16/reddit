@@ -10,10 +10,11 @@ import useCommentsCounter from "@/components/useZustand/zustandCommentsCounter";
     SeriesName:string
 } */
 const InfiniteScroll = ({type,fetchedData,children,height,width,componentRef,isFlexCol,isWindow}:{type?:string,isWindow?:boolean,isFlexCol?:boolean,componentRef:RefObject<HTMLDivElement>,fetchedData:any[],children?:React.ReactNode,height:number | string,width:number | string,})=>{
-    const {page,getPage,setPage} = usePageCounter();
+    const {page,getPage,setPage,setSearchPage,getSearchPage} = usePageCounter();
     const {commentPage,getCommentPage,setCommentPage} = useCommentsCounter();
     const [series,setSeries] = useState<any[]>([]);
     const [comment,setComment] = useState<any[]>([]);
+    const [search,setSearch] = useState<any[]>([]);
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
 
@@ -33,6 +34,12 @@ const InfiniteScroll = ({type,fetchedData,children,height,width,componentRef,isF
               {const newSeries = [...prev, ...fetchedData];
               // Remove duplicates by `SeriesName` (or other unique identifiers)
               const uniqueSeries = Array.from(new Map(newSeries.map(item => [item.Id, item])).values());
+              return uniqueSeries;});
+          }else if(type === 'search'){
+            setSearch((prev) => 
+              {const newSearch = [...prev, ...fetchedData];
+              // Remove duplicates by `SeriesName` (or other unique identifiers)
+              const uniqueSeries = Array.from(new Map(newSearch.map(item => [item.SeriesName, item])).values());
               return uniqueSeries;});
           }
             setHasMore(fetchedData.length === 15);
@@ -59,6 +66,8 @@ const InfiniteScroll = ({type,fetchedData,children,height,width,componentRef,isF
                 setPage(getPage() + 1);
               }else if(type === 'comments'){
                 setCommentPage(getCommentPage() + 1)
+              }else if(type === 'search'){
+                setSearchPage(getSearchPage() + 1)
               }
             }
           } else if (componentRef.current) {
@@ -77,6 +86,9 @@ const InfiniteScroll = ({type,fetchedData,children,height,width,componentRef,isF
               }else if(type === 'comments'){
                 setCommentPage(getCommentPage() + 1)
                 console.log('WORK PAGE: ',getCommentPage());
+                
+              }else if(type === 'search'){
+                setSearchPage(getSearchPage() + 1)
                 
               }
             }

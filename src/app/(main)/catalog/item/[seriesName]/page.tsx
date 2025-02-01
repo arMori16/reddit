@@ -22,7 +22,7 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
             </div>
         )
     }
-    const shikimoriRating = await defaultAxios.get(`https://shikimori.one/api/animes?search=${params.seriesName}`);
+    const shikimoriRating = await defaultAxios.get(`https://shikimori.one/api/animes?search=${params.seriesName}`) || null;
     
     return(
         <div className="flex flex-col items-center justify-center w-full h-full bg-[#242424]">

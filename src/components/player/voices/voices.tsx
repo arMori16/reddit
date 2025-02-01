@@ -62,7 +62,7 @@ const Voices = ({seriesName}:{seriesName:string})=>{
             </button>
             <div className="hidden max-w-[15rem] w-[15rem] left-[-0.7px] mr-0 box-border max-h-[12rem] absolute p-0 m-0 top-full px-2 bg-gray-100 border-gray-600 border-t-0 rounded-b-lg border-[1px] z-[102] overflow-y-scroll" ref={divRef}>
                 <div className="flex flex-col w-full gap-y-2">
-                    {voices.map((item,index)=>(
+                    {voices?.map((item,index)=>(
                         <button onClick={()=>{setVoice(item);setEpisodes(episodesForVoice[index]);toggleAnimation()}} key={index} className={`flex w-full ${getVoice() === item?'text-gray-300':''} justify-between`}>
                             Voice {item}
                             <div className="flex p-1 rounded-[0.25rem] font-extrabold bg-gray-300 text-[0.5rem] justify-center items-center w-[1.5rem] text-white">

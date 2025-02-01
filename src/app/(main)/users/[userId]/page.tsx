@@ -16,7 +16,6 @@ const fetchData = async (userId: number) => {
     const lastViewedRequest = axios.get("/user/lastViewedSeries", {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-  
     const [profile, lastViewed] = await Promise.all([profileRequest, lastViewedRequest]);
   
     return {
@@ -27,7 +26,9 @@ const fetchData = async (userId: number) => {
   
   const Page = async ({ params }: { params: { userId: number } }) => {
     const { profile, lastViewed } = await fetchData(params.userId);
-  
+    const remasteredLastViewed = Array.from(new Map(lastViewed.userLastViewedSeries.map((item:any) => [item.SeriesName, item])).values());
+    console.log(`Remastered lastViewed: `,remasteredLastViewed);
+    
     profile.createdAt = formatDate(profile.createdAt);
     return(
         <div className='flex flex-col w-full min-h-screen bg-gray-200 pt-[3rem] items-center shadow-[0px_-2px_10px_black]'>
@@ -46,11 +47,11 @@ const fetchData = async (userId: number) => {
                         </div>
                         <span className='inline-flex px-[6px] bg-gray-100 w-fit text-[0.8rem] rounded-md mt-1'>{profile.createdAt}</span>
                     </div>
-                    {lastViewed.userLastViewedSeries.length !== 0 && (
+                    {remasteredLastViewed.length !== 0 && (
                         <div className='flex flex-col w-full h-full mt-[1rem] ml-[1rem] '>
                             <p className='text-[1.15rem] text-white font-semibold'>Last Viewed</p>
                             <div className='flex mt-2 ml-2 gap-x-2 w-full h-full'>
-                                {lastViewed.userLastViewedSeries.map((item:any,index:number)=>{
+                                {remasteredLastViewed.map((item:any,index:number)=>{
                                 const itemRate = lastViewed.rates?.find((seriesName:any) => seriesName.SeriesName === item.SeriesName);
                                 return(
                                     <a href={`http://localhost:3000/catalog/item/${item.SeriesName}`} key={index} className='flex relative flex-col w-[10rem] transition-transform hover:scale-105 duration-500 ease-in-out overflow-hidden'>
