@@ -16,12 +16,9 @@ import useEmblaCarousel from 'embla-carousel-react'
 const CarouselWrapper = ()=>{
   /* const currentIndex = useRef(0); */
   const [seriesInfo, setSeriesInfo] = useState<{
-    seriesName: string[];
-    seriesViewName: string[];
-  }>({
-    seriesName: [''],
-    seriesViewName: [''],
-  });
+    SeriesName: string;
+    SeriesViewName: string;
+  }[] | null>([]);
   const [isFocused,setIsFocused] = useState(false);
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true, // Бесконечный скролл
@@ -33,7 +30,7 @@ const CarouselWrapper = ()=>{
   useEffect(() => {
     const fetchData = async () => {
       const data = await getSeasonedCatalog();
-      setSeriesInfo(data);
+      setSeriesInfo(data.data);
     };
     fetchData();
   }, []);
@@ -95,7 +92,7 @@ const CarouselWrapper = ()=>{
         <div className='flex rounded-t-lg justify-center items-center max-w-[80.469rem] h-[2.25rem] bg-[#3C3C3C] text-rose-50'>
             SEASON'S ANIME
         </div>
-        {seriesInfo.seriesName.length <= 1? (
+        {seriesInfo && seriesInfo.length <= 1? (
            <div className='flex bg-gray-2E w-full items-center justify-center h-[16.25rem]'>
               <Loader className='w-[2rem] h-[2rem] transition-transform animate-rotate' color='white'/>
            </div>
@@ -111,13 +108,15 @@ const CarouselWrapper = ()=>{
            </div>
                <div className='w-full h-[16.25rem] overflow-hidden' ref={emblaRef}>
                  <div className='flex'>
-                   {seriesInfo?.seriesName.map((item:string,index:number)=>(
+                   {seriesInfo?.map((item:any,index:number)=>(
                      <div key={index} className='flex embla__slide carousel-cell h-[16.25rem] relative flex-none overflow-hidden bg-red-950 flex-col w-[11.5rem]'>
-                       <Link href={`catalog/item/${seriesInfo?.seriesName[index]}`} className='flex relative flex-none overflow-hidden bg-red-950 flex-col w-full h-full'>
-                         <img src={`http://localhost:3001/media/${seriesInfo?.seriesName[index]}/images`} alt="" className='flex w-[11.5rem] h-full'/>
+                       <Link href={`catalog/item/${item.SeriesName}`} className='flex relative flex-none overflow-hidden bg-red-950 flex-col w-full h-full'>
+                         <img src={`${process.env.NEXT_PUBLIC_API}/media/${item.SeriesName}/images`} alt="" onError={(e:any)=>{
+                          e.currentTarget.src = `${process.env.NEXT_PUBLIC_API}/media/poster/images`
+                         }} className='flex w-[11.5rem] h-full'/>
                          <div className='block absolute text-white left-0 h-[3.15rem] bottom-0 bg-[rgba(0,0,0,0.6)] text-center py-[5px] px-1 w-full overflow-hidden text-ellipsis'>
                            <span className="line-clamp-2">
-                               {seriesInfo?.seriesViewName[index]}
+                               {item.SeriesViewName}
                            </span>
                          </div>
                        </Link>

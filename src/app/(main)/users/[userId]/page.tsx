@@ -54,12 +54,12 @@ const fetchData = async (userId: number) => {
                                 {remasteredLastViewed.map((item:any,index:number)=>{
                                 const itemRate = lastViewed.rates?.find((seriesName:any) => seriesName.SeriesName === item.SeriesName);
                                 return(
-                                    <a href={`http://localhost:3000/catalog/item/${item.SeriesName}`} key={index} className='flex relative flex-col w-[10rem] transition-transform hover:scale-105 duration-500 ease-in-out overflow-hidden'>
-                                        <img src={`http://localhost:3001/media/${item?.SeriesName}/images`} className='w-full h-[15rem] rounded-md' alt="" />
+                                    <a href={`${process.env.NEXT_PUBLIC_FRONT_API}/catalog/item/${item.SeriesName}`} key={index} className='flex relative flex-col w-[10rem] transition-transform hover:scale-105 duration-500 ease-in-out overflow-hidden'>
+                                        <img src={`${process.env.NEXT_PUBLIC_API}/media/${item?.SeriesName}/images`} className='w-full h-[15rem] rounded-md' alt="" />
                                         <div className='flex text-ellipsis overflow-hidden text-center'>
                                             <p className='text-white font-medium line-clamp-2'>{item.SeriesViewName}</p>
                                             <span className='flex items-center justify-center absolute top-3 after:content-[""] after:absolute after:right-[-0.97rem] after:border-[#F5C543] after:border-t-[0.75rem] after:border-b-[0.75rem] after:border-r-[1rem] after:border-r-transparent text-[1rem] text-white font-medium bg-orange-yellow h-[1.5rem]'>
-                                                <img src="http://localhost:3001/media/star.white.svg/icons" className="w-[1rem] h-[1rem] ml-1" alt="" />
+                                                <img src={`${process.env.NEXT_PUBLIC_API}/media/star.white.svg/icons`} className="w-[1rem] h-[1rem] ml-1" alt="" />
                                                 <p className='pl-1 pr-2'>{(itemRate ? itemRate._avg.Value : 0).toFixed(2)}</p>
                                                 {/* <span className='h-full border-t-[0.75rem] border-[#F5C543] absolute right-[-0.98rem] border-r-[1rem] border-b-[0.75rem] border-r-transparent bg-orange-yellow'></span> */}
                                             </span>

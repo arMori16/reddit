@@ -1,26 +1,36 @@
-"use server"
+"use client"
 import "@/app/globals.css"
 import axios from "@/components/api/axios";
 import ClientRefreshToken from "@/components/api/clientRefreshToken";
 import Avatar from "@/components/navbar-components/avatar/avatar";
 import SearchBar from "@/components/navbar-components/search-bar/search-bar";
+import Cookies from "js-cookie";
 
-import { cookies, headers } from "next/headers";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 
-export default async function RootLayout({children}:{children: React.ReactNode}){
-  const pathName = headers().get("next-url") || "/";
-  const userFirstname =  await axios.get('/user/firstname',{
-    headers:{
-        'Authorization':`Bearer ${cookies().get('accessToken')?.value}`
+export default function RootLayout({children}:{children: React.ReactNode}){
+  const pathName = usePathname();
+  const [userData,setUserData] = useState<any>();
+  console.log(`PathName: `,pathName);
+  useEffect(()=>{
+    const fetchData = async()=>{
+      const userFirstname =  await axios.get('/user/firstname',{
+        headers:{
+            'Authorization':`Bearer ${Cookies.get('accessToken')}`
+        }
+      })
+      setUserData(userFirstname);
     }
-  })
+  },[])
   const items= [
     'Dashboard',
     'Users',
     'Series',
-    'Comments'
+    'Comments',
+    'Carousel'
   ]
   const isActive = (url:string) => url === pathName;
   return (
@@ -48,7 +58,7 @@ export default async function RootLayout({children}:{children: React.ReactNode})
                     <SearchBar isAdmin={true}/>
                 </div>
                 <div className="flex flex-col w-[6rem] items-center relative">
-                    <Avatar user={userFirstname?.data}/>
+                    <Avatar user={userData?.data}/>
                     <span className="flex text-[#D98C8C] font-semibold text-[1.25rem]">Admin</span>
                 </div>
               </div>

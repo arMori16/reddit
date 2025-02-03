@@ -53,21 +53,7 @@ export const getPageCount = async()=>{
 }
 
 export const getSeasonedCatalog = async()=>{
-    const getFirstPageCatalog = await axios.get('/catalog/getCatalog',{
-        params:{
-            take:21
-        }
-    });
-    
-    const seriesViewNames = getFirstPageCatalog.data.map((item:{SeriesViewName:string}) => item.SeriesViewName);
-    const seriesNames = getFirstPageCatalog.data.map((item:{SeriesName:string}) => item.SeriesName);
-    console.log('SERIES: ',{
-        seriesName:seriesNames,
-        seriesViewName:seriesViewNames,
-    });
-    return {
-        seriesName:seriesNames,
-        seriesViewName:seriesViewNames,
-    }
+    const getCarouselItems = await axios.get('/catalog/carousel/items');
+    return getCarouselItems;
 }
 export default getSeriesInfo;
