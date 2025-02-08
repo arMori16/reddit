@@ -1,14 +1,14 @@
-"use server"
+"use client"
 import { format } from "date-fns";
 import axios from "../api/axios"
-import { cookies, headers } from "next/headers";
 import { formatDate } from "@/utils/formattDate";
+import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
 
 export const createComment = async(seriesName:string,text:string,parentId?:number) =>{
     try{
-        const cookiesStore = cookies();
-        const accessToken = cookiesStore.get('accessToken')?.value
+        const accessToken = Cookies.get('accessToken');
         if(!accessToken) return console.error('Unathorized exception!');
         const commentPost = await axios.post('comments/create',{
             seriesName:seriesName,
@@ -33,6 +33,9 @@ export const getFirstComments = async(seriesName:string,page:number)=>{
             params:{
                 seriesName:seriesName,
                 skip:page*15
+            },
+            headers:{
+                'Authorization':`Bearer ${Cookies.get('accessToken')}`
             }
         });
         const formattedComments = firstComments.data.map((comment: any) => ({
@@ -50,5 +53,65 @@ export const getFirstComments = async(seriesName:string,page:number)=>{
     }catch(err){
         console.error(err);
         /* return { createdAtArray: [], usersArray: [],commentText: [],commentId: [],userName: []}; */
+    }
+}
+export const handleDeleteComment = async(commentId:number)=>{
+    try{
+        await axios.delete('/comments/admin',{
+            params:{
+                CommentId:commentId
+            },
+            headers:{
+                'Authorization':`Bearer ${Cookies.get('accessToken')}`
+            }
+        })
+    }catch(err){
+        console.error(err); 
+    }
+}
+export const handleReactToComment = (commentId:number,type:string,seriesName:string)=>{
+    try{
+        const atToken = Cookies.get('accessToken');
+        const react = axios.post('/comments/react',{
+            commentId:commentId,
+            type:type,
+            seriesName:seriesName
+        },{
+            headers:{
+                'Authorization':`Bearer ${atToken}`
+            }
+        })
+    }catch(err){
+        console.error(err); 
+    }
+}
+export const handleDeleteReact = async(commentId:number)=>{
+    try{
+        const deleteReact = await axios.delete('/comments/react',{
+            params:{
+                commentId:commentId
+            },
+            headers:{
+                'Authorization':`Bearer ${Cookies.get('accessToken')}`
+            }
+        });
+    }catch(err){
+        console.error(err);
+        
+    }
+}
+export const handleGetReacts = async(seriesName:string)=>{
+    try{
+        const reacts = await axios.get('/comments/reacts',{
+            params:{
+                seriesName:seriesName
+            },
+            headers:{
+                'Authorization':`Bearer ${Cookies.get('accessToken')}`
+            }
+        });
+        return reacts.data;
+    }catch(err){
+        console.error(err); 
     }
 }

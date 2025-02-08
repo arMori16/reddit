@@ -3,17 +3,26 @@ import "@/app/globals.css"
 import axios from "@/components/api/axios";
 import ClientRefreshToken from "@/components/api/clientRefreshToken";
 import Avatar from "@/components/navbar-components/avatar/avatar";
-import SearchBar from "@/components/navbar-components/search-bar/search-bar";
+import '@fortawesome/fontawesome-free/css/all.css';
 import Cookies from "js-cookie";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { ToastContainer } from "react-toastify";
 
 export default function RootLayout({children}:{children: React.ReactNode}){
   const pathName = usePathname();
   const [userData,setUserData] = useState<any>();
+  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+
+useEffect(() => {
+  if(typeof window === "undefined") return;
+  const handleResize = () => setWindowWidth(window.innerWidth);
+
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
   console.log(`PathName: `,pathName);
   useEffect(()=>{
     const fetchData = async()=>{
@@ -24,6 +33,7 @@ export default function RootLayout({children}:{children: React.ReactNode}){
       })
       setUserData(userFirstname);
     }
+    fetchData();
   },[])
   const items= [
     'Dashboard',
@@ -31,38 +41,56 @@ export default function RootLayout({children}:{children: React.ReactNode}){
     'Series',
     'Comments',
     'Carousel'
+  ];
+  const icons = [
+    {Dashboard:'Dashboard',icon:'folder'},
+    {Users:'Users',icon:'users'},
+    {Series:'Series',icon:'youtube'},
+    {Comments:'Comments',icon:'comment'},
+    {Carousel:'Carousel',icon:'images'}
   ]
   const isActive = (url:string) => url === pathName;
   return (
     <html lang="en">
-      <body className="min-w-full min-h-screen bg-[#242424]">
+      <body className="w-full min-h-screen bg-[#242424]">
       <ToastContainer position="bottom-right"/>
       <ClientRefreshToken/>
-        <div className="flex w-full min-h-screen bg-[#242424]">
-            <div className="flex flex-col break-words fixed flex-shrink-0 h-full bg-[#2C2C2C] font-medium text-[1.25rem] text-rose-50 p-5 bg-opacity-50 w-[18rem] max-w-[18rem]">
-                <div className="flex font-bold ml-5 mb-3 text-[1.50rem] ">
-                    Admin
-                </div>
+        <div className="flex w-full h-full bg-[#242424]">
+            {windowWidth <= 850 ? (
+              <div className="flex fixed w-full z-50 bottom-0 h-[3.5rem] bg-gray-2E text-white justify-evenly p-1">
                 {Array.from({length:items.length},(_,index)=>(
-                    <Link key={index} href={`${items[index] === 'Dashboard'? `${process.env.NEXT_PUBLIC_FRONT_API}/admin`:`${process.env.NEXT_PUBLIC_FRONT_API}/admin/${items[index].toLowerCase()}`}`} className={`flex mt-2 items-center ${isActive(items[index] === 'Dashboard' ? '/admin' : `/admin/${items[index].toLowerCase()}`) 
-                      ? 'bg-[#373737]' 
-                      : ''}
-                   rounded-xl pl-8 hover:bg-[#373737] duration-500 transition ease-in-out max-w-full w-full h-[4rem]`}>
-                      {items[index]}
-                    </Link>
-                ))}
-            </div>
-            <div className="flex flex-col h-full pt-7 flex-[1] ml-[18rem] max-w-full">
-              <div className="flex max-w-full mb-5 w-full h-[8rem]">
-                <div className="flex items-end w-[85%] justify-center ml-auto mr-auto flex-shrink">
-                    <SearchBar isAdmin={true}/>
-                </div>
-                <div className="flex flex-col w-[6rem] items-center relative">
-                    <Avatar user={userData?.data}/>
-                    <span className="flex text-[#D98C8C] font-semibold text-[1.25rem]">Admin</span>
-                </div>
+                      <Link key={index} href={`${items[index] === 'Dashboard'? `${process.env.NEXT_PUBLIC_FRONT_API}/admin`:`${process.env.NEXT_PUBLIC_FRONT_API}/admin/${items[index].toLowerCase()}`}`} className={`flex flex-col justify-center items-center ${isActive(items[index] === 'Dashboard' ? '/admin' : `/admin/${items[index].toLowerCase()}`) 
+                        ? 'bg-[#373737]' 
+                        : ''}
+                    rounded-xl hover:bg-[#373737] duration-500 p-2 transition ease-in-out w-full`}>
+                        <i className={`${icons[index].icon === 'youtube' ? 'fa-brands' : 'fa-solid'} fa-${icons[index].icon} text-[0.75rem]`}></i>
+                        <p className="custom-xs:text-[0.75rem]">{items[index]}</p>
+                      </Link>
+                  ))}
               </div>
-              <div className="flex min-h-auto p-5">{children}</div>
+            ):(
+              <div className="flex flex-col break-words sticky top-0 bottom-0 flex-shrink-0 min-h-screen h-full bg-[#2C2C2C] font-medium text-[1.25rem] text-rose-50 p-5 bg-opacity-50 custom-md-lg:w-[10rem] w-[18rem]">
+                  <div className="flex font-bold ml-5 mb-3 text-[1.50rem] custom-md-lg:text-[1rem]">
+                      Admin
+                  </div>
+                  {Array.from({length:items.length},(_,index)=>(
+                      <Link key={index} href={`${items[index] === 'Dashboard'? `${process.env.NEXT_PUBLIC_FRONT_API}/admin`:`${process.env.NEXT_PUBLIC_FRONT_API}/admin/${items[index].toLowerCase()}`}`} className={`flex mt-2 items-center ${isActive(items[index] === 'Dashboard' ? '/admin' : `/admin/${items[index].toLowerCase()}`) 
+                        ? 'bg-[#373737]' 
+                        : ''}
+                    rounded-xl pl-8 hover:bg-[#373737] duration-500 transition ease-in-out custom-md-lg:text-[0.8rem] max-w-full w-full h-[4rem]`}>
+                        {items[index]}
+                      </Link>
+                  ))}
+              </div>
+            )}
+            <div className="flex flex-col h-full w-full pt-7 relative">
+              <div className="flex flex-col w-full items-end pr-[2rem]">
+                <Avatar user={userData?.data}/>
+                <span className="flex text-[#D98C8C] font-semibold text-[1.25rem]">Admin</span>
+              </div>
+              <div className="p-5 pb-[4rem] h-full">
+                {children}
+              </div>
             </div>
         </div>
       </body>

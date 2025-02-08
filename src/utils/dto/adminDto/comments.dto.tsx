@@ -5,5 +5,6 @@ export interface CommentsDto{
     CommentText:string,
     SeriesName:string,
     createdAt:string,
-    UserName:string
+    UserName:string,
+    Owner?:boolean | null
 }

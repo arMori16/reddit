@@ -2,46 +2,56 @@
 import {debounce} from "lodash";
 import axios from "@/components/api/axios";
 import usePageCounter from "@/components/useZustand/zustandPageCounter";
-import { RefObject, useEffect, useRef, useState } from "react"
+import { Dispatch, RefObject, SetStateAction, useEffect, useRef, useState } from "react"
 import { CommentsDto } from "./dto/adminDto/comments.dto";
 import useCommentsCounter from "@/components/useZustand/zustandCommentsCounter";
 /* interface Series {
     SeriesViewName:string,
     SeriesName:string
 } */
-const InfiniteScroll = ({type,fetchedData,children,height,width,componentRef,isFlexCol,isWindow}:{type?:string,isWindow?:boolean,isFlexCol?:boolean,componentRef:RefObject<HTMLDivElement>,fetchedData:any[],children?:React.ReactNode,height:number | string,width:number | string,})=>{
-    const {page,getPage,setPage,setSearchPage,getSearchPage} = usePageCounter();
+const InfiniteScroll = ({type,fetchedData,children,height,width,componentRef,isFlexCol,isWindow}:{type:string,isWindow?:boolean,isFlexCol?:boolean,componentRef:RefObject<HTMLDivElement>,fetchedData:any[],children?:React.ReactNode,height:number | string,width:number | string,})=>{
+    const {page,getPage,setPage,setSearchPage,getSearchPage,getUsersPage,setUsersPage} = usePageCounter();
     const {commentPage,getCommentPage,setCommentPage} = useCommentsCounter();
     const [series,setSeries] = useState<any[]>([]);
     const [comment,setComment] = useState<any[]>([]);
+    const [users,setUsers] = useState<any[]>([]);
     const [search,setSearch] = useState<any[]>([]);
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
+
+    const typeMapping: Record<
+      string,
+      { setter: React.Dispatch<React.SetStateAction<any[]>>; key: string; pageSetter: (num: number) => void, getter: () => number }
+    > = {
+      series:   { setter: setSeries, key: "SeriesName", pageSetter: setPage, getter: getPage },
+      comments: { setter: setComment, key: "Id", pageSetter: setCommentPage, getter: getCommentPage  },
+      search:   { setter: setSearch, key: "SeriesName", pageSetter: setSearchPage, getter: getSearchPage },
+      users:    { setter:setUsers, key: "firstName",pageSetter:setUsersPage, getter: getUsersPage}
+    };
+
+    const updateList = (
+      setter: React.Dispatch<React.SetStateAction<any[]>>,
+      uniqueKey: string,
+      fetchedData: any[]
+    ) => {
+      setter((prev) => {
+        const combined = [...prev, ...fetchedData];
+        const uniqueItems = Array.from(
+          new Map(combined.map((item) => [item[uniqueKey], item])).values()
+        );
+        return uniqueItems;
+      });
+    };
 
     useEffect(()=>{
         console.log('FetchedData: ',fetchedData);
         
         if (fetchedData.length > 0 && fetchedData) {
-          if(type === 'series'){
-            setSeries((prevSeries) => 
-            {const newSeries = [...prevSeries, ...fetchedData];
-            // Remove duplicates by `SeriesName` (or other unique identifiers)
-            const uniqueSeries = Array.from(new Map(newSeries.map(item => [item.SeriesName, item])).values());
-            return uniqueSeries;});
-
-          }else if(type === 'comments'){
-            setComment((prev) => 
-              {const newSeries = [...prev, ...fetchedData];
-              // Remove duplicates by `SeriesName` (or other unique identifiers)
-              const uniqueSeries = Array.from(new Map(newSeries.map(item => [item.Id, item])).values());
-              return uniqueSeries;});
-          }else if(type === 'search'){
-            setSearch((prev) => 
-              {const newSearch = [...prev, ...fetchedData];
-              // Remove duplicates by `SeriesName` (or other unique identifiers)
-              const uniqueSeries = Array.from(new Map(newSearch.map(item => [item.SeriesName, item])).values());
-              return uniqueSeries;});
-          }
+            if (typeMapping[type]) {
+              updateList(typeMapping[type].setter, typeMapping[type].key, fetchedData);
+            } else {
+              console.warn("Unknown type:", type);
+            }
             setHasMore(fetchedData.length === 15);
             setLoading(false);
         }else{
@@ -62,13 +72,7 @@ const InfiniteScroll = ({type,fetchedData,children,height,width,componentRef,isF
       
             if (scrollTop + clientHeight >= scrollHeight * 0.75) {
               setLoading(true);
-              if(type === 'series'){
-                setPage(getPage() + 1);
-              }else if(type === 'comments'){
-                setCommentPage(getCommentPage() + 1)
-              }else if(type === 'search'){
-                setSearchPage(getSearchPage() + 1)
-              }
+              typeMapping[type].pageSetter(typeMapping[type].getter() + 1);
             }
           } else if (componentRef.current) {
             // Handle div scrolling
@@ -79,18 +83,7 @@ const InfiniteScroll = ({type,fetchedData,children,height,width,componentRef,isF
             if (scrollTop + clientHeight >= scrollHeight * 0.75) {
               setLoading(true);
               console.log('IM HERE');
-              
-              if(type === 'series'){
-
-                setPage(getPage() + 1);
-              }else if(type === 'comments'){
-                setCommentPage(getCommentPage() + 1)
-                console.log('WORK PAGE: ',getCommentPage());
-                
-              }else if(type === 'search'){
-                setSearchPage(getSearchPage() + 1)
-                
-              }
+              typeMapping[type].pageSetter(typeMapping[type].getter() + 1);
             }
           }
       },300);

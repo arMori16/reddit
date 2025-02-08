@@ -41,9 +41,9 @@ const AdminCarousel = ({carouselItemsData}:{carouselItemsData:{
         }
         const fetchedData = async()=>{
             try{
-                const req = await axios.get('/catalog/item/search',{
+                const req = await axios.get('/catalog/search',{
                     params:{
-                        seriesName:text,
+                        param:text,
                         skip:getSearchAdminPage()
                     }
                 });
@@ -119,7 +119,7 @@ const AdminCarousel = ({carouselItemsData}:{carouselItemsData:{
                 </div>
             </div>
             <div className="flex w-full mt-2" ref={componentRef}>
-                <InfiniteScroll height={`100%`} width={`100%`} componentRef={componentRef} fetchedData={result} isFlexCol={false} isWindow={true}>
+                <InfiniteScroll type="series" height={`100%`} width={`100%`} componentRef={componentRef} fetchedData={result} isFlexCol={false} isWindow={true}>
                     <div className="flex w-full flex-wrap gap-x-4">
                         {result.map((item:any,index:number)=>(
                             <button onClick={()=>addNewCarouselItem(item.SeriesName,item.SeriesViewName)} key={index} className={`flex relative flex-col w-[10rem] transition-transform hover:scale-105 duration-500 ease-in-out overflow-hidden`}>

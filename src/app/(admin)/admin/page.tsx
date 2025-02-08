@@ -1,8 +1,10 @@
 "use client"
+import SearchBar from "@/components/navbar-components/search-bar/search-bar";
 import useCommentsCounter from "@/components/useZustand/zustandCommentsCounter";
 import usePageCounter from "@/components/useZustand/zustandPageCounter";
 import { getAllCounts, getCommentsData, getSeries } from "@/utils/admin.logic";
 import { CommentsDto } from "@/utils/dto/adminDto/comments.dto";
+import ClientPoster from "@/utils/Images/ClientPoster";
 import InfiniteScroll from "@/utils/infiniteScroll";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -63,18 +65,21 @@ const AdminPage = ()=>{
     },[page])
     return(
         <div className="flex flex-col w-full min-h-full px-5">
+            <div className="flex items-end w-[85%] justify-center ml-auto mr-auto flex-shrink">
+                <SearchBar isAdmin={true} model="catalog"/>
+            </div>
             <div className="flex font-medium text-[1.5rem] h-[3rem] ml-4 text-rose-50">
                 Analytics
             </div>
             {/* {`3labels`} */}
-            <div className="flex max-w-fll w-full min-h-[30rem] h-[30rem]">
+            <div className="flex custom-xl2:flex-wrap custom-xl2:items-stretch custom-xl2:justify-center w-full min-h-[30rem] items-start gap-4">
                 {/* SeriesInfo */}
-                <div className="flex max-w-[50%] w-[50%] h-full">
+                <div className="flex w-[50%] custom-xl2:w-full h-full max-h-[30rem]">
                     <div ref={seriesRef} className="flex w-full max-w-full bg-[#352877] p-5 rounded-lg text-[1rem] text-rose-50 font-medium overflow-y-scroll">
                             <div className="flex flex-col max-w-[2.5rem] w-[2.5rem] h-full items-center">
                             {Array.from({length:seriesInfo.length},(_,index)=>(
                                     <div key={index} className="flex p-1 w-[2.5rem] min-h-[3.5rem] border-b-2 border-white">
-                                        <img src={`http://localhost:3001/media/${seriesInfo[index].SeriesName}/images`} className="rounded-sm" alt="" />
+                                        <ClientPoster src={`${process.env.NEXT_PUBLIC_API}/media/${seriesInfo[index].SeriesName}/images`} alt="poster" containerClass="w-full rounded-sm"/>
                                     </div>
                             ))}
                             </div>
@@ -90,9 +95,9 @@ const AdminPage = ()=>{
                     </div>
                 </div>
                 {/* SeriesInfo */}
-                <div className="flex flex-col max-w-[48%] w-[48%] h-full text-[1.25rem] text-rose-50 font-light ml-auto">
-                    <div className="flex w-full h-[9rem] items-center justify-end gap-5">
-                        <button className="flex flex-col max-w-[33.33%] w-[12rem] p-3 h-[5.4rem] bg-[#352877] rounded-lg">
+                <div className="flex flex-col w-[48%] max-h-[30rem] custom-xl2:w-full h-full text-[1.25rem] text-rose-50 font-light">
+                    <div className="flex w-full h-[9rem] items-center justify-between custom-xl2:justify-around mb-2">
+                        <button className="flex flex-col max-w-[32%] w-[12rem] p-3 h-[4.75rem] bg-[#352877] rounded-lg">
                             <div className="flex">
                                 Comments
                             </div>
@@ -100,7 +105,7 @@ const AdminPage = ()=>{
                                 {counts.comments}
                             </div>
                         </button>
-                        <button className="flex flex-col max-w-[33.33%] w-[10rem] p-3 h-[5.4rem] bg-[#352877] rounded-lg">
+                        <button className="flex flex-col max-w-[32%] w-[10rem] p-3 h-[4.75rem] bg-[#352877] rounded-lg">
                             <div className="flex">
                                 Series
                             </div>
@@ -108,7 +113,7 @@ const AdminPage = ()=>{
                                 {counts.series}
                             </div>
                         </button>
-                        <button className="flex flex-col  max-w-[33.33%] w-[11rem] p-3 h-[5.4rem] bg-[#352877] rounded-lg">
+                        <button className="flex flex-col  max-w-[32%] w-[11rem] p-3 h-[4.75rem] bg-[#352877] rounded-lg">
                             <div className="flex">
                                 Users
                             </div>
@@ -122,8 +127,8 @@ const AdminPage = ()=>{
                             {commentsFilteredData.map((item,index)=>(
                                 <div key={index} className="flex w-full h-[3rem] border-b-2 border-white text-white">
                                 <div className="flex min-w-[4rem] w-[8rem] h-full p-[6px]">
-                                    <div className="flex min-w-[2.75rem] w-[2.75rem] overflow-hidden h-full rounded-md custom-xs:min-w-[2.65rem] custom-xs:mt-[0.33rem] custom-xs:h-[2.65rem]">
-                                        <img src={`../../../../../../Sweety.jpg`} alt="" />
+                                    <div className="flex overflow-hidden rounded-md w-[2.25rem] h-[2.25rem] mr-2">
+                                        <img src={`/Sweety.jpg`} alt="" />
                                     </div>
                                     <div className="flex flex-col min-w-[3rem] h-full text-[12px] font-medium">
                                         <Link href={`http://localhost:3000/admin/comments/view/${encodeURIComponent(item.UserName)}/${encodeURIComponent(String(item.createdAt))}/${encodeURIComponent(item.CommentText)}/${item.SeriesName}`} className={`flex w-full overflow-x-scroll hover:text-[#b5536d]`}>
@@ -144,7 +149,7 @@ const AdminPage = ()=>{
                 </div>
             </div>
             {/* {`label1`} */}
-            <div className="flex flex-col w-full h-[20rem] mt-5 p-5  max-w-full  bg-[#352877] rounded-lg">
+            <div className="flex flex-col relative w-full h-[20rem] mt-5 p-5  max-w-full  bg-[#352877] rounded-lg">
                 <div className="flex max-w-full w-full h-[3rem] border-b-2 text-[1.25rem] text-rose-50 font-normal items-end">
                     <div className="flex">
                         User

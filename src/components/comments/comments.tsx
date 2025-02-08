@@ -1,10 +1,13 @@
 "use client"
 import { useEffect, useRef, useState } from "react";
-import { createComment, getFirstComments } from "./comments.logic";
+import { createComment, getFirstComments, handleDeleteComment, handleDeleteReact, handleGetReacts, handleReactToComment } from "./comments.logic";
 import Link from "next/link";
 import { CommentsDto } from "@/utils/dto/adminDto/comments.dto";
 import InfiniteScroll from "@/utils/infiniteScroll";
 import usePageCounter from "../useZustand/zustandPageCounter";
+import Cookies from "js-cookie";
+import { toast } from "react-toastify";
+import { LeafIcon } from "@/utils/Images/Leaf";
 
 
 
@@ -26,6 +29,7 @@ const Comments = ({seriesName}:{seriesName:string})=>{
     const [commentInfo,setCommentInfo] = useState<CommentsDto[]>([]);
     const [childComments,setChildComments] = useState<CommentsDto[]>([]);
     const [filteredData,setFilteredData] = useState<CommentsDto[]>([]);
+    const [reacts,setReacts] = useState<any[]>([]);
     const [updateComments, setUpdateComments] = useState<boolean>(false); // Store users array here
     const handleOnFocus = ()=>{
         setIsOnFocus(true); 
@@ -39,7 +43,9 @@ const Comments = ({seriesName}:{seriesName:string})=>{
     useEffect(() => {
         const fetchData = async () => {
             const data = await getFirstComments(seriesName,getPage());
-            console.log(`DATA: `,data);
+            const reactsData = await handleGetReacts(seriesName);
+            setReacts(reactsData); 
+            console.log(`Reacts data :: `,reactsData);
             setChildComments((prev)=>{
                 const newArray = [...prev,...data?.childComments];
                 const filteredArray = Array.from(new Map(newArray.map(item=>[item.Id,item])).values());
@@ -120,6 +126,43 @@ const Comments = ({seriesName}:{seriesName:string})=>{
         // Recursively find nested replies
         return directReplies.flatMap((reply) => [reply, ...getAllReplies(reply.Id, comments)]);
     };
+    const handleReact = (comment:any,type:string) => {
+        if (!Cookies.get('accessToken')) return;
+    
+        const userReact = reacts.find((item) => 
+            comment.Id === item.CommentId && item.Owner
+        );
+    
+        if (userReact) {
+            // If the user already reacted, remove the reaction
+            const userType = reacts.find((item) => 
+                comment.Id === item.CommentId && item.Type === type && item.Owner
+            );
+            if(userType){
+                setReacts((prev) => prev ? prev.filter((item) => item.CommentId !== comment.Id) : []);
+                handleDeleteReact(comment.Id);
+                toast.success('Deleted successfully');
+            }else{
+                setReacts((prev) => prev ? prev.filter((item) => item.CommentId !== comment.Id) : []);
+                handleDeleteReact(comment.Id);
+                handleReactToComment(comment.Id, `${type}`, seriesName);
+                setReacts((prev) => [
+                    ...(prev || []),
+                    { CommentId: comment.Id, Type: `${type}`, SeriesName: seriesName, Owner: true }
+                ]);
+                toast.info(`${type}d successfully`);
+            }
+        } else {
+            // Otherwise, add a new reaction
+            handleReactToComment(comment.Id, `${type}`, seriesName);
+            setReacts((prev) => [
+                ...(prev || []),
+                { CommentId: comment.Id, Type: `${type}`, SeriesName: seriesName, Owner: true }
+            ]);
+            toast.info(`${type}d successfully`);
+            
+        }
+    };
     return(
         <div ref={divRef} className="relative flex flex-col w-full p-4 bg-[#3C3C3C] mb-[100px]">
             <div className="h-auto flex flex-col relative w-full bg-[#3C3C3C]">
@@ -131,26 +174,40 @@ const Comments = ({seriesName}:{seriesName:string})=>{
                 </div>
                 
             </div>
-            <InfiniteScroll componentRef={divRef} fetchedData={commentInfo} height={`100%`} width={`100%`} isFlexCol={true}>
+            <InfiniteScroll type="comments" componentRef={divRef} fetchedData={commentInfo} height={`100%`} width={`100%`} isFlexCol={true}>
                 {filteredData.map((comment,index)=>(
                     <div key={index} className="block relative w-full max-w-full pt-4 mb-4 bg-[#3C3C3C] min-h-[7.5rem] border-t-[1px] border-gray-500">
                         <Link href={''} className="float-left min-w-[6.25rem] h-[6.25rem]  custom-xs:min-w-[2.65rem] custom-xs:mt-[0.33rem] custom-xs:h-[2.65rem] mr-3">
                             <img src="/Sweety.jpg" className="block rounded-lg w-full h-full" alt="" />
                         </Link>
-                        <div className="relative w-full block h-[3rem]">
-                                <div className="block relative comment-head w-full">
-                                    <div className="relative flex flex-col w-auto h-auto">
-                                        <span className="text-[#B3DCC5]"> 
-                                            {comment.UserName}
-                                        </span>
-                                        <span className="relative flex items-center justify-center bg-[#629377] text-rose-50 rounded-md  min-w-[5rem] w-[5.5rem] max-w-[6rem] h-5 text-[11px] px-1">
-                                            {comment.createdAt}
-                                        </span>
-                                    </div>
-                                    {/* <div className="relative block bg-[#629377] text-rose-50 rounded-md  w-[5rem] max-w-[6rem] h-5 text-[11px] px-1">
-                                        {comment.time}
-                                    </div> */}
+                        <div className="relative justify-between flex">
+                            <div className="flex flex-col">
+                                <span className="text-[#B3DCC5]"> 
+                                    {comment.UserName}
+                                </span>
+                                <span className="relative flex items-center justify-center bg-[#629377] text-rose-50 rounded-md  min-w-[5rem] w-[5.5rem] max-w-[6rem] h-5 text-[11px] px-1">
+                                    {comment.createdAt}
+                                </span>
+                            </div>
+                            <div className="flex min-w-[8rem] h-[1.75rem] justify-end">
+                                <div className="flex h-full mr-2 text-white">
+                                    <button onClick={()=>handleReact(comment,'Like')} className="flex h-full items-center justify-center text-green-400">
+                                        <i className={`${reacts.find((item)=>item.CommentId === comment.Id && item.Type === 'Like' && item.Owner) ? 'fa-solid':'fa-regular'} fa-thumbs-up mr-1`}></i>
+                                        {reacts.length >= 1 ? (reacts?.filter((item:any)=>comment.Id === item.CommentId && item.Type === 'Like')).length : 0}
+                                    </button>
+                                    <button onClick={()=>handleReact(comment,'Dislike')} className="flex h-full items-center justify-center text-red-button">
+                                        <i className={`${reacts.find((item)=>item.CommentId === comment.Id && item.Type === 'Dislike' && item.Owner) ? 'fa-solid':'fa-regular'} fa-thumbs-down ml-2 mr-1`}></i>
+                                        {reacts.length >= 1 ? (reacts?.filter((item:any)=>comment.Id === item.CommentId && item.Type === 'Dislike')).length : 0}
+                                    </button>
                                 </div>
+                                {comment.Owner && (
+                                    <button onClick={()=>{handleDeleteComment(comment.Id);
+                                        setFilteredData((prev)=>(prev.filter((item)=> item.Id !== comment.Id)))
+                                    }} className="flex bg-red-button w-[1.75rem] h-full rounded-md justify-center items-center">
+                                        <i className="fa-regular fa-trash-can text-white text-[0.8rem]"></i>
+                                    </button>
+                                )}
+                            </div>
                         </div>
                         <div className="block relative w-full custom-xs:ml-0">
                             <div className="relative block text-rose-50 mt-2 max-w-[88%] h-auto text-[14px] break-words overflow-hidden mr-0">
@@ -184,21 +241,38 @@ const Comments = ({seriesName}:{seriesName:string})=>{
                                                 <Link href={''} className="float-left min-w-[6.25rem] h-[6.25rem]  custom-xs:min-w-[2.65rem] custom-xs:mt-[0.33rem] custom-xs:h-[2.65rem] mr-3">
                                                     <img src="/Sweety.jpg" className="block rounded-lg w-full h-full" alt="" />
                                                 </Link>
-                                                <div className="relative w-full block h-[3rem]">
-                                                    <div className="block relative comment-head w-full">
-                                                        <div className="relative flex flex-col w-auto h-auto">
-                                                            <span className="text-[#B3DCC5]"> 
-                                                                {child.UserName}
-                                                            </span>
-                                                            <span className="relative flex items-center justify-center bg-[#629377] text-rose-50 rounded-md min-w-[5rem] w-[5.5rem] max-w-[6rem] h-5 text-[11px] px-1">
-                                                                {child.createdAt}
-                                                            </span>
+                                                <div className="relative justify-between flex">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[#B3DCC5]"> 
+                                                            {child.UserName}
+                                                        </span>
+                                                        <span className="relative flex items-center justify-center bg-[#629377] text-rose-50 rounded-md  min-w-[5rem] w-[5.5rem] max-w-[6rem] h-5 text-[11px] px-1">
+                                                            {child.createdAt}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex min-w-[8rem] h-[1.75rem] justify-end">
+                                                        <div className="flex h-full mr-2 text-white">
+                                                            <button onClick={()=>handleReact(child,'Like')} className="flex h-full items-center justify-center text-green-400 ">
+                                                            <i className={`${reacts.find((item)=>item.CommentId === child.Id && item.Type === 'Like' && item.Owner) ? 'fa-solid':'fa-regular'} fa-thumbs-up mr-1`}></i>
+                                                                { reacts.length >= 1 ? reacts?.filter((item:any)=>child.Id === item.CommentId && item.Type === 'Like').length : 0}
+                                                            </button>
+                                                            <button onClick={()=>handleReact(child,'Dislike')} className="flex h-full items-center justify-center text-red-button">
+                                                                <i className={`${reacts.find((item)=>item.CommentId === child.Id && item.Type === 'Dislike' && item.Owner) ? 'fa-solid':'fa-regular'} fa-thumbs-down ml-2 mr-1`}></i>
+                                                                {reacts.length >= 1 ? reacts?.filter((item:any)=>child.Id === item.CommentId && item.Type === 'Dislike').length : 0}
+                                                            </button>
                                                         </div>
+                                                        {child.Owner && (
+                                                            <button onClick={()=>{handleDeleteComment(child.Id);
+                                                                setChildComments((prev)=>(prev.filter((item)=> item.Id !== child.Id)))
+                                                            }} className="flex bg-red-button w-[1.75rem] h-full rounded-md justify-center items-center">
+                                                                <i className="fa-regular fa-trash-can text-white text-[0.8rem]"></i>
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 </div>
                                                 <div className="block w-full custom-xs:ml-0">
                                                     <div className="relative block text-rose-50 mt-2 max-w-[88%] h-auto text-[14px] break-words overflow-hidden mr-0">
-                                                        <span className="bg-gray-2E rounded-md mr-1 p-1">@{comment.UserName}</span>{child.CommentText}
+                                                        <span className="bg-gray-2E rounded-md mr-1 p-1">@{(child.ParentId === comment.Id) ? comment.UserName : (childComments.find((item)=>child.ParentId === item.Id)?.UserName)}</span>{child.CommentText}
                                                     </div>
                                                 </div>
                                                 {show && child.Id === commentIndex && (

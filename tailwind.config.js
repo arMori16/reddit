@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-const colors = require('./tailwind/tailwind.color')
+const gray = require('./tailwind/tailwind.color')
 module.exports = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -10,7 +10,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        ...colors
+        ...gray
       },
       boxShadow:{
         'image':'0px -1px 8px rgba(143, 143, 143, 0.3)',
@@ -77,6 +77,7 @@ module.exports = {
         'custom-s':{max:'26rem'},
         'custom-s-200':{max:'29.4rem'},
         'custom-md': { max: '40.5rem' }, // 648px breakpoint
+        'custom-md-2': { max: '47.5rem' },
         'custom-xs': { max: '36.25rem' },
         'custom-md-lg': { max: '53.125rem' },
         'custom-lg': { max: '59.125rem' },

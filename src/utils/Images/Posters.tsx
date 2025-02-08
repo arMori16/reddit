@@ -1,6 +1,5 @@
 'use server'
 import axios from '@/components/api/axios';
-import Image from 'next/image';
 
 
 export default async function Poster({ src, alt ,conteainerClass }:{src:string,alt:string,conteainerClass:string}) {
@@ -15,13 +14,10 @@ export default async function Poster({ src, alt ,conteainerClass }:{src:string,a
         imgSrc = '/images/Poster.png'; // Make sure this fallback image is in your public folder.
     }
     return (
-        <div className={conteainerClass}>
-            <Image
-                src={imgSrc}
-                alt={alt}
-                layout="fill"
-                objectFit="cover"
-            />
-        </div>
+        <img
+            src={imgSrc}
+            alt={alt}
+            className={conteainerClass}
+        />
     );
 }

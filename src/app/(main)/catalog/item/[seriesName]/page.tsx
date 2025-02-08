@@ -8,6 +8,7 @@ import UserList from '@/components/catalog/item/userList';
 import Comments from '@/components/comments/comments';
 import MediaPlayerSection from '@/components/player/MediaPlayerSection/MediaPlayerSection';
 import { cookies } from 'next/headers';
+import Poster from '@/utils/Images/Posters';
 
 const ItemPage = async({params}:{params:{seriesName:string}})=>{
     const atToken = cookies().get('accessToken')?.value;
@@ -28,8 +29,8 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
         <div className="flex flex-col items-center justify-center w-full h-full bg-[#242424]">
             <div className='w-[68rem] max-w-full flex flex-col items-center  h-full shadow-[0px_0px_12px_black]'>
                 <div className='flex relative p-5 w-[68rem] max-w-[96%] mt-[3rem] h-auto bg-gray-300 text-rose-50 rounded-lg flex-wrap'>
-                    <div className='flex flex-col shadow-image rounded-br-md rounded-bl-md relative mr-5 custom-image:mr-0 w-[15.62rem] max-h-[24rem] custom-image:h-auto'>
-                        <img className='flex max-h-[21.87rem] w-full rounded-t-lg' src={`http://localhost:3001/media/${params.seriesName}/images`} alt={seriesData.data.SeriesName}/>
+                    <div className='flex flex-col shadow-image rounded-br-md rounded-t-lg rounded-bl-md relative mr-5 custom-image:mr-0 w-[15.62rem] max-h-[24rem] custom-image:h-auto'>
+                        <Poster conteainerClass='flex max-h-[21.87rem] w-full rounded-t-lg' src={`${process.env.NEXT_PUBLIC_API}/media/${params.seriesName}/images`} alt={seriesData.data.SeriesName}/>
                         <UserList seriesName={params.seriesName} seriesViewName={seriesData.data.SeriesViewName} userList={seriesData.userListItem}/>
                     </div>
                     <div className='flex flex-col'>

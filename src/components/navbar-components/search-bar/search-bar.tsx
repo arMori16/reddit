@@ -9,7 +9,7 @@ import { debounce } from 'lodash';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-const SearchBar = ({isAdmin}:{isAdmin?:boolean})=>{
+const SearchBar = ({isAdmin,model}:{isAdmin?:boolean,model?:string})=>{
     const [isFocus,setIsFocus] = useState(false);
     const [text,setText] = useState('');
     const {getSearchPage,searchPage} = usePageCounter();
@@ -39,13 +39,24 @@ const SearchBar = ({isAdmin}:{isAdmin?:boolean})=>{
         const fetchedData = async()=>{
             try{
                 setLoading(true);
-                const req = await axios.get('/catalog/item/search',{
-                    params:{
-                        seriesName:text,
-                        skip:getSearchPage()
-                    }
-                });
-                setResult(req.data);
+                if(isAdmin && model){
+                    const req = await axios.get(`/${model}/search`,{
+                        params:{
+                            param:text,
+                            skip:getSearchPage()
+                        }
+                    });
+                    setResult(req.data);
+                }else{
+                    const req = await axios.get(`/catalog/search`,{
+                        params:{
+                            param:text,
+                            skip:getSearchPage()
+                        }
+                    });
+                    setResult(req.data);
+
+                }
             }catch(err){
                 console.error(`Error!${err}`);
             }
@@ -55,7 +66,10 @@ const SearchBar = ({isAdmin}:{isAdmin?:boolean})=>{
         console.log('SERIES: ',result);
         console.log('SHOW: ',getIsShow());
         
-        return () => debouncedFunc.cancel();
+        return () => {
+            debouncedFunc.cancel()
+            
+        };
     },[text]);
     return(
             <div className={`flex items-center ${result.length !== 0 && getIsShow()?'rounded-t-lg':'rounded-lg'} justify-center text-white min-w-[10rem] w-full max-w-[35rem] bg-gray-400`}>
@@ -70,15 +84,19 @@ const SearchBar = ({isAdmin}:{isAdmin?:boolean})=>{
                     </div>
                     {result && getIsShow() && (
                         <div className='flex absolute top-[1.75rem] left-0 w-full max-h-[15rem] rounded-b-lg overflow-hidden overflow-y-scroll flex-col bg-gray-400' ref={componentRef}>
-                            <InfiniteScroll fetchedData={result} componentRef={componentRef} width={`100%`} height={`100%`} isFlexCol={true}>
+                            <InfiniteScroll type='search' fetchedData={result} componentRef={componentRef} width={`100%`} height={`100%`} isFlexCol={true}>
                                 {result.map((item,index)=>(
-                                    <Link onClick={()=>updateIsShow(false)} href={isAdmin ? `${process.env.NEXT_PUBLIC_FRONT_API}/admin/series/view/${item.SeriesName}` :`${process.env.NEXT_PUBLIC_FRONT_API}/catalog/item/${item.SeriesName}`} key={index} className='flex cursor-pointer w-full h-[3rem] font-medium bg-gray-400 items-center border-b-[1px] border-gray-700'>
+                                    <Link onClick={()=>updateIsShow(false)} href={isAdmin  && model === 'catalog'? `${process.env.NEXT_PUBLIC_FRONT_API}/admin/series/view/${item.SeriesName}` :
+                                        model === 'catalog'?`${process.env.NEXT_PUBLIC_FRONT_API}/catalog/item/${item.SeriesName}`:
+                                        model === 'user' && isAdmin ? `${process.env.NEXT_PUBLIC_FRONT_API}/admin/users/view`: ``} key={index} className='flex cursor-pointer w-full h-[3rem] font-medium bg-gray-400 items-center border-b-[1px] border-gray-700'>
                                         <div className='flex w-full h-full ml-1 hover:shadow-[-5px_0_0] duration-700 transition-shadow ease-in-out hover:shadow-green-400'>
-                                            <div className='flex w-[1.8rem] h-full py-1 mr-1'>
-                                                <img src={`http://localhost:3001/media/${result[index].SeriesName}/images`} className='flex w-full h-full' alt="" />
+                                            <div className='flex w-auto h-full py-1 mr-1'>
+                                                {<img src={model === 'catalog' ? `${process.env.NEXT_PUBLIC_API}/media/${result[index].SeriesName}/images` : 
+                                                model === 'user' ? `/Sweety.jpg`:``} 
+                                                className={`flex ${model === 'user'?'w-[2.25rem]':'w-[1.8rem]'} rounded-sm h-full`} alt="" />}
                                             </div>
                                             <div className='flex items-center'>
-                                                {result[index].SeriesViewName}
+                                                {model === 'catalog' ? result[index].SeriesViewName: model === 'user' && item.firstName}
                                             </div>
 
                                         </div>

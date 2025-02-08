@@ -28,6 +28,10 @@
     border-radius: 0.25rem;
     outline-style: solid;
   }
+  .Toastify__toast-icon:has(img) {
+    width: 2rem !important;
+}
+  
 }
 
 @layer utilities {

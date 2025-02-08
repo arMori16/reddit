@@ -77,9 +77,9 @@ const Series = ()=>{
                     </div>
                 </div>
             </div>
-            <div className="flex max-w-full w-full h-[3.50rem] justify-end items-center mt-5">
-                <Link href={'series/add-new-series'} className="flex h-full w-[3.50rem] overflow-hidden rounded-[50%] mr-5 bg-white">
-                    <img src={`http://localhost:3001/media/plus/icons`} className="flex h-full w-full" alt="" />
+            <div className="flex max-w-full w-full h-[3.50rem] justify-end items-center mt-5 mb-[4rem]">
+                <Link href={'series/add-new-series'} className="flex h-full w-[3.50rem] items-center justify-center rounded-[50%] bg-gray-300 overflow-hidden mr-5">
+                    <i className="fa-solid fa-plus text-[2rem] text-white"></i>
                 </Link>
             </div>
         </div>

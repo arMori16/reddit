@@ -32,7 +32,7 @@ const fetchData = async (userId: number) => {
     profile.createdAt = formatDate(profile.createdAt);
     return(
         <div className='flex flex-col w-full min-h-screen bg-gray-200 pt-[3rem] items-center shadow-[0px_-2px_10px_black]'>
-            <div className='flex w-[90%] h-[2rem] shadow-[0px_5px_8px_black] rounded-t-lg bg-[url("http://localhost:3001/media/profile-bg/images")] relative bg-repeat-x bg-auto overflow-hidden'>
+            <div className={`flex w-[90%] h-[2rem] shadow-[0px_5px_8px_black] rounded-t-lg bg-[url("http://localhost:3001/media/profile-bg/images")] relative bg-repeat-x bg-auto overflow-hidden`}>
                 <span className='absolute top-0 left-[1rem] text-white font-semibold text-[1.25rem]'>Profile</span>
             </div>
             <div className='flex h-[28rem] w-[87%] rounded-b-md bg-gray-2E p-5'>

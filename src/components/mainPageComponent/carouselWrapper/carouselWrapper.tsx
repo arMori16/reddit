@@ -1,12 +1,12 @@
 'use client'
 
-import getSeriesInfo, { getSeasonedCatalog } from '@/utils/getSeriesInfo';
-import { debounce } from 'lodash';
+import { getSeasonedCatalog } from '@/utils/getSeriesInfo';
 import "@/components/mainPageComponent/carouselWrapper/carousel.css"
 import { ChevronLeft, ChevronRight, Loader } from 'lucide-react';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react'
+import ClientPoster from '@/utils/Images/ClientPoster';
 
 
 
@@ -38,14 +38,8 @@ const CarouselWrapper = ()=>{
   const scrollPrev = useCallback(() => {
     if (emblaApi) {
       const currentIndex = emblaApi.selectedScrollSnap(); // Текущий индекс
-      console.log(`Current index: `,currentIndex);
-      
-      const viewportWidth = emblaApi.rootNode().getBoundingClientRect().width; // Ширина видимой области
-      console.log(`viewportWidth: `,viewportWidth);
-  
+      const viewportWidth = emblaApi.rootNode().getBoundingClientRect().width;
       const slidesToScroll = (viewportWidth / 184) % 1 >= 0.94 ? Math.ceil(viewportWidth / 184):Math.floor(viewportWidth / 184)
-      console.log('Slide to scroll: ',slidesToScroll);
-      
       const newIndex = currentIndex - slidesToScroll; // Новый индекс (не меньше 0)
   
       emblaApi.scrollTo(newIndex); // Скроллим к новому индексу
@@ -54,14 +48,10 @@ const CarouselWrapper = ()=>{
   
   const scrollNext = useCallback(() => {
     if (emblaApi) {
-      const currentIndex = emblaApi.selectedScrollSnap(); // Текущий индекс
-      console.log(`Current index: `,currentIndex);
-      
+      const currentIndex = emblaApi.selectedScrollSnap();
       const viewportWidth = emblaApi.rootNode().getBoundingClientRect().width; // Ширина видимой области
-      console.log(`viewportWidth: `,viewportWidth);
       const emblaSlide = document.querySelectorAll(`.embla__slide`);
-      const slidesToScroll = (viewportWidth / 184) % 1 >= 0.94 ? Math.ceil(viewportWidth / 184):Math.floor(viewportWidth / 184) // Сколько слайдов видно
-      console.log('Slide to scroll: ',slidesToScroll);
+      const slidesToScroll = (viewportWidth / 184) % 1 >= 0.94 ? Math.ceil(viewportWidth / 184):Math.floor(viewportWidth / 184) 
       
       const newIndex = currentIndex + slidesToScroll;
       emblaApi.scrollTo(newIndex); // Скроллим к новому индексу
@@ -111,9 +101,7 @@ const CarouselWrapper = ()=>{
                    {seriesInfo?.map((item:any,index:number)=>(
                      <div key={index} className='flex embla__slide carousel-cell h-[16.25rem] relative flex-none overflow-hidden bg-red-950 flex-col w-[11.5rem]'>
                        <Link href={`catalog/item/${item.SeriesName}`} className='flex relative flex-none overflow-hidden bg-red-950 flex-col w-full h-full'>
-                         <img src={`${process.env.NEXT_PUBLIC_API}/media/${item.SeriesName}/images`} alt="" onError={(e:any)=>{
-                          e.currentTarget.src = `${process.env.NEXT_PUBLIC_API}/media/poster/images`
-                         }} className='flex w-[11.5rem] h-full'/>
+                         <ClientPoster src={`${process.env.NEXT_PUBLIC_API}/media/${item.SeriesName}/images`} alt='poster' containerClass='w-[11.5rem] object-cover h-full' />
                          <div className='block absolute text-white left-0 h-[3.15rem] bottom-0 bg-[rgba(0,0,0,0.6)] text-center py-[5px] px-1 w-full overflow-hidden text-ellipsis'>
                            <span className="line-clamp-2">
                                {item.SeriesViewName}

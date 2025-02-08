@@ -20,7 +20,7 @@ const Navbar = async({user,userFirstName}:{user:any,userFirstName?:string | null
                 <div className='flex ml-5 relative h-full items-center'>
                     <div className='flex relative justify-items-center items-center h-full'>
                         <div className='flex relative w-[2.50rem] h-[2.50rem]'>
-                            <Link href="/"> <img src={`http://localhost:3001/media/leafsvg.svg/icons`}/> </Link>
+                            <Link href="/"> <img src={`/icons/leafsvg.svg`}/> </Link>
                         </div>
                         <div className='flex relative items-center text-[1.75rem] font-inknut ml-3 font-bold'>
                             <Link href='/' className='text-rose-50'>AniMori</Link>
@@ -28,7 +28,7 @@ const Navbar = async({user,userFirstName}:{user:any,userFirstName?:string | null
                     </div>
                 </div>
                 <div className='flex w-[80%] relative ml-auto items-center justify-center custom-md-lg:hidden'>
-                    <SearchBar/>
+                    <SearchBar isAdmin={false} model='catalog'/>
                 </div>
                 <div className='flex h-full mr-[2rem] gap-x-4 custom-s-200:hidden'>
                     <div className='flex h-full mx-2 gap-x-4 items-center text-[1rem] font-medium text-white uppercase'>

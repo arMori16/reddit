@@ -26,10 +26,9 @@ export const backHandleLogin = async (action:string,data:any,setServerError:(err
     console.log('BackHandleLogin vizvan');
     try{
         console.log('xui');
-        
         const res = await axios.post('/',{
             ...data,
-            action:action
+            action:action,
 
         },)
         console.log('xui');
