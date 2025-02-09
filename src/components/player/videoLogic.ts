@@ -65,8 +65,6 @@ export function initializeVideoControls(videoSelector:string, playerContainerSel
         if(isScrubbing){
             video.pause();
         }else{
-            console.log(`HAHAHHASAISAHSOAI`);
-            
             video.currentTime = percent * video.duration
             if(!socketRef.current){
                 if(!video.paused){

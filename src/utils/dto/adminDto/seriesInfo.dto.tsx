@@ -10,4 +10,6 @@ export interface SeriesInfo{
     Studio:string[],
     AmountOfEpisode:number,
     VoiceActing:string[],
+    CurrentEpisode?:number,
+    NextEpisodeTime?:string
 }

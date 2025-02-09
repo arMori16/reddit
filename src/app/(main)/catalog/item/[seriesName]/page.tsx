@@ -9,6 +9,9 @@ import Comments from '@/components/comments/comments';
 import MediaPlayerSection from '@/components/player/MediaPlayerSection/MediaPlayerSection';
 import { cookies } from 'next/headers';
 import Poster from '@/utils/Images/Posters';
+import { differenceInMilliseconds, intervalToDuration } from 'date-fns';
+import { formatToStandard } from '@/utils/formattDate';
+import CountDown from '@/components/catalog/item/CountDown';
 
 const ItemPage = async({params}:{params:{seriesName:string}})=>{
     const atToken = cookies().get('accessToken')?.value;
@@ -24,7 +27,6 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
         )
     }
     const shikimoriRating = await defaultAxios.get(`https://shikimori.one/api/animes?search=${params.seriesName}`) || null;
-    
     return(
         <div className="flex flex-col items-center justify-center w-full h-full bg-[#242424]">
             <div className='w-[68rem] max-w-full flex flex-col items-center  h-full shadow-[0px_0px_12px_black]'>
@@ -74,7 +76,15 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                             </li>
                             <li>
                                 <div className='w-[6rem]'>Episodes:</div> 
-                                <div className='ml-5'>{seriesData.data.AmountOfEpisode}</div>
+                                <div className='flex ml-5'>
+                                    {seriesData.data.Status === 'ongoing' && (
+                                        <p>{seriesData.data.CurrentEpisode} of</p>
+                                    )}
+                                    <p className='ml-1'>{seriesData.data.AmountOfEpisode}</p>
+                                    {seriesData.data.Status === 'ongoing' && (
+                                        <CountDown remainingTime={formatToStandard(seriesData.data.NextEpisodeTime)}/>
+                                    )}
+                                </div>
                             </li>
                             <li>
                                 <div className='w-[6rem]'>Voice:</div>

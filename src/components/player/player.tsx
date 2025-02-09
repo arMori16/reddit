@@ -33,8 +33,8 @@ const Player = ({ seriesViewName,seriesName,episode }: { seriesName: string,seri
         setIsControlsVisible((prev) => !prev); // Переключаем видимость контролов
     };
     
+    initializeVideoControls('video','.player-container',socketRef,setIsPlaying);
     useEffect(()=>{
-        initializeVideoControls('video','.player-container',socketRef,setIsPlaying);
         volumeLogic();
         tokenManager.setupTokenRefresh();
         if (performance.navigation.type === 1 && Cookies.get("socket")) {

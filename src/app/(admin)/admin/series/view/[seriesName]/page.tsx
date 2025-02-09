@@ -6,8 +6,10 @@ import voiceStorage from "@/components/useZustand/player/zustandVoice";
 import menuStorage from "@/components/useZustand/zustandMenu";
 import { getDataView, handleDeleteEpisode, updateSeries } from "@/utils/admin.logic";
 import { SeriesInfo } from "@/utils/dto/adminDto/seriesInfo.dto";
+import { formatToStandard } from "@/utils/formattDate";
 import YesNoButton from "@/utils/handleYesNoButton";
 import useOutsideCommon from "@/utils/hooks/useOutsideCommon";
+import ClientPoster from "@/utils/Images/ClientPoster";
 import Cookies from "js-cookie";
 import { useEffect, useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -49,6 +51,8 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
             Studio: data?.Studio,
             AmountOfEpisode: data?.AmountOfEpisode,
             VoiceActing: data?.VoiceActing,
+            CurrentEpisode:data?.CurrentEpisode,
+            NextEpisodeTime:data?.NextEpisodeTime
         }
     })
 
@@ -100,7 +104,11 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
     
     const handleDataSubmit = (data:SeriesInfo)=>{
         console.log(`DATA submit: `,data);
-        updateSeries(data,params.seriesName);
+        if(data.NextEpisodeTime){
+            updateSeries({...data,NextEpisodeTime:data.NextEpisodeTime,CurrentEpisode:Number(data.CurrentEpisode)},params.seriesName);
+        }else{
+            updateSeries(data,params.seriesName);
+        }
     }
     const handleClear = ()=>{
         reset();
@@ -178,7 +186,7 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                 <div className='flex flex-col relative bg-[#3C3C3C] p-5 w-[68rem] max-w-[96%] max-h-full text-rose-50 rounded-lg flex-wrap'>
                     <div className="flex w-full min-h-[22rem]">
                         <div className='flex relative mr-5 custom-image:mr-0 w-[15.62rem] max-h-[21.87rem] custom-image:h-auto'>
-                            <img className='flex max-h-full w-full rounded-lg' src={`http://localhost:3001/media/${params.seriesName}/images`} alt={data.SeriesName}/>
+                            <ClientPoster containerClass='flex max-h-full w-full rounded-lg object-cover' src={`${process.env.NEXT_PUBLIC_API}/media/${params.seriesName}/images`} alt={data.SeriesName}/>
                         </div>
                         <div className='flex flex-col min-h-[22rem]'>
                             <textarea className='text-3xl custom-xs:mt-0 flex bg-transparent min-h-[2.5rem] min-w-[2rem]' defaultValue={data.SeriesViewName} {...register('SeriesViewName')}></textarea>
@@ -277,7 +285,21 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                                 </li>
                                 <li className="flex">
                                     <div className='w-[6rem]'>Episodes:</div> 
-                                    <textarea className='bg-transparent min-w-[2rem] ml-5' defaultValue={data.AmountOfEpisode} {...register('AmountOfEpisode')}></textarea>
+                                    {getValues('Status') === 'ongoing' && (
+                                        <textarea className="ml-5 min-w-[1.25rem] bg-transparent" id="" {...register('CurrentEpisode')} defaultValue={data.CurrentEpisode}></textarea>
+                                    )}
+                                    {getValues('Status') === 'ongoing' && 'of'}<textarea className={`bg-transparent min-w-[2rem] ${getValues('Status') === 'ongoing' ? 'ml-2':'ml-5'}`} defaultValue={data.AmountOfEpisode} {...register('AmountOfEpisode')}></textarea>
+                                    {getValues('Status') === 'ongoing' && (
+                                        <div className="flex min-w-[6rem] ml-5 items-center">NextEpisodeTime 
+                                            <span className="ml-1 flex items-center justify-center w-[1rem] p-[2px] group relative rounded-[50%] bg-gray-2E">
+                                                <i className="fa fa-question text-[0.75rem]"></i> 
+                                                <span className="absolute right-[-4.2rem] after:content-['']  after:absolute after:top-full after:border-t-[0.4rem] after:border-r-[0.5rem] after:border-t-black after:border-l-[0.5rem] after:left-[42%] after:border-x-transparent after:right-[44%] whitespace-nowrap pointer-events-none rounded-md py-1 px-2 bottom-[100%] mb-2 opacity-0 bg-black group-hover:opacity-100 transition-all delay-150 duration-500 z-10 translate-y-[6px] group-hover:translate-y-0  ease-out">
+                                                    (e.g 08Feb 17:00)
+                                                </span>
+                                            </span>:
+                                            <textarea className="bg-transparent min-w-[2rem] ml-2" {...register('NextEpisodeTime')} defaultValue={data.NextEpisodeTime}></textarea>
+                                        </div>
+                                    )}
                                 </li>
                                 <li className="flex">
                                     <div className='w-[6rem]'>Voice:</div>
@@ -386,7 +408,7 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                         <span>{uploadProgress}%  - You need to wait until the message shows!</span>
                     </div>
                 )}
-                <div className="flex h-[2.5rem] mt-3 max-w-full justify-end">
+                <div className="flex h-[1.85rem] mt-3 max-w-full justify-end">
                     <button onClick={()=>{updateIsShow(true);setTypeOfDelete(true)}} className="flex h-full max-w-[8rem] w-full rounded-md text-[0.8rem] bg-red-button mr-4 font-medium text-rose-50 items-center justify-center">
                         delete voice
                     </button>

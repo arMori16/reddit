@@ -121,6 +121,8 @@ export const getDataView = async(seriesName:string):Promise<SeriesInfo>=>{
             Studio:getData.data.Studio,
             AmountOfEpisode:getData.data.AmountOfEpisode,
             VoiceActing:getData.data.VoiceActing,
+            CurrentEpisode:getData.data.CurrentEpisode,
+            NextEpisodeTime:getData.data.NextEpisodeTime
         }
     }catch(err){
         console.error('Cannot getData for the admin view page');
@@ -136,6 +138,8 @@ export const getDataView = async(seriesName:string):Promise<SeriesInfo>=>{
             Studio:[''],
             AmountOfEpisode:0,
             VoiceActing:[''],
+            NextEpisodeTime:'',
+            CurrentEpisode:0
         }
     }
 }
@@ -154,7 +158,7 @@ export const updateSeries = async(data:SeriesInfo,seriesName:string)=>{
             toast.success('Sumitted successfully!')
         }
     }catch(err){
-        console.error(`Error when trying to update the series!\n ${err}`);
+        console.error(`Error when trying to update the series!\n`,err);
         toast.error('Cannot update the series information!');
     }
 
