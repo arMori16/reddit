@@ -1,11 +1,10 @@
-'use client'
 import { RefObject, useEffect, useState } from "react";
 import axios from "../api/axios"
 import menuStorage from "../useZustand/zustandMenu";
 
 
 
-export const getVoices = async(seriesName:string)=>{
+export const getVoicesInfo = async(seriesName:string)=>{
     try{
         const req = await axios.get('/catalog/item/voices',{
             params:{
@@ -13,7 +12,7 @@ export const getVoices = async(seriesName:string)=>{
             }
         })
         console.log(`This is reg data: `,req.data);
-        return {voices:req.data.voices,episodes:req.data.amountOfEpisodes}
+        return req.data;
     }catch(err){
         console.error(`Error!${err}`);
         

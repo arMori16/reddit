@@ -1,7 +1,7 @@
 'use client'
 
 import axios from "@/components/api/axios";
-import { getVoices } from "@/components/player/player.logic";
+import { getVoicesInfo } from "@/components/player/player.logic";
 import voiceStorage from "@/components/useZustand/player/zustandVoice";
 import menuStorage from "@/components/useZustand/zustandMenu";
 import { getDataView, handleDeleteEpisode, updateSeries } from "@/utils/admin.logic";
@@ -32,12 +32,12 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
     const [episode,setEpisode] = useState<any>(1);
     const [uploadedEpisodes,setUploadedEpisodes] = useState<[]>([]);
     const [file, setFile] = useState<File | null>(null);
-
+    
     const handleFileChange = (e:any) => {
         const selectedFile = e.target.files[0] || null;
         setFile(selectedFile);
     }; 
-
+    
     const {register,handleSubmit,reset,watch,getValues} = useForm<SeriesInfo>({
         defaultValues:{
             AlternitiveNames: data?.AlternitiveNames,
@@ -55,6 +55,7 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
             NextEpisodeTime:data?.NextEpisodeTime
         }
     })
+    const status = watch("Status");
 
     useEffect(() => {
         if (submitState) {
@@ -95,7 +96,7 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                     setUploadProgress(progress); // Update progress
                 },
             })
-            toast.success('Video uploaded successfully!');
+            toast.success('Video uploaded successfully!',{autoClose:false});
         }catch(err){
             console.error(`Couldn't upload!Error: ${err}`);
             toast.error(`Couldn't upload the video!`)
@@ -105,7 +106,17 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
     const handleDataSubmit = (data:SeriesInfo)=>{
         console.log(`DATA submit: `,data);
         if(data.NextEpisodeTime){
-            updateSeries({...data,NextEpisodeTime:data.NextEpisodeTime,CurrentEpisode:Number(data.CurrentEpisode)},params.seriesName);
+            try{
+                console.log(`DATA FORMATTED: `,formatToStandard(data.NextEpisodeTime));
+                
+                updateSeries({...data,NextEpisodeTime:data.NextEpisodeTime,CurrentEpisode:Number(data.CurrentEpisode)},params.seriesName);
+            }catch(err){
+                if(err instanceof RangeError){
+                    toast.info('Remember to write the month using only its first three letters.',{autoClose:10000})
+                    return toast.error('Invalid date format! Please enter a valid time.(ddMMM HH:mm)',{autoClose:false});
+                }
+                return toast.error(`${err}`)
+            }
         }else{
             updateSeries(data,params.seriesName);
         }
@@ -131,11 +142,21 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
     };
     useEffect(()=>{
         const fetchData = async()=>{
-            const data = await getVoices(params.seriesName);
-            setVoices(data?.voices);
-            setVoice(data?.voices[0]);
+            const data = await getVoicesInfo(params.seriesName);
+            console.log(`THIS IS DATA: `,data);
+            
+            setVoices(data);
+            if (data.length > 0) {
+                const foundVoice = data.find((item:any) => item.episodes > 0);
+                console.log('FOund voice: ',data[0].episodes);
+                
+                setVoice(foundVoice ? foundVoice.voice : data[0].voice);
+                setEpisodes(foundVoice ? foundVoice.episodes : data[0].episodes);
+            } else {
+                setVoice(null);
+                setEpisodes(null);
+            }
             setUploadedEpisodes(data?.episodes);
-            setEpisodes(data?.episodes[0]);
         }
         fetchData();
     },[]);
@@ -168,10 +189,8 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
       };
     useEffect(()=>{
         const fetchData = async()=>{
-
             const data = await getDataView(params.seriesName);
             setData(data);
-            
         }
         fetchData()
     },[params.seriesName])
@@ -180,6 +199,7 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
             <div className="text-3xl flex text-rose-50 w-full h-full justify-center">Loading...</div>
         )
     }
+    
     return(
         <div className="flex flex-col max-w-full w-full min-h-full">
             <form onSubmit={handleSubmit(handleDataSubmit)} className="flex max-w-full w-full max-h-full">
@@ -251,7 +271,7 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                                         ))}
                                         <button type="button" onClick={()=>{/* setGenreItems((prev)=>prev + 1); */
                                             const currentValues = getValues();
-                                            const updatedGenre:string[] = [...currentValues.Genre,""];
+                                            const updatedGenre:string[] = currentValues.Genre ? [...currentValues.Genre,""] : [""];
                                             setData((prev) => (prev?{...data,Genre:updatedGenre}:undefined));
                                             reset({...currentValues,Genre:updatedGenre});
                                         }} className="flex h-[1.75rem] text-white rounded-md px border-gray-500 border-2  px-[6px] items-center justify-center">
@@ -275,7 +295,7 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                                         ))}
                                          <button type="button" onClick={()=>{/* setGenreItems((prev)=>prev + 1); */
                                             const currentValues = getValues();
-                                            const updatedStudio:string[] = [...currentValues.Studio,""];
+                                            const updatedStudio:string[] = currentValues.Studio ? [...currentValues.Studio,""] : [""];
                                             setData((prev) => (prev?{...data,Studio:updatedStudio}:undefined));
                                             reset({...currentValues,Studio:updatedStudio});
                                         }} className="flex h-[1.75rem] text-white rounded-md px border-gray-500 border-2  px-[6px] items-center justify-center">
@@ -285,11 +305,11 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                                 </li>
                                 <li className="flex">
                                     <div className='w-[6rem]'>Episodes:</div> 
-                                    {getValues('Status') === 'ongoing' && (
+                                    {status === 'ongoing' && (
                                         <textarea className="ml-5 min-w-[1.25rem] bg-transparent" id="" {...register('CurrentEpisode')} defaultValue={data.CurrentEpisode}></textarea>
                                     )}
-                                    {getValues('Status') === 'ongoing' && 'of'}<textarea className={`bg-transparent min-w-[2rem] ${getValues('Status') === 'ongoing' ? 'ml-2':'ml-5'}`} defaultValue={data.AmountOfEpisode} {...register('AmountOfEpisode')}></textarea>
-                                    {getValues('Status') === 'ongoing' && (
+                                    {status === 'ongoing' && 'of'}<textarea className={`bg-transparent min-w-[2rem] ${status === 'ongoing' ? 'ml-2':'ml-5'}`} defaultValue={data.AmountOfEpisode} {...register('AmountOfEpisode')}></textarea>
+                                    {status === 'ongoing' && (
                                         <div className="flex min-w-[6rem] ml-5 items-center">NextEpisodeTime 
                                             <span className="ml-1 flex items-center justify-center w-[1rem] p-[2px] group relative rounded-[50%] bg-gray-2E">
                                                 <i className="fa fa-question text-[0.75rem]"></i> 
@@ -322,7 +342,7 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                                         ))} */}
                                         <button type="button" onClick={()=>{
                                             const currentValues = getValues();
-                                            const updatedVoice = [...currentValues.VoiceActing,""];
+                                            const updatedVoice = currentValues.VoiceActing ? [...currentValues.VoiceActing,""] : [""];
                                             setData((prev)=>(prev?{...prev,VoiceActing:updatedVoice}:undefined));
                                             reset({...currentValues,VoiceActing:updatedVoice});
                                         }} className="flex h-[1.75rem] text-white rounded-md px border-gray-500 border-2  px-[6px] items-center justify-center">
@@ -362,9 +382,9 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                         
                         <div className="hidden max-w-[15rem] w-[15rem] left-[-1px] mr-0 box-border max-h-[12rem] absolute p-0 m-0 top-full px-2 bg-gray-100 border-gray-600 border-t-0 rounded-b-lg border-[1px] z-10 overflow-y-scroll" ref={divRef}>
                             <div className="flex flex-col w-full gap-y-2">
-                                {voices.map((item,index)=>(
-                                    <button key={index} onClick={()=>{toggleAnimation();setVoice(item);setEpisodes(uploadedEpisodes[index])}} className={`flex w-full ${getVoice() === item?'text-gray-300':''}`}>
-                                        Voice {item}
+                                {voices.length > 0 && voices.map((item,index)=>(
+                                    <button key={index} onClick={()=>{toggleAnimation();setVoice(item.voice);setEpisodes(uploadedEpisodes[index])}} className={`flex w-full ${getVoice() === item.voice?'text-gray-300':''}`}>
+                                        Voice {item.voice}
                                     </button>
                                 ))}
                             </div>       
@@ -390,7 +410,7 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                     </div>
                 </div>
                 <div className="flex max-w-full h-full bg-gray-100 border-gray-600 border-[1px] rounded-[0.25rem]">
-                    <label htmlFor="file-upload"  className="inline-flex flex-grow max-w-full h-full items-center justify-center">
+                    <label htmlFor="file-upload"  className="flex flex-grow max-w-full h-[9rem] items-center justify-center">
                         {file && (
                             <div>
                                 <p className="text-[1rem] font-medium text-rose-50">{file.name}</p>

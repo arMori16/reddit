@@ -50,12 +50,28 @@ export default function AuthWindow(){
             element.value = '';
         }
         return () => {
-            // Очистка сообщения об ошибке при размонтировании компонента или изменении view
-            console.log('setServerError is cleared!');
-            
             setServerError('');
         };
     }, [view]);
+    useEffect(()=>{
+        const handleKeyPress = (e:KeyboardEvent)=>{
+            const activeElement = document.activeElement;
+
+            // Check if the user is inside a textarea
+            if ((activeElement && activeElement.tagName === 'TEXTAREA' && e.key === 'Enter') || (activeElement && e.key === 'Enter')) {
+                e.preventDefault(); // Prevent new line in the textarea
+
+                // Find the submit button and trigger a click
+                const button = document.querySelector('.submit-button') as HTMLButtonElement;
+                if (button) button.click();
+            }
+        }
+        document.removeEventListener('keydown',handleKeyPress);
+        document.addEventListener('keydown',handleKeyPress);
+        return () => {
+            document.removeEventListener('keydown',handleKeyPress);
+        };
+    },[])
     /* Clear setServerError either closing tab or switching view */
 
     /* <Validation> */
@@ -138,8 +154,7 @@ export default function AuthWindow(){
         
     } */
     return(
-    
-            <div className='flex px-[5rem] h-full text-white flex-col w-full'>
+            <div className='flex px-[5rem] custom-xs:px-[2rem] h-full text-white flex-col w-full'>
                 <p className='text-green-400 text-[1.75rem] font-semibold'>{view === 'login'?'Log In' : view === 'signup'?'Sign Up':emailView === true?'Email verification':'Create your username and password'}</p>
                 {view === 'signup-2' ? (
                     <p className='text-white text-[0.9rem] break-words'>AniMori is anonymous, so your username is what you'll go by here. Choose wisely—because once you get a name, you can't change it.</p>
@@ -155,8 +170,8 @@ export default function AuthWindow(){
                 <form onSubmit={handleSubmit((data)=>{
                     view === 'login' || view === 'signup-2'?handleSignup(data):view === 'signup'?(trigger('email'),handleEmailCode()):''
                     })} className={`flex flex-col h-full w-full ${view === 'login'?'mt-[9rem]':'mt-5'}`}>
-                    <div className='flex flex-col w-full p-2 h-[3.5rem] bg-gray-300 rounded-md'>
-                        <textarea className='w-full selector h-full bg-transparent outline-none flex py-2 overflow-x-scroll overflow-y-hidden whitespace-nowrap scrollbar-hide' placeholder={`${view === 'login' ||view === 'signup'?'Enter your email':view === 'signup-2'?'Enter your username':'Enter your code'}`}
+                    <div className='flex flex-col w-full p-2 h-[3.5rem] custom-xs:h-[2.75rem] bg-gray-300 rounded-md'>
+                        <textarea className='w-full selector h-full bg-transparent outline-none custom-xs:pt-1 custom-xs:text-[0.85rem] flex py-2 overflow-x-scroll overflow-y-hidden whitespace-nowrap scrollbar-hide' placeholder={`${view === 'login' ||view === 'signup'?'Enter your email':view === 'signup-2'?'Enter your username':'Enter your code'}`}
                         {...(emailView ===false?register(view === 'login' || view === 'signup'?'email':view === 'signup-2'?'firstName':'email'):{})}
                         onChange={(e:any)=>{emailView && setIsEmailCode(e.target.value)}}
                         ></textarea>
@@ -164,7 +179,7 @@ export default function AuthWindow(){
                     {(serverError || errors.email || errors.firstName) && <div className='flex text-[14px] text-[#E93055] relative ml-2 my-1'>{errors.email?.message || serverError}</div>}
                     {(view === 'login' || view === 'signup-2') && (
                         <div className='flex flex-col'>
-                            <div className={`flex w-full ${serverError || errors.email?'':'mt-4'} p-2 h-[3.5rem] bg-gray-300 rounded-md`}>
+                            <div className={`flex w-full ${serverError || errors.email?'':'mt-4'} p-2 custom-xs:p-1 custom-xs:text-[0.85rem] custom-xs:h-[2.75rem] h-[3.5rem] bg-gray-300 rounded-md`}>
                                 <textarea className='w-full h-full bg-transparent outline-none flex py-2 overflow-x-scroll overflow-y-hidden whitespace-nowrap scrollbar-hide' placeholder={`${'Enter your password'}`} {...register('password')}></textarea>
                             </div>
                             {(serverError || errors.password) && <div className='flex text-[14px] text-[#E93055] relative ml-2 mt-1'>{errors.password?.message || serverError}</div>}
@@ -172,10 +187,10 @@ export default function AuthWindow(){
                         
                     )}
                     {view==='login' && (
-                        <button type="button" onClick={handleNewToAniMori} className='flex text-green-400 mt-3 w-[8rem]'>New to <span className='ml-1 font-inknut font-semibold'>AniMori?</span></button>
+                        <button type="button" onClick={handleNewToAniMori} className='flex text-green-400 mt-3 w-[8rem] custom-xs:text-[0.85rem]'>New to <span className='ml-1 font-inknut font-semibold'>AniMori?</span></button>
                     )}
-                    <div className='flex mt-[2.75rem] w-full h-[2.5rem] justify-center'>
-                        <button type={`${emailView?"button":"submit"}`} onClick={()=>emailView && (handleUserEmailCode())} className='flex bg-green-400 items-center justify-center w-[90%] h-full rounded-md'>
+                    <div className='flex mt-[2.75rem] w-full h-[2.5rem] custom-xs:h-[2rem] custom-xs:mt-[2.25rem] custom-xs:text-[0.85rem] justify-center'>
+                        <button type={`${emailView?"button":"submit"}`} onClick={()=>emailView && (handleUserEmailCode())} className='flex bg-green-400 submit-button items-center justify-center w-[90%] h-full rounded-md'>
                             {view === 'login' || view === 'signup'?'Continue':view === 'signup-2' || 'email'?'Submit':''}
                         </button>
                     </div>

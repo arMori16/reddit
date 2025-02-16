@@ -3,10 +3,11 @@ import axios from '@/components/api/axios';
 import CarouselWrapper from '@/components/mainPageComponent/carouselWrapper/carouselWrapper';
 import TabsComponent from '@/components/mainPageComponent/tabs-content/tabs';
 import { xui2 } from '@/components/mainPageComponent/test';
+import SearchBar from '@/components/navbar-components/search-bar/search-bar';
 import usePageCounter from '@/components/useZustand/zustandPageCounter';
 import { SeriesInfo } from '@/utils/dto/adminDto/seriesInfo.dto';
 import { SSeriesDto } from '@/utils/dto/main/SSeriesDto';
-import getSeriesInfo, { getPageCount } from '@/utils/getSeriesInfo';
+import getSeriesInfo, { getPageCount, getSeasonedCatalog } from '@/utils/getSeriesInfo';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -14,15 +15,18 @@ export default async function Home({searchParams}:{searchParams:{page:number}}) 
   
   const seriesInfo = await getSeriesInfo(searchParams.page - 1);
   const counts = await getPageCount() || 1;
-  
+  const data = await getSeasonedCatalog();
   if(searchParams.page > counts){
     notFound()
   }
   return (
       <div className='max-w-full relative min-h-[100vh] h-auto bg-[#242424] shadow-[0px_-2px_10px_black]'>
         <div className='flex relative flex-col items-center mx-2'>
+          <div className={`custom-md-lg:flex mt-[3rem] hidden w-full relative ml-auto items-center justify-center`}>
+              <SearchBar isAdmin={false} model='catalog'/>
+          </div>
           <div className='block w-full flex-grow max-w-[1300px]'>
-            <CarouselWrapper/>
+            <CarouselWrapper seasonedAnime={data.data}/>
           </div>
           <div className='flex relative justify-center h-[15rem] max-w-[60rem]'>
 

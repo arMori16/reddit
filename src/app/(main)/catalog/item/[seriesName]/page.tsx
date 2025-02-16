@@ -10,7 +10,7 @@ import MediaPlayerSection from '@/components/player/MediaPlayerSection/MediaPlay
 import { cookies } from 'next/headers';
 import Poster from '@/utils/Images/Posters';
 import { differenceInMilliseconds, intervalToDuration } from 'date-fns';
-import { formatToStandard } from '@/utils/formattDate';
+import { formatDate, formatToStandard } from '@/utils/formattDate';
 import CountDown from '@/components/catalog/item/CountDown';
 
 const ItemPage = async({params}:{params:{seriesName:string}})=>{
@@ -27,6 +27,9 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
         )
     }
     const shikimoriRating = await defaultAxios.get(`https://shikimori.one/api/animes?search=${params.seriesName}`) || null;
+    const initializeRemainingTime = seriesData.data.NextEpisodeTime && new Date(formatToStandard(seriesData.data.NextEpisodeTime)).getTime() - new Date().getTime();
+    const timeLeft = seriesData.data.NextEpisodeTime ? initializeRemainingTime > 0 ? intervalToDuration({ start: 0, end: initializeRemainingTime}) : null : null;
+    let initializeTimeLeft = timeLeft;
     return(
         <div className="flex flex-col items-center justify-center w-full h-full bg-[#242424]">
             <div className='w-[68rem] max-w-full flex flex-col items-center  h-full shadow-[0px_0px_12px_black]'>
@@ -80,12 +83,20 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                                     {seriesData.data.Status === 'ongoing' && (
                                         <p>{seriesData.data.CurrentEpisode} of</p>
                                     )}
-                                    <p className='ml-1'>{seriesData.data.AmountOfEpisode}</p>
-                                    {seriesData.data.Status === 'ongoing' && (
-                                        <CountDown remainingTime={formatToStandard(seriesData.data.NextEpisodeTime)}/>
-                                    )}
+                                    <p className='ml-1 mr-2'>{seriesData.data.AmountOfEpisode}</p>
                                 </div>
                             </li>
+                            {seriesData.data.Status === 'ongoing' && seriesData.data.NextEpisodeTime !== null && (
+                                <li>
+                                    <div className='w-[7rem]'>Next episode:</div>
+                                    <div className='flex'>
+                                        <p className='mr-2'>{seriesData.data.NextEpisodeTime}</p>
+                                        <span> | </span>
+                                        <p className='text-white mx-2'>Time Left:</p>
+                                        <CountDown remainingTime={formatToStandard(seriesData.data.NextEpisodeTime)} initializeTimeLeft={initializeTimeLeft}/>
+                                    </div>
+                                </li>
+                            )}
                             <li>
                                 <div className='w-[6rem]'>Voice:</div>
                                 {seriesData.data.VoiceActing && (

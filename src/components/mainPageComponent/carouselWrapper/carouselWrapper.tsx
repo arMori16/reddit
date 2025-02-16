@@ -11,14 +11,15 @@ import ClientPoster from '@/utils/Images/ClientPoster';
 
 
 /* import { useEffect, useState } from 'react'; */
-
-
-const CarouselWrapper = ()=>{
+const CarouselWrapper = ({seasonedAnime}:{ seasonedAnime: { 
+  SeriesName: string; 
+  SeriesViewName: string; 
+}[] | null })=>{
   /* const currentIndex = useRef(0); */
   const [seriesInfo, setSeriesInfo] = useState<{
     SeriesName: string;
     SeriesViewName: string;
-  }[] | null>([]);
+  }[] | null>(seasonedAnime);
   const [isFocused,setIsFocused] = useState(false);
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true, // Бесконечный скролл
@@ -27,13 +28,13 @@ const CarouselWrapper = ()=>{
     duration: 45,
   });
 
-  useEffect(() => {
+  /* useEffect(() => {
     const fetchData = async () => {
       const data = await getSeasonedCatalog();
       setSeriesInfo(data.data);
     };
     fetchData();
-  }, []);
+  }, []); */
   // Прокрутка назад
   const scrollPrev = useCallback(() => {
     if (emblaApi) {
@@ -78,7 +79,7 @@ const CarouselWrapper = ()=>{
 
   
   return(
-      <div className='block h-full w-full relative mt-[3rem] max-w-[80.469rem] embla'>
+      <div className='block h-full w-full relative mt-[3rem] custom-md-lg:mt-5 max-w-[80.469rem] embla'>
         <div className='flex rounded-t-lg justify-center items-center max-w-[80.469rem] h-[2.25rem] bg-[#3C3C3C] text-rose-50'>
             SEASON'S ANIME
         </div>

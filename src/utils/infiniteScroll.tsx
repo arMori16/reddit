@@ -12,46 +12,23 @@ import useCommentsCounter from "@/components/useZustand/zustandCommentsCounter";
 const InfiniteScroll = ({type,fetchedData,children,height,width,componentRef,isFlexCol,isWindow}:{type:string,isWindow?:boolean,isFlexCol?:boolean,componentRef:RefObject<HTMLDivElement>,fetchedData:any[],children?:React.ReactNode,height:number | string,width:number | string,})=>{
     const {page,getPage,setPage,setSearchPage,getSearchPage,getUsersPage,setUsersPage} = usePageCounter();
     const {commentPage,getCommentPage,setCommentPage} = useCommentsCounter();
-    const [series,setSeries] = useState<any[]>([]);
-    const [comment,setComment] = useState<any[]>([]);
-    const [users,setUsers] = useState<any[]>([]);
-    const [search,setSearch] = useState<any[]>([]);
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
 
     const typeMapping: Record<
       string,
-      { setter: React.Dispatch<React.SetStateAction<any[]>>; key: string; pageSetter: (num: number) => void, getter: () => number }
+      { key: string; pageSetter: (num: number) => void, getter: () => number }
     > = {
-      series:   { setter: setSeries, key: "SeriesName", pageSetter: setPage, getter: getPage },
-      comments: { setter: setComment, key: "Id", pageSetter: setCommentPage, getter: getCommentPage  },
-      search:   { setter: setSearch, key: "SeriesName", pageSetter: setSearchPage, getter: getSearchPage },
-      users:    { setter:setUsers, key: "firstName",pageSetter:setUsersPage, getter: getUsersPage}
-    };
-
-    const updateList = (
-      setter: React.Dispatch<React.SetStateAction<any[]>>,
-      uniqueKey: string,
-      fetchedData: any[]
-    ) => {
-      setter((prev) => {
-        const combined = [...prev, ...fetchedData];
-        const uniqueItems = Array.from(
-          new Map(combined.map((item) => [item[uniqueKey], item])).values()
-        );
-        return uniqueItems;
-      });
+      series:   { key: "SeriesName", pageSetter: setPage, getter: getPage },
+      comments: { key: "Id", pageSetter: setCommentPage, getter: getCommentPage  },
+      search:   { key: "SeriesName", pageSetter: setSearchPage, getter: getSearchPage },
+      users:    { key: "firstName",pageSetter:setUsersPage, getter: getUsersPage}
     };
 
     useEffect(()=>{
         console.log('FetchedData: ',fetchedData);
         
         if (fetchedData.length > 0 && fetchedData) {
-            if (typeMapping[type]) {
-              updateList(typeMapping[type].setter, typeMapping[type].key, fetchedData);
-            } else {
-              console.warn("Unknown type:", type);
-            }
             setHasMore(fetchedData.length === 15);
             setLoading(false);
         }else{

@@ -14,7 +14,7 @@ import Cookies from "js-cookie";
 import { tokenManager } from "../api/setup-token";
 
 
-const Player = ({ seriesViewName,seriesName,episode }: { seriesName: string,seriesViewName: string,episode: number })=>{
+const Player = ({ seriesViewName,seriesName }: { seriesName: string,seriesViewName: string })=>{
     const [isControlsVisible, setIsControlsVisible] = useState(false); // Состояние видимости контролов
     const {playRef,isLoading,setIsLoading,togglePlayPause,changeQuality,toggleFullScreen,setIsPlaying,quality,isPlaying,isShowPlay,setIsShowPlay,toggleShowPlay,skipTime} = usePlayer(seriesName,seriesViewName);
     const {numOfEpisode,getNumOfEpisode,updateNumOfEpisode} = numOfEpisodeStorage();
@@ -28,14 +28,15 @@ const Player = ({ seriesViewName,seriesName,episode }: { seriesName: string,seri
     const [multiplayer,setMultiplayer] = useState(false);
     const socketRef = useRef<Socket | null>(null);
     const atToken = Cookies.get('accessToken');
-    const {getVoice,getEpisodes,setVoice} = voiceStorage();
+    const {getVoice,getEpisodes,setVoice,episodes} = voiceStorage();
     const toggleControlsVisibility = () => {
         setIsControlsVisible((prev) => !prev); // Переключаем видимость контролов
     };
-    
-    initializeVideoControls('video','.player-container',socketRef,setIsPlaying);
-    useEffect(()=>{
+    if(episodes !== 0 && episodes !== null && episodes !== undefined){
+        initializeVideoControls('video','.player-container',socketRef,setIsPlaying);
         volumeLogic();
+    }
+    useEffect(()=>{
         tokenManager.setupTokenRefresh();
         if (performance.navigation.type === 1 && Cookies.get("socket")) {
             setIsShowYesNo(true);
@@ -160,7 +161,9 @@ const Player = ({ seriesViewName,seriesName,episode }: { seriesName: string,seri
                 toggleShowPlay(true);
                 toggleControlsVisibility();
             } else {
-                togglePlayPause();
+                console.log(`OOOH YEAH!`);
+                
+                togglePlayPause(true);
             }
         };
     
@@ -308,7 +311,8 @@ const Player = ({ seriesViewName,seriesName,episode }: { seriesName: string,seri
             socketRef.current.emit("playVideo",{playInfo:playInfo,roomInfo:roomData.room,time:currentTime})
         }
     }
-
+    console.log(`PLAYER INFO:: `,episodes);
+    
     return (
     <>
         {isShowYesNo && (
@@ -344,7 +348,7 @@ const Player = ({ seriesViewName,seriesName,episode }: { seriesName: string,seri
             </div>
         </div>
         )}
-        {getEpisodes() !== 0 ? (
+        {episodes !== 0 && episodes !== null && episodes !== undefined ? (
             <div className={`overflow-hidden flex flex-col z-10 mt-5 player-container max-h-[34rem] relative w-[100%] max-w-[62.5rem]`}data-volume-level={'high'}>
                 {isShowPlay && (
                     <div className="w-[100%] inset-0 absolute bg-black rounded-md z-10 flex items-center justify-center">
@@ -428,9 +432,8 @@ const Player = ({ seriesViewName,seriesName,episode }: { seriesName: string,seri
                         <Loader className="loading" color="white" width={50} height={50}/>
                     </div>
                 )}
-                <div className="flex max-w-full flex-grow overflow-hidden items-center justify-center">
-                    <video ref={playRef} controls={false} className='block flex-grow w-full object-cover video relative max-h-[34rem] rounded-lg' src={`${process.env.NEXT_PUBLIC_API}/catalog/${seriesName}/${encodeURIComponent(getVoice())}/${getNumOfEpisode()}/1080p`}></video>
-
+                <div className="flex max-w-full rounded-t-xl flex-grow overflow-hidden items-center justify-center">
+                    <video ref={playRef} controls={false} className='block flex-grow w-full object-contain video relative max-h-[34rem] rounded-lg' src={`${process.env.NEXT_PUBLIC_API}/catalog/${seriesName}/${encodeURIComponent(getVoice())}/${getNumOfEpisode()}/1080p`}></video>
                 </div>
                     <div className={`flex backdrop-blur-xl ${isShowPlay ? 'hidden' : 'visible'} controls ${isControlsVisible ? 'flex visible' : 'hidden'} absolute z-0 custom-xs:p-[6px] bottom-0 inset-x-0 flex-grow max-w-full items-center p-3 justify-between`}>
                         <div className="flex items-center">

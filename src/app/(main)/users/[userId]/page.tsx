@@ -9,23 +9,23 @@ import React from 'react';
 const fetchData = async (userId: number) => {
     const accessToken = cookies().get("accessToken")?.value;
   
-    const profileRequest = axios.get("/user/profile/info", {
-      headers: { Authorization: `Bearer ${accessToken}` },
+    const profileRequest = await axios.get("/user/profile/info", {
+        params:{
+            userId:userId
+        },
+        headers: { Authorization: `Bearer ${accessToken}` },
     });
-  
-    const lastViewedRequest = axios.get("/user/lastViewedSeries", {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    const [profile, lastViewed] = await Promise.all([profileRequest, lastViewedRequest]);
-  
     return {
-      profile: profile.data,
-      lastViewed: lastViewed.data,
+      profile: profileRequest.data.userInfo,
+      lastViewed: profileRequest.data.userLastViewedSeries,
+      owner: profileRequest.data.Owner
     };
   };
   
   const Page = async ({ params }: { params: { userId: number } }) => {
-    const { profile, lastViewed } = await fetchData(params.userId);
+    const { profile, lastViewed, owner } = await fetchData(params.userId);
+    console.log(`DATA PROFILE: `,lastViewed);
+    
     const remasteredLastViewed = Array.from(new Map(lastViewed.userLastViewedSeries.map((item:any) => [item.SeriesName, item])).values());
     console.log(`Remastered lastViewed: `,remasteredLastViewed);
     
@@ -35,26 +35,26 @@ const fetchData = async (userId: number) => {
             <div className={`flex w-[90%] h-[2rem] shadow-[0px_5px_8px_black] rounded-t-lg bg-[url("http://localhost:3001/media/profile-bg/images")] relative bg-repeat-x bg-auto overflow-hidden`}>
                 <span className='absolute top-0 left-[1rem] text-white font-semibold text-[1.25rem]'>Profile</span>
             </div>
-            <div className='flex h-[28rem] w-[87%] rounded-b-md bg-gray-2E p-5'>
+            <div className='flex min-h-[28rem] w-[87%] rounded-b-md bg-gray-2E p-5 custom-xs:flex-wrap'>
                 <label htmlFor="file-upload" className='flex w-[10rem] cursor-pointer flex-shrink-0 h-[10rem] rounded-md overflow-hidden'>
                     <img src="/Sweety.jpg" className='w-full h-full' alt="" />
                     <input type="file" accept='image/*' className="hidden" id='file-upload'/>
                 </label>
-                <div className='flex flex-col w-full ml-2'>
-                    <div className='text-white text-[1rem] mt-2 font-semibold flex flex-col'>
+                <div className='flex flex-col max-w-full min-w-[6rem] custom-xs:ml-0 ml-2 '>
+                    <div className='text-white text-[1rem] max-w-[40%] mt-2  font-semibold flex flex-col'>
                         <div className='inline-flex w-fit px-1 bg-green-400 rounded-md'>
                             <p>{profile.firstName}</p>
                         </div>
-                        <span className='inline-flex px-[6px] bg-gray-100 w-fit text-[0.8rem] rounded-md mt-1'>{profile.createdAt}</span>
+                        <span className='inline-flex px-[6px] bg-gray-100 w-fit max-w-[6rem] text-[0.8rem] rounded-md mt-1 whitespace-nowrap'>{profile.createdAt}</span>
                     </div>
                     {remasteredLastViewed.length !== 0 && (
-                        <div className='flex flex-col w-full h-full mt-[1rem] ml-[1rem] '>
+                        <div className='flex flex-col max-w-full h-full mt-[1rem] custom-xs:ml-0 ml-[1rem] overflow-x-auto scrollbar-hide'>
                             <p className='text-[1.15rem] text-white font-semibold'>Last Viewed</p>
-                            <div className='flex mt-2 ml-2 gap-x-2 w-full h-full'>
+                            <div className='flex mt-2 ml-2 max-w-full h-full'>
                                 {remasteredLastViewed.map((item:any,index:number)=>{
                                 const itemRate = lastViewed.rates?.find((seriesName:any) => seriesName.SeriesName === item.SeriesName);
                                 return(
-                                    <a href={`${process.env.NEXT_PUBLIC_FRONT_API}/catalog/item/${item.SeriesName}`} key={index} className='flex relative flex-col w-[10rem] transition-transform hover:scale-105 duration-500 ease-in-out overflow-hidden'>
+                                    <a href={`${process.env.NEXT_PUBLIC_FRONT_API}/catalog/item/${item.SeriesName}`} key={index} className='flex mr-2 relative flex-col w-[10rem] transition-transform hover:scale-105 duration-500 ease-in-out overflow-hidden flex-shrink-0'>
                                         <img src={`${process.env.NEXT_PUBLIC_API}/media/${item?.SeriesName}/images`} className='w-full h-[15rem] rounded-md' alt="" />
                                         <div className='flex text-ellipsis overflow-hidden text-center'>
                                             <p className='text-white font-medium line-clamp-2'>{item.SeriesViewName}</p>
@@ -71,7 +71,7 @@ const fetchData = async (userId: number) => {
                     )}
                 </div>
             </div>
-            <ProfileUserList />
+            <ProfileUserList userId={params.userId} isOwner={owner}/>
         </div>
     )
 }

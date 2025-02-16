@@ -31,6 +31,7 @@ const Users = ()=>{
         }
         fetchData();
     },[usersPage])
+    
     return(
         <div className="flex flex-col w-full max-w-full h-full">
             <div className="flex items-end w-[85%] justify-center ml-auto mr-auto flex-shrink">

@@ -2,10 +2,13 @@
 import Image from "next/image";
 import { useState } from "react";
 
-const ClientPoster = ({ src, alt ,containerClass }:{src:string,alt:string,containerClass:string})=>{
+const ClientPoster = ({ src, alt ,containerClass,divClass,children }:{src:string,alt:string,containerClass?:string,divClass?:string,children?:React.ReactNode})=>{
     const [imgSrc, setImgSrc] = useState(src);
     return (
-          <img className={containerClass} src={imgSrc} alt={alt} onError={() => setImgSrc("/images/Poster.png")}/>
+        <div className={divClass}>
+            <img className={containerClass} src={imgSrc} alt={alt} onError={() => setImgSrc("/images/Poster.png")}/>
+            {children}
+        </div>
       );
 }
 export default ClientPoster;

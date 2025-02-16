@@ -255,3 +255,16 @@ export const handleDeleteEpisode = async(seriesName:string,voice:string,episode?
         toast.error(`Couldn't delete the episode`);
     }
 }
+export const handleUsersUpdate = async(email:string,operationType:string,data:boolean | number)=>{
+    try{
+        const updateUserInfo = await axios.put('/user/info',{
+            email:email,
+            operationType:operationType,
+            data:data
+        })
+        toast.success('Successfully!');
+    }catch(err){
+        toast.error(`${err}`);
+        console.error(err); 
+    }
+}

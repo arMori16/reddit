@@ -79,7 +79,7 @@ const AdminPage = ()=>{
                             <div className="flex flex-col max-w-[2.5rem] w-[2.5rem] h-full items-center">
                             {Array.from({length:seriesInfo.length},(_,index)=>(
                                     <div key={index} className="flex p-1 w-[2.5rem] min-h-[3.5rem] border-b-2 border-white">
-                                        <ClientPoster src={`${process.env.NEXT_PUBLIC_API}/media/${seriesInfo[index].SeriesName}/images`} alt="poster" containerClass="w-full rounded-sm"/>
+                                        <ClientPoster src={`${process.env.NEXT_PUBLIC_API}/media/${seriesInfo[index].SeriesName}/images`} alt="poster" divClass="overflow-hidden w-full h-full object-cover rounded-sm"/>
                                     </div>
                             ))}
                             </div>
@@ -131,7 +131,7 @@ const AdminPage = ()=>{
                                         <img src={`/Sweety.jpg`} alt="" />
                                     </div>
                                     <div className="flex flex-col min-w-[3rem] h-full text-[12px] font-medium">
-                                        <Link href={`http://localhost:3000/admin/comments/view/${encodeURIComponent(item.UserName)}/${encodeURIComponent(String(item.createdAt))}/${encodeURIComponent(item.CommentText)}/${item.SeriesName}`} className={`flex w-full overflow-x-scroll hover:text-[#b5536d]`}>
+                                        <Link href={`/admin/comments/view/${encodeURIComponent(item.UserName)}/${encodeURIComponent(String(item.createdAt))}/${encodeURIComponent(item.CommentText)}/${item.SeriesName}`} className={`flex w-full overflow-x-scroll hover:text-[#b5536d]`}>
                                             {item.UserName}
                                         </Link>
                                         <div className="flex w-full text-[8px]">

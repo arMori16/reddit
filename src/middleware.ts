@@ -7,8 +7,15 @@ export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get('accessToken')?.value;
   const refreshToken = request.cookies.get('refreshToken')?.value;
   const { pathname } = request.nextUrl;
+  const user =  accessToken && await axios.get('/user/profile/info',{
+    headers:{
+      'Authorization':`Bearer ${accessToken}`
+    }
+  }) || null;
   
-  
+  if ((request.cookies.get('banned') || user && user?.data.userInfo.isBanned) && pathname !== '/banned'){
+    return NextResponse.redirect(new URL('/banned', request.url));
+  }
   if (!accessToken && refreshToken) {
     try {
       
@@ -33,25 +40,25 @@ export async function middleware(request: NextRequest) {
       try {
           const cookieStore = cookies();
           const atToken = cookieStore.get('accessToken')?.value
-      // Send a request to the backend to verify the user's role
-      const response = await axios.get('/admin/verify',{
-          headers:{
-              'Authorization':`Bearer ${atToken}`
+          // Send a request to the backend to verify the user's role
+          const response = await axios.get('/admin/verify',{
+              headers:{
+                  'Authorization':`Bearer ${atToken}`
+              }
+          });
+          console.log('DTA MIDDLEWARE: ',response.data);
+          
+          if (response.data) {
+              // User is authorized, allow them to proceed
+              return NextResponse.next();
+          } else {
+              // User is unauthorized, redirect to login or error page
+              return NextResponse.redirect(new URL('/login', request.url));
           }
-      });
-      console.log('DTA MIDDLEWARE: ',response.data);
-      
-      if (response.data) {
-          // User is authorized, allow them to proceed
-          return NextResponse.next();
-      } else {
-          // User is unauthorized, redirect to login or error page
-          return NextResponse.redirect(new URL('/login', request.url));
-      }
-      } catch (error) {
-      console.error('Error verifying admin access:', error);
-      return NextResponse.redirect(new URL('/404', request.url));
-      }
+          } catch (error) {
+            console.error('Error verifying admin access:', error);
+            return NextResponse.redirect(new URL('/404', request.url));
+          }
     }
   // For all other routes, proceed as normal
   return NextResponse.next();

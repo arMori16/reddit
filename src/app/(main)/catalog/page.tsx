@@ -1,9 +1,11 @@
 
 
-const ItemPage = ()=>{
+const Catalog = ()=>{
     return(
-        <div>HELLO WORLD!!!</div>
+        <div className="flex w-full min-h-screen bg-gray-200">
+
+        </div>
     )
 }
 
-export default ItemPage;
+export default Catalog;

@@ -1,36 +1,46 @@
 'use client'
 
-import { Duration, intervalToDuration } from "date-fns";
+import { differenceInSeconds, Duration, intervalToDuration } from "date-fns";
 import { useEffect, useState } from "react";
 
-export default function CountDown({ remainingTime }: { remainingTime: string }) {
-    const [timeLeft, setTimeLeft] = useState<Duration | null>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+export default function CountDown({ remainingTime, initializeTimeLeft, classProps}: { remainingTime: string, initializeTimeLeft: Duration | null,classProps?: string }) {
+    const [timeLeft, setTimeLeft] = useState<{ days: number | null, hours: number | null, minutes: number | null, seconds: number | null } | null>(
+        initializeTimeLeft ? {
+            days: ((initializeTimeLeft.years ?? 0) * 365 + (initializeTimeLeft.months ?? 0) * 30 + (initializeTimeLeft.days ?? 0)) === 0? null : ((initializeTimeLeft.years ?? 0) * 365 + (initializeTimeLeft.months ?? 0) * 30 + (initializeTimeLeft.days ?? 0)),
+            hours: initializeTimeLeft.hours ?? null,
+            minutes: initializeTimeLeft.minutes ?? null,
+            seconds: initializeTimeLeft.seconds ?? 0
+        } : null
+    );
 
     useEffect(() => {
         const interval = setInterval(() => {
-            // Convert remainingTime (string) into a Date object
             const endDate = new Date(remainingTime);
             const currentTime = new Date();
-
-            // Calculate remaining time in milliseconds
-            const remainingTimeLeft = endDate.getTime() - currentTime.getTime();
+            const remainingTimeLeft = differenceInSeconds(endDate, currentTime);
 
             if (remainingTimeLeft > 0) {
-                // Update the state with the remaining duration
-                setTimeLeft(intervalToDuration({ start: 0, end: remainingTimeLeft }));
+                const duration = intervalToDuration({ start: 0, end: remainingTimeLeft * 1000 });
+                const days = ((duration.years ?? 0) * 365 + (duration.months ?? 0) * 30 + (duration.days ?? 0));
+                setTimeLeft({
+                    days: days === 0 ? null : days,
+                    hours: duration.hours ?? null,
+                    minutes: duration.minutes ?? null,
+                    seconds: duration.seconds ?? 0
+                });
             } else {
-                console.log(`YEAH`);
-                clearInterval(interval); 
-                setTimeLeft(null); 
+                clearInterval(interval);
+                setTimeLeft(null);
             }
         }, 1000);
         return () => clearInterval(interval);
-    }, [remainingTime]); 
+    }, [remainingTime]);
 
     return (
-        <div className='flex ml-3'>
-            <span className='mr-2'>|</span>
-            <p>Time left: {timeLeft?.days && timeLeft.days + "d"} {timeLeft?.hours && timeLeft.hours + "h"} {timeLeft?.minutes && timeLeft.minutes + "min"} {timeLeft?.seconds && timeLeft?.seconds + 'sec'}</p>
+        <div className={classProps}>
+            {timeLeft !== null && (
+                <p>{timeLeft?.days !== null && timeLeft?.days + "d"} {timeLeft?.hours !== null && timeLeft?.hours + "h"} {timeLeft?.minutes !== null && timeLeft?.minutes + "min"} {timeLeft?.seconds !== null && timeLeft?.seconds + 'sec'}</p>
+            )}
         </div>
     );
 }

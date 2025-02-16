@@ -3,7 +3,6 @@ import { EnumPlayerQuality, HTMLCustomVideoElement } from "./types/player.type";
 import useVideo from "./videoFormatter";
 import Hls from "hls.js";
 import axios from "../api/axios";
-import { timePosition } from "../useZustand/zustandSaveTime";
 import playbackPosition from "../useZustand/zustandStorage";
 import numOfEpisodeStorage from "../useZustand/player/zustandNumOfEpisode";
 import voiceStorage from "../useZustand/player/zustandVoice";
@@ -46,7 +45,6 @@ const usePlayer =(seriesName?:string,seriesViewName?:string)=>{
             if (prev) {
                 // If was playing, now we pause
                 playRef.current?.pause();
-                
                 const atToken = Cookies.get('accessToken');
                 if (atToken && seriesViewName && !socket) {
                     axios.put(

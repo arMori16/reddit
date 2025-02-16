@@ -1,23 +1,23 @@
 import { create } from "zustand"
 
 type State={
-    voice:string,
-    episodes:number
+    voice:string | null,
+    episodes:number | null
 }
 
 type Action={
-    setVoice:(voice:string)=>void,
+    setVoice:(voice:string | null)=>void,
     getVoice:()=>string,
-    setEpisodes:(episode:number)=>void,
+    setEpisodes:(episode:number | null)=>void,
     getEpisodes:()=>number,
 }
 
 const voiceStorage = create<State & Action>((set:any,get:any)=>({
-    voice:'',
-    episodes:0,
-    setVoice:(voice:string)=>set(()=>({voice:voice})),
+    voice:null,
+    episodes:null,
+    setVoice:(voice:string | null)=>set(()=>({voice:voice})),
     getVoice:()=>get().voice,
-    setEpisodes:(episodes:number)=>set(()=>({episodes:episodes})),
+    setEpisodes:(episodes:number | null)=>set(()=>({episodes:episodes})),
     getEpisodes:()=>get().episodes,
 }))
 export default voiceStorage;

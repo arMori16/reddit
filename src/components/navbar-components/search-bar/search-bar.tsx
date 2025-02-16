@@ -86,7 +86,7 @@ const SearchBar = ({isAdmin,model}:{isAdmin?:boolean,model?:string})=>{
                         <div className='flex absolute top-[1.75rem] left-0 w-full max-h-[15rem] rounded-b-lg overflow-hidden overflow-y-scroll flex-col bg-gray-400' ref={componentRef}>
                             <InfiniteScroll type='search' fetchedData={result} componentRef={componentRef} width={`100%`} height={`100%`} isFlexCol={true}>
                                 {result.map((item,index)=>(
-                                    <Link onClick={()=>updateIsShow(false)} href={isAdmin  && model === 'catalog'? `${process.env.NEXT_PUBLIC_FRONT_API}/admin/series/view/${item.SeriesName}` :
+                                    <Link onClick={()=>{updateIsShow(false);setText('');setIsFocus(false)}} href={isAdmin  && model === 'catalog'? `${process.env.NEXT_PUBLIC_FRONT_API}/admin/series/view/${item.SeriesName}` :
                                         model === 'catalog'?`${process.env.NEXT_PUBLIC_FRONT_API}/catalog/item/${item.SeriesName}`:
                                         model === 'user' && isAdmin ? `${process.env.NEXT_PUBLIC_FRONT_API}/admin/users/view`: ``} key={index} className='flex cursor-pointer w-full h-[3rem] font-medium bg-gray-400 items-center border-b-[1px] border-gray-700'>
                                         <div className='flex w-full h-full ml-1 hover:shadow-[-5px_0_0] duration-700 transition-shadow ease-in-out hover:shadow-green-400'>

@@ -139,11 +139,12 @@ const Comments = ({seriesName}:{seriesName:string})=>{
                 comment.Id === item.CommentId && item.Type === type && item.Owner
             );
             if(userType){
-                setReacts((prev) => prev ? prev.filter((item) => item.CommentId !== comment.Id) : []);
+                setReacts((prev) => prev ? [...prev.filter((item) => !(item.CommentId === comment.Id && item.Owner))] : []);
+                
                 handleDeleteReact(comment.Id);
                 toast.success('Deleted successfully');
             }else{
-                setReacts((prev) => prev ? prev.filter((item) => item.CommentId !== comment.Id) : []);
+                setReacts((prev) => prev ? prev.filter((item) => !(item.CommentId === comment.Id && item.Owner)) : []);
                 handleDeleteReact(comment.Id);
                 handleReactToComment(comment.Id, `${type}`, seriesName);
                 setReacts((prev) => [
@@ -182,20 +183,20 @@ const Comments = ({seriesName}:{seriesName:string})=>{
                         </Link>
                         <div className="relative justify-between flex">
                             <div className="flex flex-col">
-                                <span className="text-[#B3DCC5]"> 
+                                <Link href={`/users/${comment.UserId}`} prefetch={false} className="text-[#B3DCC5]"> 
                                     {comment.UserName}
-                                </span>
+                                </Link>
                                 <span className="relative flex items-center justify-center bg-[#629377] text-rose-50 rounded-md  min-w-[5rem] w-[5.5rem] max-w-[6rem] h-5 text-[11px] px-1">
                                     {comment.createdAt}
                                 </span>
                             </div>
                             <div className="flex min-w-[8rem] h-[1.75rem] justify-end">
                                 <div className="flex h-full mr-2 text-white">
-                                    <button onClick={()=>handleReact(comment,'Like')} className="flex h-full items-center justify-center text-green-400">
+                                    <button onClick={()=>comment.Owner ? toast.info('You cannot like your own comment') : handleReact(comment,'Like')} className="flex h-full items-center justify-center text-green-400">
                                         <i className={`${reacts.find((item)=>item.CommentId === comment.Id && item.Type === 'Like' && item.Owner) ? 'fa-solid':'fa-regular'} fa-thumbs-up mr-1`}></i>
-                                        {reacts.length >= 1 ? (reacts?.filter((item:any)=>comment.Id === item.CommentId && item.Type === 'Like')).length : 0}
+                                        {reacts.length >= 1 ? (reacts?.filter((item:any)=>(comment.Id === item.CommentId) && item.Type === 'Like')).length : 0}
                                     </button>
-                                    <button onClick={()=>handleReact(comment,'Dislike')} className="flex h-full items-center justify-center text-red-button">
+                                    <button onClick={()=>comment.Owner ? toast.info('You cannot dislike your own comment') : handleReact(comment,'Dislike')} className="flex h-full items-center justify-center text-red-button">
                                         <i className={`${reacts.find((item)=>item.CommentId === comment.Id && item.Type === 'Dislike' && item.Owner) ? 'fa-solid':'fa-regular'} fa-thumbs-down ml-2 mr-1`}></i>
                                         {reacts.length >= 1 ? (reacts?.filter((item:any)=>comment.Id === item.CommentId && item.Type === 'Dislike')).length : 0}
                                     </button>
@@ -252,11 +253,11 @@ const Comments = ({seriesName}:{seriesName:string})=>{
                                                     </div>
                                                     <div className="flex min-w-[8rem] h-[1.75rem] justify-end">
                                                         <div className="flex h-full mr-2 text-white">
-                                                            <button onClick={()=>handleReact(child,'Like')} className="flex h-full items-center justify-center text-green-400 ">
+                                                            <button onClick={()=>child.Owner ? toast.info('You cannot like your own comment') : handleReact(child,'Like')} className="flex h-full items-center justify-center text-green-400 ">
                                                             <i className={`${reacts.find((item)=>item.CommentId === child.Id && item.Type === 'Like' && item.Owner) ? 'fa-solid':'fa-regular'} fa-thumbs-up mr-1`}></i>
                                                                 { reacts.length >= 1 ? reacts?.filter((item:any)=>child.Id === item.CommentId && item.Type === 'Like').length : 0}
                                                             </button>
-                                                            <button onClick={()=>handleReact(child,'Dislike')} className="flex h-full items-center justify-center text-red-button">
+                                                            <button onClick={()=>child.Owner ? toast.info('You cannot dislike your own comment') : handleReact(child,'Dislike')} className="flex h-full items-center justify-center text-red-button">
                                                                 <i className={`${reacts.find((item)=>item.CommentId === child.Id && item.Type === 'Dislike' && item.Owner) ? 'fa-solid':'fa-regular'} fa-thumbs-down ml-2 mr-1`}></i>
                                                                 {reacts.length >= 1 ? reacts?.filter((item:any)=>child.Id === item.CommentId && item.Type === 'Dislike').length : 0}
                                                             </button>
