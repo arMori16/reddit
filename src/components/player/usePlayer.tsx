@@ -3,6 +3,7 @@ import { EnumPlayerQuality, HTMLCustomVideoElement } from "./types/player.type";
 import useVideo from "./videoFormatter";
 import Hls from "hls.js";
 import axios from "../api/axios";
+import axiosDefault from "axios";
 import playbackPosition from "../useZustand/zustandStorage";
 import numOfEpisodeStorage from "../useZustand/player/zustandNumOfEpisode";
 import voiceStorage from "../useZustand/player/zustandVoice";
@@ -77,6 +78,13 @@ const usePlayer =(seriesName?:string,seriesViewName?:string)=>{
         if(isShowPlay){
             spaceButton();
             const atToken = Cookies.get('accessToken');
+            axios.post('/catalog/view',{
+                seriesName:seriesName,
+            },{
+                headers:{
+                    'Authorization':`Bearer ${atToken}`
+                }
+            })
             if(atToken && !socket){
                 axios.post('/user/lastViewedSeries',{
                     seriesName:seriesName,

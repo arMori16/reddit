@@ -38,7 +38,7 @@ const Users = ()=>{
                 <SearchBar isAdmin={true} model="user"/>
             </div>
             <div className="flex flex-col max-w-full h-full bg-purple-300 p-2 rounded-md mt-5 text-white">
-                <div className="flex w-full h-[2.5rem] justify-between border-b-2 pr-[15%] text-[1.15rem] custom-md-2:text-[0.85rem] font-medium">
+                <div className="flex w-full h-[2.5rem] justify-between border-b-2 pr-[10%] text-[1.15rem] custom-md-2:text-[0.85rem] font-medium">
                     <div className="flex w-[8rem] flex-shrink justify-center h-full items-center">
                         Username
                     </div>

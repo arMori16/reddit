@@ -13,8 +13,8 @@ import { notFound } from 'next/navigation';
 
 export default async function Home({searchParams}:{searchParams:{page:number}}) {
   
-  const seriesInfo = await getSeriesInfo(searchParams.page - 1);
-  const counts = await getPageCount() || 1;
+  const seriesInfo = await getSeriesInfo(searchParams.page - 1,);
+  const counts = await getPageCount({divideNumber:16}) || 1;
   const data = await getSeasonedCatalog();
   if(searchParams.page > counts){
     notFound()
@@ -32,7 +32,7 @@ export default async function Home({searchParams}:{searchParams:{page:number}}) 
 
           </div>
           <div className='flex relative flex-wrap'>
-             <TabsComponent seriesNames={seriesInfo.seriesNames} seriesViewNames={seriesInfo.seriesViewName} rate={seriesInfo.rate} genre={seriesInfo.genre}/>
+             <TabsComponent seriesData={seriesInfo}/>
           </div>
           <div className='flex mb-[10rem] max-w-[61.25rem] h-[2.5rem] p-1 gap-x-2 font-medium text-white'>
             {Array.from({length:counts <= 7?counts:7},(value,index)=>(

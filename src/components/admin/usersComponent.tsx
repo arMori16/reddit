@@ -43,14 +43,6 @@ const AdminUsers = ({initialUsers}:{initialUsers:any[]})=>{
                             <i className="fa-solid fa-ban"></i>
                         </button>
                         <button onClick={()=>{
-                            setUsers((prev:any)=>{
-                                return [...prev.map((items:any)=>items.email === item.email ? {...items,isMuted:!item.isMuted} : {...items})];
-                            });
-                            handleUpdateUserInfo(item,'isMuted',!item.isMuted);
-                        }} className={`${item.isMuted ? 'bg-red-button' : 'bg-green-400'} p-1 rounded-md min-w-[1.75rem]`}>
-                            <i className="fa-solid fa-bell-slash"></i>
-                        </button>
-                        <button onClick={()=>{
                             if(item.warn + 1 === 3){
                                 return toast.info(`The user has already gotten 2 warns,read the rules what you'd better to do`,{autoClose:false});
                             }

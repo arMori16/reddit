@@ -1,50 +1,31 @@
 import axios from "@/components/api/axios";
 import { SeriesInfo } from "./dto/adminDto/seriesInfo.dto";
 
-const getSeriesInfo = async(page:number)=>{
+const getSeriesInfo = async(page:number,take?:number,category?:string,skipPage = 16)=>{
     
    try{
     const req = await axios.get('/catalog/getCatalog',{
         params:{
-            skip:page*16
+            take:take || null,
+            skip:page*skipPage,
+            category:category || null
         }
-    })
-    const seriesNames = req.data.map((item:{SeriesName:string}) => item.SeriesName);
-    const seriesViewNames = req.data.map((item:{SeriesViewName:string}) => item.SeriesViewName);
-    const rate = req.data.map((item:{Rate:number[]}) => item.Rate);
-    const genre = req.data.map((item:{Genre:string[][]}) => item.Genre);
-    const reqAmountOfSeries = await axios.get('/catalog/getAmountOfSeries');
-    const amountOfSeries = reqAmountOfSeries.data;
+    });
+    console.log(`Catalog for the page ${page} is taken!`,req.data);
     
-    return {
-        amountOfSeries:amountOfSeries,
-        seriesNames:seriesNames,
-        seriesViewName:seriesViewNames,
-        rate:rate,
-        genre:genre
-    } 
-   }catch(err){
+    return req.data 
+}catch(err){
     console.error(`Cannot take the catalog for the page!Error: ${err}`);
-    return {
-        amountOfSeries:0,
-        seriesNames:[''],
-        seriesViewName:[''],
-        rate:0,
-        genre:['']
-    } 
-   }
 }
-export const getPageCount = async()=>{
+}
+export const getPageCount = async({category,divideNumber = 24}:{category?:string,divideNumber?:number}={})=>{
     try{
-        const req = await axios.get('/catalog/getCounts',{
+        const reqAmountOfSeries = await axios.get('/catalog/getAmountOfSeries',{
             params:{
-                series:true
+                category:category || null
             }
-        })
-        
-        const amountOfPages = Math.ceil(req.data.count / 16);
-        console.log('Amount Of pages! ',amountOfPages);
-        
+        });
+        const amountOfPages = Math.ceil(reqAmountOfSeries.data / divideNumber);
         return amountOfPages;
     }catch(err){
         console.error(`Cannot count amount of series for the page! ${err}`);

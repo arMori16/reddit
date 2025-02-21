@@ -80,15 +80,15 @@ const ScheduleItems = ({initialExpiredItems,initialOngoingSeries,initialActiveAn
                     <div className="flex w-full gap-x-2">
                         {filteredData.map((item:any,index:number)=>(
                             <Link href={`/admin/series/view/${item.SeriesName}`} key={index} className="flex group relative flex-col w-[10rem] hover:scale-105 transition-transform ease-in-out duration-500">
-                                <ClientPoster divClass={`w-full h-[15rem] rounded-sm overflow-hidden`} src={`${process.env.NEXT_PUBLIC_API}/media/${item.SeriesName}/images`} alt="poster">
+                                <ClientPoster containerClass={`w-full max-h-[15rem] h-[15rem] rounded-sm overflow-hidden`} src={`${process.env.NEXT_PUBLIC_API}/media/${item.SeriesName}/images`} alt="poster">
                                     {(toggleTimeVisibility && item.NextEpisodeTime || (item.NextEpisodeTime && lessThanOneDaySeries.find((items)=>items.SeriesName === item.SeriesName))) && (
                                         <CountDown remainingTime={item.NextEpisodeTime} initializeTimeLeft={item.NextEpisodeTime && intervalToDuration({start:0,end:new Date(item.NextEpisodeTime).getTime() - new Date().getTime()})}
-                                            classProps="flex absolute top-0 bottom-[16.5%] rounded-sm left-0 right-0 z-10 bg-gray-300 bg-opacity-80 items-center justify-center text-[0.9rem] whitespace-nowrap text-white font-medium"
+                                            classProps="flex absolute top-0 bottom-[16.6%] rounded-sm left-0 right-0 z-10 bg-gray-300 bg-opacity-80 items-center justify-center text-[0.9rem] whitespace-nowrap text-white font-medium"
                                         />
                                     )}
                                     {!toggleTimeVisibility && lessThanOneDaySeries.find((items)=>items.SeriesName === item.SeriesName) === undefined && (
                                         <CountDown remainingTime={item.NextEpisodeTime} initializeTimeLeft={item.NextEpisodeTime && intervalToDuration({start:0,end:new Date(item.NextEpisodeTime).getTime() - new Date().getTime()})}
-                                                classProps={`opacity-0 group-hover:opacity-100 flex transition-all duration-500 ease-in-out absolute top-0 bottom-[16.5%] rounded-sm left-0 right-0 z-10 bg-gray-300 bg-opacity-80 items-center justify-center text-[0.9rem] whitespace-nowrap text-white font-medium`}
+                                                classProps={`opacity-0 group-hover:opacity-100 flex transition-all duration-500 ease-in-out absolute top-0 bottom-[16.6%] rounded-sm left-0 right-0 z-10 bg-gray-300 bg-opacity-80 items-center justify-center text-[0.9rem] whitespace-nowrap text-white font-medium`}
                                         />
                                     )}
                                 </ClientPoster>

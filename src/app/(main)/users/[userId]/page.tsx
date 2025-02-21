@@ -2,7 +2,9 @@
 import axios from '@/components/api/axios';
 import { list } from '@/components/catalog/item/item.logic';
 import ProfileUserList from '@/components/navbar-components/profile/profile';
+import UserWarn from '@/components/navbar-components/profile/userWarn';
 import { formatDate } from '@/utils/formattDate';
+import Poster from '@/utils/Images/Posters';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import React from 'react';
@@ -41,11 +43,14 @@ const fetchData = async (userId: number) => {
                     <input type="file" accept='image/*' className="hidden" id='file-upload'/>
                 </label>
                 <div className='flex flex-col max-w-full min-w-[6rem] custom-xs:ml-0 ml-2 '>
-                    <div className='text-white text-[1rem] max-w-[40%] mt-2  font-semibold flex flex-col'>
-                        <div className='inline-flex w-fit px-1 bg-green-400 rounded-md'>
+                    <div className='text-white text-[1rem] max-w-full mt-2  font-semibold flex flex-col'>
+                        <div className='inline-flex w-fit px-1 bg-green-400 rounded-sm'>
                             <p>{profile.firstName}</p>
                         </div>
                         <span className='inline-flex px-[6px] bg-gray-100 w-fit max-w-[6rem] text-[0.8rem] rounded-md mt-1 whitespace-nowrap'>{profile.createdAt}</span>
+                        {owner && profile.warn >= 1 && Number(cookies().get('warn')?.value) !== profile.warn && (
+                            <UserWarn userWarn={profile.warn}/>
+                        )}
                     </div>
                     {remasteredLastViewed.length !== 0 && (
                         <div className='flex flex-col max-w-full h-full mt-[1rem] custom-xs:ml-0 ml-[1rem] overflow-x-auto scrollbar-hide'>
@@ -55,7 +60,7 @@ const fetchData = async (userId: number) => {
                                 const itemRate = lastViewed.rates?.find((seriesName:any) => seriesName.SeriesName === item.SeriesName);
                                 return(
                                     <a href={`${process.env.NEXT_PUBLIC_FRONT_API}/catalog/item/${item.SeriesName}`} key={index} className='flex mr-2 relative flex-col w-[10rem] transition-transform hover:scale-105 duration-500 ease-in-out overflow-hidden flex-shrink-0'>
-                                        <img src={`${process.env.NEXT_PUBLIC_API}/media/${item?.SeriesName}/images`} className='w-full h-[15rem] rounded-md' alt="" />
+                                        <Poster src={`${process.env.NEXT_PUBLIC_API}/media/${item?.SeriesName}/images`} conteainerClass='object-cover w-full h-[15rem] rounded-md' alt="" />
                                         <div className='flex text-ellipsis overflow-hidden text-center'>
                                             <p className='text-white font-medium line-clamp-2'>{item.SeriesViewName}</p>
                                             <span className='flex items-center justify-center absolute top-3 after:content-[""] after:absolute after:right-[-0.97rem] after:border-[#F5C543] after:border-t-[0.75rem] after:border-b-[0.75rem] after:border-r-[1rem] after:border-r-transparent text-[1rem] text-white font-medium bg-orange-yellow h-[1.5rem]'>

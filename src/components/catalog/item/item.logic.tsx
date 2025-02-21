@@ -67,9 +67,12 @@ export const getItemsRate = async(seriesNames:string[])=>{
         
     }
 }
-export const getUserRates = async(atToken:string | undefined)=>{
+export const getUserRates = async(atToken:string | undefined,seriesNames:string[])=>{
     try{
         const userRates = await axios.get('/catalog/user/rates',{
+            params:{
+                seriesNames:seriesNames
+            },
             headers:{
                 'Authorization':`Bearer ${atToken}`
             }
@@ -115,7 +118,9 @@ export const getSeriesData = async(seriesName:string,atToken?:string)=>{
                 'Authorization':`Bearer ${atToken}`
             }
         }) : null
-        return {data:res.data,seriesRate:seriesRate,userListItem:userListItem?.data};
+        console.log(`RESPONSE : `,res.data);
+        
+        return {data:res.data,seriesRate:seriesRate.avgRate,count:seriesRate.count,Views:res.data.Views,userListItem:userListItem?.data};
     }catch(err){
         console.error(`Couldn't get series data: ${err}`);
         return null;

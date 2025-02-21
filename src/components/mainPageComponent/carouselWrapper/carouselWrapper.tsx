@@ -1,6 +1,5 @@
 'use client'
 
-import { getSeasonedCatalog } from '@/utils/getSeriesInfo';
 import "@/components/mainPageComponent/carouselWrapper/carousel.css"
 import { ChevronLeft, ChevronRight, Loader } from 'lucide-react';
 import Link from 'next/link';

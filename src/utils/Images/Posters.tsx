@@ -2,7 +2,7 @@
 import axios from '@/components/api/axios';
 
 
-export default async function Poster({ src, alt ,conteainerClass }:{src:string,alt:string,conteainerClass:string}) {
+export default async function Poster({ src, alt ,conteainerClass,sizes }:{src:string,alt:string,conteainerClass:string,sizes?:string}) {
     let imgSrc: string;
 
     try {
@@ -15,9 +15,11 @@ export default async function Poster({ src, alt ,conteainerClass }:{src:string,a
     }
     return (
         <img
+            loading='lazy'
             src={imgSrc}
             alt={alt}
             className={conteainerClass}
+            sizes={sizes}
         />
     );
 }

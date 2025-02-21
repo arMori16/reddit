@@ -6,12 +6,15 @@ import usePageCounter from '@/components/useZustand/zustandPageCounter';
 import useOutsideCommon from '@/utils/hooks/useOutsideCommon';
 import InfiniteScroll from '@/utils/infiniteScroll';
 import { debounce } from 'lodash';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 const SearchBar = ({isAdmin,model}:{isAdmin?:boolean,model?:string})=>{
     const [isFocus,setIsFocus] = useState(false);
-    const [text,setText] = useState('');
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const [text,setText] = useState<string>(searchParams.get('seriesName') || '');
     const {getSearchPage,searchPage} = usePageCounter();
     const {componentRef} = useOutsideCommon();
     const {getIsShow,updateIsShow,isShow} = menuStorage();
@@ -63,10 +66,23 @@ const SearchBar = ({isAdmin,model}:{isAdmin?:boolean,model?:string})=>{
         }
         const debouncedFunc = debounce(fetchedData,400);
         debouncedFunc();
-        console.log('SERIES: ',result);
-        console.log('SHOW: ',getIsShow());
-        
+        const handleKeyPress = (e:KeyboardEvent)=>{
+            const activeElement = document.activeElement;
+
+            // Check if the user is inside a textarea
+            if (activeElement && activeElement.tagName === 'TEXTAREA' && e.key === 'Enter') {
+                e.preventDefault(); // Prevent new line in the textarea
+                console.log(`Text`,text);
+                updateIsShow(false);
+                setIsFocus(false);
+                router.push(`/catalog/search?page=1&seriesName=${encodeURIComponent(text)}`)
+            }
+        }
+        document.removeEventListener('keydown',handleKeyPress);
+        document.addEventListener('keydown',handleKeyPress);
+    
         return () => {
+            document.removeEventListener('keydown',handleKeyPress);
             debouncedFunc.cancel()
             
         };

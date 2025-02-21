@@ -311,8 +311,6 @@ const Player = ({ seriesViewName,seriesName }: { seriesName: string,seriesViewNa
             socketRef.current.emit("playVideo",{playInfo:playInfo,roomInfo:roomData.room,time:currentTime})
         }
     }
-    console.log(`PLAYER INFO:: `,episodes);
-    
     return (
     <>
         {isShowYesNo && (

@@ -16,7 +16,7 @@ import CountDown from '@/components/catalog/item/CountDown';
 const ItemPage = async({params}:{params:{seriesName:string}})=>{
     const atToken = cookies().get('accessToken')?.value;
     const seriesData = await getSeriesData(params.seriesName,atToken);
-    console.log('SeriesData: ',seriesData?.data.VoiceActing);
+    console.log('SeriesData: ',seriesData?.Views);
     
     const userRate = atToken ? await getUserRate(params.seriesName,atToken) : undefined;
     if(!seriesData){
@@ -40,6 +40,12 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                     </div>
                     <div className='flex flex-col'>
                         <h1 className='text-3xl custom-xs:mt-0 break-words flex flex-wrap'>{seriesData?.data.SeriesViewName}</h1>
+                        <div className='flex items-center text-white'>
+                            <i className='fa-regular fa-eye text-[0.85rem] mr-1'></i>
+                            <p>{seriesData.Views} views</p>
+                            <i className='fa-solid fa-star text-[0.85rem] ml-2 mr-1'></i>
+                            <p>{seriesData.count}</p>
+                        </div>
                         <div className='flex my-1'>
                             {seriesData.data.AlternitiveNames?.map((item:string,index:number)=>(
                                 <div key={index} className='flex rounded-lg min-h-[1.75rem] font-light py-[2px] px-2 bg-gray-100 items-center justify-center'>

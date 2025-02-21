@@ -6,7 +6,7 @@ const ClientPoster = ({ src, alt ,containerClass,divClass,children }:{src:string
     const [imgSrc, setImgSrc] = useState(src);
     return (
         <div className={divClass}>
-            <img className={containerClass} src={imgSrc} alt={alt} onError={() => setImgSrc("/images/Poster.png")}/>
+            <img loading="lazy" className={containerClass} src={imgSrc} alt={alt} onError={() => setImgSrc("/images/Poster.png")}/>
             {children}
         </div>
       );
