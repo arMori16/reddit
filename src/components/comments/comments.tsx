@@ -179,7 +179,7 @@ const Comments = ({seriesName}:{seriesName:string})=>{
                 {filteredData.map((comment,index)=>(
                     <div key={index} className="block relative w-full max-w-full pt-4 mb-4 bg-[#3C3C3C] min-h-[7.5rem] border-t-[1px] border-gray-500">
                         <Link href={''} className="float-left min-w-[6.25rem] h-[6.25rem]  custom-xs:min-w-[2.65rem] custom-xs:mt-[0.33rem] custom-xs:h-[2.65rem] mr-3">
-                            <img src="/Sweety.jpg" className="block rounded-lg w-full h-full" alt="" />
+                            <img src={`${process.env.NEXT_PUBLIC_API}/user/avatar/${comment.UserId}`} className="block object-cover rounded-lg w-full h-full" alt="" />
                         </Link>
                         <div className="relative justify-between flex">
                             <div className="flex flex-col">
@@ -239,8 +239,8 @@ const Comments = ({seriesName}:{seriesName:string})=>{
                                     {showReplyState[comment.Id] && (
                                         getAllReplies(comment.Id, childComments).map((child:any,index:number)=>(
                                             <div key={index} className="block relative w-full max-w-full pt-2 mb-4 bg-[#3C3C3C] min-h-[7.5rem] pl-2 border-l-2 border-l-green-400">
-                                                <Link href={''} className="float-left min-w-[6.25rem] h-[6.25rem]  custom-xs:min-w-[2.65rem] custom-xs:mt-[0.33rem] custom-xs:h-[2.65rem] mr-3">
-                                                    <img src="/Sweety.jpg" className="block rounded-lg w-full h-full" alt="" />
+                                                <Link href={''} className="float-left w-[6.25rem] h-[6.25rem]  custom-xs:min-w-[2.65rem] custom-xs:mt-[0.33rem] custom-xs:h-[2.65rem] mr-3">
+                                                    <img src={`${process.env.NEXT_PUBLIC_API}/user/avatar/${child.Id}`} className="block object-cover rounded-lg w-full h-full" alt="" />
                                                 </Link>
                                                 <div className="relative justify-between flex">
                                                     <div className="flex flex-col">

@@ -12,6 +12,9 @@ module.exports = {
       colors: {
         ...gray
       },
+      borderRadius: {
+        'custom-sm':'0.25rem'
+      },
       boxShadow:{
         'image':'0px -1px 8px rgba(143, 143, 143, 0.3)',
         'poster':'0px 0px 0.1px 2px rgba(124,124,124,1)'

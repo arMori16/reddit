@@ -2,6 +2,7 @@
 import axios from '@/components/api/axios';
 import { list } from '@/components/catalog/item/item.logic';
 import ProfileUserList from '@/components/navbar-components/profile/profile';
+import UserAvatar from '@/components/navbar-components/profile/userAvatar';
 import UserWarn from '@/components/navbar-components/profile/userWarn';
 import { formatDate } from '@/utils/formattDate';
 import Poster from '@/utils/Images/Posters';
@@ -26,10 +27,8 @@ const fetchData = async (userId: number) => {
   
   const Page = async ({ params }: { params: { userId: number } }) => {
     const { profile, lastViewed, owner } = await fetchData(params.userId);
-    console.log(`DATA PROFILE: `,lastViewed);
-    
     const remasteredLastViewed = Array.from(new Map(lastViewed.userLastViewedSeries.map((item:any) => [item.SeriesName, item])).values());
-    console.log(`Remastered lastViewed: `,remasteredLastViewed);
+
     
     profile.createdAt = formatDate(profile.createdAt);
     return(
@@ -38,10 +37,7 @@ const fetchData = async (userId: number) => {
                 <span className='absolute top-0 left-[1rem] text-white font-semibold text-[1.25rem]'>Profile</span>
             </div>
             <div className='flex min-h-[28rem] w-[87%] rounded-b-md bg-gray-2E p-5 custom-xs:flex-wrap'>
-                <label htmlFor="file-upload" className='flex w-[10rem] cursor-pointer flex-shrink-0 h-[10rem] rounded-md overflow-hidden'>
-                    <img src="/Sweety.jpg" className='w-full h-full' alt="" />
-                    <input type="file" accept='image/*' className="hidden" id='file-upload'/>
-                </label>
+                <UserAvatar initialUserAvatar={`${process.env.NEXT_PUBLIC_API}/user/avatar/${params.userId}`}/>
                 <div className='flex flex-col max-w-full min-w-[6rem] custom-xs:ml-0 ml-2 '>
                     <div className='text-white text-[1rem] max-w-full mt-2  font-semibold flex flex-col'>
                         <div className='inline-flex w-fit px-1 bg-green-400 rounded-sm'>

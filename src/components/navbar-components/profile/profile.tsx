@@ -153,13 +153,15 @@ const ProfileUserList = ({userId,isOwner}:{userId:number,isOwner:boolean})=>{
                     </div>
                     {isOwner && (
                         <div className="flex h-full absolute right-0 z-20 max-w-[20rem] flex-grow justify-end text-white">
-                            {openItemSettings.find((items:any)=>items.SeriesName === item.SeriesName && items.opened) && (
-                            <div className="flex " ref={divRef}>
+                            <div className={`flex transition-all duration-500 ease-out overflow-hidden`} 
+                                style={openItemSettings.find((items:any)=>items.SeriesName === item.SeriesName && items.opened) 
+                                    ? { maxWidth: "20rem", opacity: 1 } 
+                                    : { maxWidth: "0px", opacity: 0 }}
+                            >
                                 {list.map((items:any,index:any)=>(
                                     <button onClick={()=>handleUpdateUserList(item,items.key)} key={index} className={`flex w-[2.8rem] items-center hover:!bg-[${items.color}] duration-500 ease-in-out transition-colors justify-center h-full border-r-[1px] bg-gray-100 border-r-gray-2E `} style={{backgroundColor:listItem === items.key ? `${items.color}`: ''}}
                                     onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = items.color)}
                                     onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = listItem === items.key ? items.color : '')}
-
                                     >
                                         <i className={`fa fa-${items.value} p-1 rounded-md flex text-[0.8rem] `} ></i>
                                     </button>
@@ -168,7 +170,6 @@ const ProfileUserList = ({userId,isOwner}:{userId:number,isOwner:boolean})=>{
                                     <i className={`fa-solid fa-trash p-1 rounded-md flex text-[0.8rem] `} ></i>
                                 </button>
                             </div>
-                            )}
                             <div className="flex w-[2.9rem] h-full z-20 bg-gray-100">
                                 <button type="button" onClick={()=> handleOpenCloseSettings(item.SeriesName)} className="flex w-full h-full items-center justify-center">
                                     <i className="fa fa-cog text-[0.8rem]"></i>

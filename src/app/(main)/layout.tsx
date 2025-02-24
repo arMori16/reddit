@@ -24,7 +24,6 @@ export default async function RootLayout({ children }:any) {
       <html lang="en" className="min-h-screen">
         <body className="min-h-screen pt-[14rem] overflow-x-hidden overflow-y-scroll bg-[#242424] relative">
         <ClientRefreshToken/>
-        <Analytics />
         <ToastContainer position="bottom-right"/>
           <Navbar user={userState} userFirstName={userFirstname?.data}/>
           {children}

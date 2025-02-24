@@ -69,7 +69,7 @@ export default function RootLayout({children}:{children: React.ReactNode}){
   
             <div className="flex flex-col h-full w-full pt-7 relative">
               <div className="flex flex-col w-full items-end pr-[2rem]">
-                <Avatar user={userData?.data}/>
+               
                 <span className="flex text-[#D98C8C] font-semibold text-[1.25rem]">Admin</span>
               </div>
               <div className="p-5 pb-[4rem] h-full">

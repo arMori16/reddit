@@ -31,7 +31,6 @@
   .Toastify__toast-icon:has(img) {
     width: 2rem !important;
 }
-  
 }
 
 @layer utilities {
