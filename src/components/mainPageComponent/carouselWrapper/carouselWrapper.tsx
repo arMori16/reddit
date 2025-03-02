@@ -79,7 +79,7 @@ const CarouselWrapper = ({seasonedAnime}:{ seasonedAnime: {
   
   return(
       <div className='block h-full w-full relative mt-[3rem] custom-md-lg:mt-5 max-w-[80.469rem] embla'>
-        <div className='flex rounded-t-lg justify-center items-center max-w-[80.469rem] h-[2.25rem] bg-[#3C3C3C] text-rose-50'>
+        <div className='flex rounded-t-lg justify-center text-[0.95rem] items-center max-w-[80.469rem] h-[2.25rem] bg-gray-1B text-rose-50'>
             SEASON'S ANIME
         </div>
         {seriesInfo && seriesInfo.length <= 1? (

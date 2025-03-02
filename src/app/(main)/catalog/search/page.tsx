@@ -39,7 +39,7 @@ export default async function SearcPage({searchParams}:{searchParams:{page:numbe
                         </div>
                         {seriesInfo?.data.map((item:any,index:number)=>(
                             <div key={index} className="flex-1 flex flex-col mr-5 mb-3 max-w-[14rem] hover:scale-105 group transition-transform duration-500 ease-in-out">
-                                <Link href={`catalog/item/${item.SeriesName}`} className="flex flex-col
+                                <Link href={`/catalog/item/${item.SeriesName}`} className="flex flex-col
                                 " >
                                     <Poster 
                                         src={`${process.env.NEXT_PUBLIC_API}/media/${item.SeriesName}/images`} 

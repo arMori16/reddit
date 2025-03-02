@@ -1,4 +1,5 @@
 'use client'
+import SearchBar from "@/components/navbar-components/search-bar/search-bar";
 import usePageCounter from "@/components/useZustand/zustandPageCounter";
 import { deleteSeries, getAllCounts, getSeries } from "@/utils/admin.logic";
 import InfiniteScroll from "@/utils/infiniteScroll";
@@ -35,6 +36,9 @@ const Series = ()=>{
     },[page])
     return(
         <div className="flex max-w-full flex-col w-full h-full">
+            <div className="flex w-full justify-center mb-5">
+                <SearchBar isAdmin={true} model={'catalog'}/>
+            </div>
             <div className="flex max-w-full w-full h-[35rem] p-5 bg-[#352877] rounded-md">
                 <div className="flex w-full h-full max-w-full bg-[#352877] p-5 rounded-lg text-[1rem] text-rose-50 font-medium">
                     <div ref={divRef} className="flex flex-col max-w-full w-full h-full overflow-y-scroll">

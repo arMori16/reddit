@@ -11,7 +11,7 @@ export const getVoicesInfo = async(seriesName:string)=>{
                 seriesName:seriesName
             }
         })
-        console.log(`This is reg data: `,req.data);
+      
         return req.data;
     }catch(err){
         console.error(`Error!${err}`);

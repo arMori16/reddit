@@ -14,11 +14,8 @@ const Schedule = async()=>{
             'Authorization':`Bearer ${cookies().get('accessToken')?.value}`
         }
     });
-    console.log(`ANime for schedule: `,ongoingSeries.data);
-    ongoingSeries.data = ongoingSeries.data.map((item:any)=>(item.NextEpisodeTime ? {...item,NextEpisodeTime:formatToStandard(item.NextEpisodeTime)}:{...item}));
+    /* ongoingSeries.data = ongoingSeries.data.map((item:any)=>(item.NextEpisodeTime ? {...item,NextEpisodeTime:formatToStandard(item.NextEpisodeTime)}:{...item})); */
     const expiredTimeAnime = ongoingSeries.data.filter((item:any)=>item.NextEpisodeTime && ((new Date(item.NextEpisodeTime).getTime() - new Date().getTime()) < 0));
-    
-    console.log(`ExpiredTimeAnime: `,expiredTimeAnime );
     const initialActiveAnime = ongoingSeries.data.filter((item:any)=>(item.NextEpisodeTime ? ((new Date(item.NextEpisodeTime).getTime() - new Date().getTime()) > 0) : {...item}));
     const filteredData = [...initialActiveAnime].sort((a: any, b: any) => {
         const timeA = a.NextEpisodeTime ? new Date(a.NextEpisodeTime).getTime() : Infinity;
@@ -27,8 +24,6 @@ const Schedule = async()=>{
         return timeA - timeB;
     });
     const lessThanOneDaySeries = filteredData.filter((item:any)=>item.NextEpisodeTime ? intervalToDuration({start:0, end: (new Date(item.NextEpisodeTime).getTime() - new Date().getTime()) }).days === undefined : item.NextEpisodeTime && {...item} )
-    console.log(`lessThanOneDaySeries: `,lessThanOneDaySeries);
-    
     return (
         <div className="flex flex-col w-full h-full">
             <h1 className="text-white text-[1.25rem] font-medium">Schedule</h1>

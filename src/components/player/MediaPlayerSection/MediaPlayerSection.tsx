@@ -9,7 +9,7 @@ import Voices from "../voices/voices"
 
 const MediaPlayerSection = async({seriesViewName,AmountOfEpisode,seriesName}:{seriesViewName:string,AmountOfEpisode:number,seriesName:string})=>{
     const initializeVoiceInfo = await getVoicesInfo(seriesName);
-    console.log(`INITIALIZED VOICE INFO: `,initializeVoiceInfo);
+    console.log(`INITIALIZE VOICE INFO: `,initializeVoiceInfo);
     
     if(initializeVoiceInfo.length <= 0){
         return (

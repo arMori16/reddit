@@ -346,7 +346,7 @@ const Player = ({ seriesViewName,seriesName }: { seriesName: string,seriesViewNa
             </div>
         </div>
         )}
-        {episodes !== 0 && episodes !== null && episodes !== undefined && (
+        {episodes !== 0 && episodes !== null && episodes !== undefined ? (
             <div className={`overflow-hidden flex flex-col z-10 mt-5 player-container max-h-[34rem] relative w-[100%] max-w-[62.5rem]`}data-volume-level={'high'}>
                 {isShowPlay && (
                     <div className="w-[100%] inset-0 absolute bg-black rounded-md z-10 flex items-center justify-center">
@@ -470,7 +470,13 @@ const Player = ({ seriesViewName,seriesName }: { seriesName: string,seriesViewNa
                         </div>
                     </div>
                 </div>
+        ):(
+            <div className="flex rounded-md w-full h-[2.5rem] items-center pl-5 text-white font-semibold bg-[#28c46e]">
+                <p>There is no video :(</p>
+            </div>
         )}
+
+
     </>
 
     );

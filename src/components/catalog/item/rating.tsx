@@ -42,7 +42,9 @@ const Rating = ({ initialRate, initialUserRate,seriesName}: { initialRate: numbe
 
             // Fetch and update the series rate
             const updatedRate = await getSeriesRate(seriesName);
-            setRate(updatedRate);
+            console.log(`UPDATED RATE: `,updatedRate.avgRate);
+            
+            setRate(updatedRate.avgRate);
 
             // Close the rating modal
             setIsShow(false);
@@ -71,7 +73,7 @@ const Rating = ({ initialRate, initialUserRate,seriesName}: { initialRate: numbe
     }
     return (
         <div className="flex h-[2.35rem] max-sw-full items-center">
-            <button onClick={handleRateClick} className="flex w-[1.25rem] h-[1.25rem]">
+            <button onClick={handleRateClick} type='button' className="flex w-[1.25rem] z-20 h-[1.25rem]">
                 <img
                     src={`http://localhost:3001/media/star.svg/icons`}
                     className="flex w-full h-full"

@@ -7,9 +7,9 @@ import Poster from "@/utils/Images/Posters";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-const Catalog = async({searchParams,category}:{searchParams:{page:number},category?:string})=>{
-    const seriesInfo = await getSeriesInfo(searchParams.page - 1,24,category,24);
-    const counts = await getPageCount({category:category}) || 1;
+const Catalog = async({searchParams}:{searchParams:{page:number,status?:string,category?:string}})=>{
+    const seriesInfo = await getSeriesInfo({page:searchParams.page - 1,take:24,category:searchParams.category,skipPage:24,status:searchParams.status});
+    const counts = await getPageCount({category:searchParams.category,status:searchParams.status}) || 1;
     const categories = await axios.get('/catalog/categories');
     if(searchParams.page > counts){
         notFound()
@@ -21,7 +21,7 @@ const Catalog = async({searchParams,category}:{searchParams:{page:number},catego
                     <p className=" font-semibold uppercase"><i className="fa-solid fa-sliders text-[1rem] mr-1"></i>Category</p>
                     {categories.data.map((item:any,index:number)=>(
                         <div key={index} className="flex w-full pl-5 mt-2">
-                            <Link href={`/catalog/category/${item.genre}`} className="inline-flex w-fit hover:text-green-400 transition-all hover:scale-105 duration-500">{item.genre}</Link>
+                            <Link href={`/catalog/?page=1&category=${item.genre}`} className="inline-flex w-fit hover:text-green-400 transition-all hover:scale-105 duration-500">{item.genre}</Link>
                         </div>
                     ))}
                 </div>

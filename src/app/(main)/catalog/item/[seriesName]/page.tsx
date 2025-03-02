@@ -16,8 +16,6 @@ import CountDown from '@/components/catalog/item/CountDown';
 const ItemPage = async({params}:{params:{seriesName:string}})=>{
     const atToken = cookies().get('accessToken')?.value;
     const seriesData = await getSeriesData(params.seriesName,atToken);
-    console.log('SeriesData: ',seriesData?.Views);
-    
     const userRate = atToken ? await getUserRate(params.seriesName,atToken) : undefined;
     if(!seriesData){
         return(
@@ -27,7 +25,7 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
         )
     }
     const shikimoriRating = await defaultAxios.get(`https://shikimori.one/api/animes?search=${params.seriesName}`) || null;
-    const initializeRemainingTime = seriesData.data.NextEpisodeTime && new Date(formatToStandard(seriesData.data.NextEpisodeTime)).getTime() - new Date().getTime();
+    const initializeRemainingTime = seriesData.data.NextEpisodeTime && new Date(seriesData.data.NextEpisodeTime).getTime() - new Date().getTime();
     const timeLeft = seriesData.data.NextEpisodeTime ? initializeRemainingTime > 0 ? intervalToDuration({ start: 0, end: initializeRemainingTime}) : null : null;
     let initializeTimeLeft = timeLeft;
     return(
@@ -96,10 +94,10 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                                 <li>
                                     <div className='w-[7rem]'>Next episode:</div>
                                     <div className='flex'>
-                                        <p className='mr-2'>{seriesData.data.NextEpisodeTime}</p>
+                                        <p className='mr-2'>{formatDate(seriesData.data.NextEpisodeTime)}</p>
                                         <span> | </span>
                                         <p className='text-white mx-2'>Time Left:</p>
-                                        <CountDown remainingTime={formatToStandard(seriesData.data.NextEpisodeTime)} initializeTimeLeft={initializeTimeLeft}/>
+                                        <CountDown remainingTime={seriesData.data.NextEpisodeTime} initializeTimeLeft={initializeTimeLeft}/>
                                     </div>
                                 </li>
                             )}

@@ -7,7 +7,8 @@ import ClientPoster from "@/utils/Images/ClientPoster";
 import axios from "../api/axios";
 import { formatToStandard } from "@/utils/formattDate";
 import Link from "next/link";
-import CountDown from "../catalog/item/CountDown";
+import dynamic from "next/dynamic";
+const CountDown = dynamic(() => import("../catalog/item/CountDown"), { ssr: false });
 import { intervalToDuration } from "date-fns";
 
 
@@ -32,15 +33,13 @@ const ScheduleItems = ({initialExpiredItems,initialOngoingSeries,initialActiveAn
                 const uniqueItems = Array.from(
                     new Map(combined.map((item) => [item.SeriesName, item])).values()
                 );
-                const newItems = uniqueItems.map((item:any)=>(item.NextEpisodeTime ? {...item,NextEpisodeTime:formatToStandard(item.NextEpisodeTime)}:{...item}));
-                const items = newItems.filter((item:any)=>(item.NextEpisodeTime ? ((new Date(item.NextEpisodeTime).getTime() - new Date().getTime()) > 0) : {...item}));
+                const items = uniqueItems.filter((item:any)=>(item.NextEpisodeTime ? ((new Date(item.NextEpisodeTime).getTime() - new Date().getTime()) > 0) : {...item}));
                 console.log(`ITEMS: `,items);
                 
                 return items;
             });
             setExpiredItems((prev)=>{
-                const newExpiredItems = data.map((item:any)=>(item.NextEpisodeTime ? {...item,NextEpisodeTime:formatToStandard(item.NextEpisodeTime)}:{...item}));
-                const expiredTimeAnime = newExpiredItems.filter((item:any)=>(item.NextEpisodeTime && (new Date(item.NextEpisodeTime).getTime() - new Date().getTime()) < 0));
+                const expiredTimeAnime = data.filter((item:any)=>(item.NextEpisodeTime && (new Date(item.NextEpisodeTime).getTime() - new Date().getTime()) < 0));
                 const uniqueItems = Array.from(
                     new Map(expiredItems.map((item) => [item.SeriesName, item])).values()
                 );
@@ -61,7 +60,7 @@ const ScheduleItems = ({initialExpiredItems,initialOngoingSeries,initialActiveAn
                 <div className={`flex flex-col w-full`}>
                     <div className="flex w-full flex-wrap gap-x-2">
                         {expiredItems.map((item:any,index:number)=>(
-                            <Link href={`/admin/series/view/${item.SeriesName}`} className="flex flex-col w-[10rem] hover:scale-105 transition-transform ease-in-out duration-500">
+                            <Link key={index} href={`/admin/series/view/${item.SeriesName}`} className="flex flex-col w-[10rem] hover:scale-105 transition-transform ease-in-out duration-500">
                                 <ClientPoster containerClass="w-full h-[15rem] rounded-sm" src={`${process.env.NEXT_PUBLIC_API}/media/${item.SeriesName}/images`} alt="poster"/>
                                 <span className="w-full text-ellipsis text-white text-center overflow-hidden font-medium">
                                     <p className="line-clamp-2">{item.SeriesViewName}</p>

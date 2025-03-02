@@ -1,5 +1,6 @@
 'use server'
 import axios from '@/components/api/axios';
+import Announcements from '@/components/mainPageComponent/announcement/AnnouncementComponent';
 import CarouselWrapper from '@/components/mainPageComponent/carouselWrapper/carouselWrapper';
 import TabsComponent from '@/components/mainPageComponent/tabs-content/tabs';
 import { xui2 } from '@/components/mainPageComponent/test';
@@ -13,7 +14,7 @@ import { notFound } from 'next/navigation';
 
 export default async function Home({searchParams}:{searchParams:{page:number}}) {
   
-  const seriesInfo = await getSeriesInfo(searchParams.page - 1,);
+  const seriesInfo = await getSeriesInfo({page:searchParams.page - 1,skipPage:16,take:16});
   const counts = await getPageCount({divideNumber:16}) || 1;
   const data = await getSeasonedCatalog();
   if(searchParams.page > counts){
@@ -28,13 +29,13 @@ export default async function Home({searchParams}:{searchParams:{page:number}}) 
           <div className='block w-full flex-grow max-w-[1300px]'>
             <CarouselWrapper seasonedAnime={data.data}/>
           </div>
-          <div className='flex relative justify-center h-[15rem] max-w-[60rem]'>
-
+          <div className='flex relative my-4 w-full max-w-[70.25rem]'>
+            <Announcements />
           </div>
           <div className='flex relative flex-wrap'>
              <TabsComponent seriesData={seriesInfo}/>
           </div>
-          <div className='flex mb-[10rem] max-w-[61.25rem] h-[2.5rem] p-1 gap-x-2 font-medium text-white'>
+          <div className='flex mb-[10rem] max-w-[70.25rem] h-[2.5rem] p-1 gap-x-2 font-medium text-white'>
             {Array.from({length:counts <= 7?counts:7},(value,index)=>(
               <Link key={index} href={`http://localhost:3000/?page=${index + 1}`} className='flex bg-gray-300 h-full w-[2rem] items-center justify-center rounded-md'>
                 <p>{index + 1}</p>

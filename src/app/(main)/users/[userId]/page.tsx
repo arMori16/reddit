@@ -28,7 +28,8 @@ const fetchData = async (userId: number) => {
   const Page = async ({ params }: { params: { userId: number } }) => {
     const { profile, lastViewed, owner } = await fetchData(params.userId);
     const remasteredLastViewed = Array.from(new Map(lastViewed.userLastViewedSeries.map((item:any) => [item.SeriesName, item])).values());
-
+    console.log(`USER:::`,lastViewed);
+    
     
     profile.createdAt = formatDate(profile.createdAt);
     return(
@@ -61,7 +62,7 @@ const fetchData = async (userId: number) => {
                                             <p className='text-white font-medium line-clamp-2'>{item.SeriesViewName}</p>
                                             <span className='flex items-center justify-center absolute top-3 after:content-[""] after:absolute after:right-[-0.97rem] after:border-[#F5C543] after:border-t-[0.75rem] after:border-b-[0.75rem] after:border-r-[1rem] after:border-r-transparent text-[1rem] text-white font-medium bg-orange-yellow h-[1.5rem]'>
                                                 <img src={`${process.env.NEXT_PUBLIC_API}/media/star.white.svg/icons`} className="w-[1rem] h-[1rem] ml-1" alt="" />
-                                                <p className='pl-1 pr-2'>{(itemRate ? itemRate._avg.Value : 0).toFixed(2)}</p>
+                                                <p className='pl-1 pr-2'>{(itemRate ? Number(itemRate.avgValue) : 0).toFixed(2)}</p>
                                                 {/* <span className='h-full border-t-[0.75rem] border-[#F5C543] absolute right-[-0.98rem] border-r-[1rem] border-b-[0.75rem] border-r-transparent bg-orange-yellow'></span> */}
                                             </span>
                                         </div>

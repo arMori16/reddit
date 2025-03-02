@@ -46,8 +46,6 @@ export async function middleware(request: NextRequest) {
                   'Authorization':`Bearer ${atToken}`
               }
           });
-          console.log('DTA MIDDLEWARE: ',response.data);
-          
           if (response.data) {
               // User is authorized, allow them to proceed
               return NextResponse.next();

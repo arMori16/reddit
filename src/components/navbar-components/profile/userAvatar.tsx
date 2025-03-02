@@ -140,8 +140,11 @@ export default function UserAvatar({initialUserAvatar}:{initialUserAvatar:string
         }
     }    
     return(
-        <div className={`flex p-2 w-[10rem] h-[10rem] rounded-[4px]`}>
-            <img src={currentUserAvatar} className='w-full object-cover h-full cursor-pointer rounded-custom-sm' alt="" onClick={()=>setIsShow(true)}/>
+        <div className={`flex p-2 w-[10rem] group h-[10rem] rounded-[4px] relative`}>
+            <img src={currentUserAvatar} className='w-full object-cover h-full cursor-pointer rounded-custom-sm' alt=""/>
+            <button onClick={()=>setIsShow(true)} className="flex items-center transition-opacity duration-300 justify-center opacity-0 group-hover:opacity-100 z-50 inset-[8px] absolute bg-gray-200 bg-opacity-80 rounded-custom-sm ">
+                <p className="text-white font-medium">Change avatar</p>
+            </button>
             <input type="file" accept='image/*' className="hidden" id='file-upload' onChange={handleFileChange}/>
             {isShow && (
                 <div className='flex fixed inset-0 justify-center z-30 items-center rounded-md overflow-hidden'>

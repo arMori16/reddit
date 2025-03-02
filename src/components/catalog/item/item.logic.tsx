@@ -4,10 +4,7 @@ import { toast } from "react-toastify";
 
 export const setSeriesRate = async(seriesName:string,value:number)=>{
     try{
-        const atToken = Cookies.get('accessToken');
-        console.log('Access token: ',atToken);
-        console.log('Value: ',value);
-        
+        const atToken = Cookies.get('accessToken');   
         const req = await axios.put('/catalog/item/rate',{
             seriesName:seriesName,
             value:value
@@ -17,8 +14,6 @@ export const setSeriesRate = async(seriesName:string,value:number)=>{
                 'Authorization':`Bearer ${atToken}`
             }
         })
-        console.log(`User's rate: `,req.data);
-        
         toast.success('Rated successfully')
         return req.data.Value
     }catch(err){
@@ -36,7 +31,6 @@ export const getUserRate = async(seriesName:string,atToken:string | undefined)=>
                 'Authorization':`Bearer ${atToken}`
             }
         })
-        console.log(`User's rate: `,req.data);
         return req.data.Value
     }catch(err){
         console.error(`Couldn't set rate for the series!Error:${err}`);
@@ -50,18 +44,17 @@ export const getSeriesRate = async(seriesName:String)=>{
     });
     return data.data;
 }
-export const getItemsRate = async(seriesNames:string[])=>{
+export const getItemsRate = async(seriesNames:string[],atToken?:string)=>{
     try{
         const itemsRate = await axios.get('catalog/items/rate',{
             params:{
                 seriesNames:seriesNames
+            },
+            headers:{
+                'Authorization':`Bearer ${atToken}`
             }
         })
-        console.log(`IT's RESULT DATA: `,itemsRate.data);
-        const data = itemsRate.data.map((item:any,index:number)=>{
-            return {SeriesName:item.SeriesName,Rate:item._avg.Value}
-        })
-        return data;
+        return itemsRate.data;
     }catch(err){
         console.error(`Error: ${err}`);
         
@@ -76,7 +69,9 @@ export const getUserRates = async(atToken:string | undefined,seriesNames:string[
             headers:{
                 'Authorization':`Bearer ${atToken}`
             }
-        })
+        });
+        /* console.log(`HAHAHAHA: `,userRates.data);
+         */
         return userRates.data;
     }catch(err){
         console.error(`Error: ${err}`);
@@ -118,8 +113,6 @@ export const getSeriesData = async(seriesName:string,atToken?:string)=>{
                 'Authorization':`Bearer ${atToken}`
             }
         }) : null
-        console.log(`RESPONSE : `,res.data);
-        
         return {data:res.data,seriesRate:seriesRate.avgRate,count:seriesRate.count,Views:res.data.Views,userListItem:userListItem?.data};
     }catch(err){
         console.error(`Couldn't get series data: ${err}`);
@@ -168,3 +161,12 @@ export const list = [
     {key:'On Hold',value:'clock',color:'#465DF3'},
     {key:'Dropped',value:'eye-slash',color:'#F34669'}
 ]
+export const schedule = [
+    { day: 'Monday', value: 1 },
+    { day: 'Tuesday', value: 2 },
+    { day: 'Wednesday', value: 3 },
+    { day: 'Thursday', value: 4 },
+    { day: 'Friday', value: 5 },
+    { day: 'Saturday', value: 6 },
+    { day: 'Sunday', value: 0 } // Sunday is usually 0 in JS (getDay())
+];

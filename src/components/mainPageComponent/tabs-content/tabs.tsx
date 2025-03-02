@@ -1,7 +1,5 @@
 
-
-import axios from '@/components/api/axios';
-import { getUserRate, getSeriesRate, getItemsRate, getUserRates } from '@/components/catalog/item/item.logic';
+import { getUserRates } from '@/components/catalog/item/item.logic';
 import Rating from '@/components/catalog/item/rating';
 import '@/components/mainPageComponent/tabs-content/tabs.css';
 import Poster from '@/utils/Images/Posters';
@@ -14,8 +12,8 @@ const TabsComponent = async({seriesData}:{seriesData:any[]})=>{
     const seriesNames = seriesData.map((item:any)=>(item.SeriesName));
     const userRates = await getUserRates(atToken,seriesNames);
     return(
-        <div className='flex relative flex-wrap max-w-[61.25rem] h-auto'>
-            <div className="flex flex-col relative border-b-[#FFD04B] text-[1.25rem] font-medium border-b-[3px] bg-[#3C3C3C] rounded-t-lg min-w-[3rem] w-full text-rose-50 p-2 pl-4">
+        <div className='flex relative flex-wrap max-w-[70.25rem] h-auto'>
+            <div className="flex flex-col relative border-b-[#FFD04B] text-[1.25rem] font-medium border-b-[3px] bg-gray-1B rounded-t-lg min-w-[3rem] w-full text-rose-50 p-2 pl-4">
                 What's new on the site
             </div>
             <div className='flex relative flex-wrap w-[100%] gap-x-5'>

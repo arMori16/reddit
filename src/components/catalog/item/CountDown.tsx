@@ -16,6 +16,7 @@ export default function CountDown({ remainingTime, initializeTimeLeft, classProp
     useEffect(() => {
         const interval = setInterval(() => {
             const endDate = new Date(remainingTime);
+        
             const currentTime = new Date();
             const remainingTimeLeft = differenceInSeconds(endDate, currentTime);
 

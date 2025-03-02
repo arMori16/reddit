@@ -6,7 +6,7 @@ import voiceStorage from "@/components/useZustand/player/zustandVoice";
 import menuStorage from "@/components/useZustand/zustandMenu";
 import { getDataView, handleDeleteEpisode, updateSeries } from "@/utils/admin.logic";
 import { SeriesInfo } from "@/utils/dto/adminDto/seriesInfo.dto";
-import { formatToStandard } from "@/utils/formattDate";
+import { formatDate, formatToStandard } from "@/utils/formattDate";
 import YesNoButton from "@/utils/handleYesNoButton";
 import useOutsideCommon from "@/utils/hooks/useOutsideCommon";
 import ClientPoster from "@/utils/Images/ClientPoster";
@@ -107,9 +107,10 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
         console.log(`DATA submit: `,data);
         if(data.NextEpisodeTime){
             try{
-                console.log(`DATA FORMATTED: `,formatToStandard(data.NextEpisodeTime));
+                const time = formatToStandard(data.NextEpisodeTime)
+                console.log(`DATA FORMATTED: `,time);
                 
-                updateSeries({...data,NextEpisodeTime:data.NextEpisodeTime,CurrentEpisode:Number(data.CurrentEpisode)},params.seriesName);
+                updateSeries({...data,NextEpisodeTime:time,CurrentEpisode:Number(data.CurrentEpisode)},params.seriesName);
             }catch(err){
                 if(err instanceof RangeError){
                     toast.info('Remember to write the month using only its first three letters.',{autoClose:10000})
@@ -317,7 +318,7 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                                                     (e.g 08Feb 17:00)
                                                 </span>
                                             </span>:
-                                            <textarea className="bg-transparent min-w-[2rem] ml-2" {...register('NextEpisodeTime')} defaultValue={data.NextEpisodeTime}></textarea>
+                                            <textarea className="bg-transparent min-w-[2rem] ml-2" {...register('NextEpisodeTime')} defaultValue={data.NextEpisodeTime && formatDate(data.NextEpisodeTime)}></textarea>
                                         </div>
                                     )}
                                 </li>

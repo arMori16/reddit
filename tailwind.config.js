@@ -99,6 +99,7 @@ module.exports = {
         'custom-320':{ max: '20rem',min:'0.1rem'},
         'custom-768':{ max: '48rem',min:'36rem'},
         'custom-1024':{ max: '64rem',min:'29.4rem'},
+        'custom-1024-max':{ max: '64rem'},
         'custom-xl2':{max:'71.25rem'},
         landscape:{
           raw:"(orientation:landscape)"
