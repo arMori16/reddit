@@ -1,6 +1,6 @@
 
 import '@/app/(main)/catalog/item/[seriesName]/page.css'
-import axios from '@/components/api/axios';
+import axios from '@/api/axios';
 import defaultAxios from "axios";
 import { getSeriesData, getSeriesRate, getUserRate } from '@/components/catalog/item/item.logic';
 import Rating from '@/components/catalog/item/rating';
@@ -12,6 +12,7 @@ import Poster from '@/utils/Images/Posters';
 import { differenceInMilliseconds, intervalToDuration } from 'date-fns';
 import { formatDate, formatToStandard } from '@/utils/formattDate';
 import CountDown from '@/components/catalog/item/CountDown';
+import Link from 'next/link';
 
 const ItemPage = async({params}:{params:{seriesName:string}})=>{
     const atToken = cookies().get('accessToken')?.value;
@@ -24,10 +25,12 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
             </div>
         )
     }
-    const shikimoriRating = await defaultAxios.get(`https://shikimori.one/api/animes?search=${params.seriesName}`) || null;
+    const shikimoriRating = seriesData.data.Shikimori ? await defaultAxios.get(seriesData.data.Shikimori) : null;
     const initializeRemainingTime = seriesData.data.NextEpisodeTime && new Date(seriesData.data.NextEpisodeTime).getTime() - new Date().getTime();
     const timeLeft = seriesData.data.NextEpisodeTime ? initializeRemainingTime > 0 ? intervalToDuration({ start: 0, end: initializeRemainingTime}) : null : null;
     let initializeTimeLeft = timeLeft;
+    console.log(`SHIKIMORI: `,shikimoriRating?.data);
+    
     return(
         <div className="flex flex-col items-center justify-center w-full h-full bg-[#242424]">
             <div className='w-[68rem] max-w-full flex flex-col items-center  h-full shadow-[0px_0px_12px_black]'>
@@ -53,10 +56,13 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                         </div>
                         <div className='flex items-center border-y-[1px] border-gray-400'>
                             <Rating seriesName={params.seriesName} initialRate={seriesData?.seriesRate ? seriesData.seriesRate : 0} initialUserRate={userRate}/>
-                            <div className='flex items-center justify-center font-medium min-w-[4rem] bg-white text-black h-[76%] rounded-md p-1'>
-                                <img src={`${process.env.NEXT_PUBLIC_API}/media/shikimori-svg.svg/icons`} className='w-[1rem] h-[1rem] mr-1' alt="" />
-                                {shikimoriRating?.data[0].score}
-                            </div>
+                            {shikimoriRating?.data && (
+                                <a href={`https://shikimori.one/${shikimoriRating.data[0].url}`} className='flex items-center justify-center font-medium min-w-[4rem] bg-white text-black h-[76%] rounded-md p-1'>
+                                    <img src={`${process.env.NEXT_PUBLIC_API}/media/shikimori-svg.svg/icons`} className='w-[1rem] h-[1rem] mr-1' alt="" />
+                                    {shikimoriRating.data && shikimoriRating.data[0].score}
+                                </a>
+
+                            )}
                         </div>
                         <ul className='flex flex-col mt-3'>
                             <li>
@@ -71,9 +77,9 @@ const ItemPage = async({params}:{params:{seriesName:string}})=>{
                             <li>
                                 <div className='w-[6rem]'>Genre:</div> 
                                 <div className='flex gap-1 ml-5 flex-wrap'>{seriesData.data.Genre.map((item:string,index:number)=>(
-                                    <div key={index} className='flex border-2 border-gray-500 hover:border-rose-50 rounded-md break-words font-medium text-[0.85rem] py-[2px] px-[4px] items-center justify-center'>
+                                    <Link href={`/catalog?page=1&category=${item}`} key={index} className='flex border-2 border-gray-500 hover:border-rose-50 cursor-pointer rounded-md break-words font-medium text-[0.85rem] py-[2px] px-[4px] items-center justify-center'>
                                         {item}
-                                    </div>
+                                    </Link>
                                     ))}
                                 </div>
                             </li>

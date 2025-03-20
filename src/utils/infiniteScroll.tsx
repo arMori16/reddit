@@ -1,6 +1,6 @@
 'use client'
 import {debounce} from "lodash";
-import axios from "@/components/api/axios";
+import axios from "@/api/axios";
 import usePageCounter from "@/components/useZustand/zustandPageCounter";
 import { Dispatch, RefObject, SetStateAction, useEffect, useRef, useState } from "react"
 import { CommentsDto } from "./dto/adminDto/comments.dto";

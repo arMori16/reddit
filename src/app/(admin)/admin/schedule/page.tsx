@@ -1,7 +1,7 @@
 'use server'
 
 import ScheduleItems from "@/components/admin/schedule";
-import axios from "@/components/api/axios";
+import axios from "@/api/axios";
 import { formatToStandard } from "@/utils/formattDate";
 import { intervalToDuration } from "date-fns";
 import { cookies } from "next/headers";

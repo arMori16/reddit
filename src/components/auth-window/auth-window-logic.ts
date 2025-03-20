@@ -1,8 +1,8 @@
 "use client"
 import Cookies from "js-cookie";
-import axios from "../api/axios";
+import axios from "../../api/axios";
 import origAxios, { AxiosError } from 'axios';
-import { tokenManager } from "../api/setup-token";
+import { tokenManager } from "../../api/setup-token";
 import { toast } from "react-toastify";
 
 

@@ -4,12 +4,12 @@ import useOutsideOne from "@/utils/hooks/useOutsideOne";
 import ReactCrop, { centerCrop, Crop, makeAspectCrop, PixelCrop } from 'react-image-crop'
 import { useEffect, useRef, useState } from "react";
 import "react-image-crop/dist/ReactCrop.css";
-import axios from "@/components/api/axios";
+import axios from "@/api/axios";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 
-export default function UserAvatar({initialUserAvatar}:{initialUserAvatar:string}){
+export default function UserAvatar({initialUserAvatar,owner}:{initialUserAvatar:string,owner:boolean}){
     const componentRef = useRef<HTMLLabelElement>(null);
     const imageRef = useRef<HTMLImageElement | null>(null);
     const cropRef = useRef<HTMLDivElement | null>(null);
@@ -141,12 +141,14 @@ export default function UserAvatar({initialUserAvatar}:{initialUserAvatar:string
     }    
     return(
         <div className={`flex p-2 w-[10rem] group h-[10rem] rounded-[4px] relative`}>
-            <img src={currentUserAvatar} className='w-full object-cover h-full cursor-pointer rounded-custom-sm' alt=""/>
-            <button onClick={()=>setIsShow(true)} className="flex items-center transition-opacity duration-300 justify-center opacity-0 group-hover:opacity-100 z-50 inset-[8px] absolute bg-gray-200 bg-opacity-80 rounded-custom-sm ">
-                <p className="text-white font-medium">Change avatar</p>
-            </button>
+            <img src={currentUserAvatar} className={`w-full object-cover h-full rounded-custom-sm ${owner && 'cursor-pointer'}`} alt=""/>
+            {owner && (
+                <button onClick={()=>setIsShow(true)} className="flex items-center transition-opacity duration-300 justify-center opacity-0 group-hover:opacity-100 z-50 inset-[8px] absolute bg-gray-200 bg-opacity-80 rounded-custom-sm ">
+                    <p className="text-white font-medium">Change avatar</p>
+                </button>
+            )}
             <input type="file" accept='image/*' className="hidden" id='file-upload' onChange={handleFileChange}/>
-            {isShow && (
+            {isShow && owner && (
                 <div className='flex fixed inset-0 justify-center z-30 items-center rounded-md overflow-hidden'>
                     <label htmlFor="file-upload" className="flex outline-dashed outline-white outline-[2px] outline-offset-[-2rem] w-[26rem] h-[16rem] bg-gray-200 justify-center items-center rounded-[4px] flex-col" style={{
                             transform: `scale(${scale})`,

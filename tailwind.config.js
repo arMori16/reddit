@@ -99,8 +99,13 @@ module.exports = {
         'custom-320':{ max: '20rem',min:'0.1rem'},
         'custom-768':{ max: '48rem',min:'36rem'},
         'custom-1024':{ max: '64rem',min:'29.4rem'},
+        'custom-1024-836':{ max: '64rem',min:'53.125rem'},
+        'custom-836-576':{ max: '53.125rem',min:'36rem'},
+        'custom-576':{ max: '36rem', min: '26rem'},
         'custom-1024-max':{ max: '64rem'},
         'custom-xl2':{max:'71.25rem'},
+        'custom-920-675':{max:'57.5rem',min:'42.187rem'},
+        'custom-675':{max:'42.187rem'},
         landscape:{
           raw:"(orientation:landscape)"
         }

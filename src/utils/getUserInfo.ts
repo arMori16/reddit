@@ -1,4 +1,4 @@
-import axios from "@/components/api/axios";
+import axios from "@/api/axios";
 
 
 

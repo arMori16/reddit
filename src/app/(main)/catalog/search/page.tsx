@@ -1,6 +1,6 @@
 'use server'
 
-import axios from "@/components/api/axios";
+import axios from "@/api/axios";
 import Poster from "@/utils/Images/Posters";
 import Link from "next/link";
 

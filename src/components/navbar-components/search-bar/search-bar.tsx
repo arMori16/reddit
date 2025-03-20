@@ -1,5 +1,5 @@
 'use client'
-import axios from '@/components/api/axios';
+import axios from '@/api/axios';
 import '@/components/navbar-components/search-bar/search-bar.css'
 import menuStorage from '@/components/useZustand/zustandMenu';
 import usePageCounter from '@/components/useZustand/zustandPageCounter';

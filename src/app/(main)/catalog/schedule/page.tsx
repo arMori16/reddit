@@ -1,6 +1,6 @@
 'use server'
 
-import axios from "@/components/api/axios";
+import axios from "@/api/axios";
 import { getItemsRate, schedule } from "@/components/catalog/item/item.logic";
 import ScheduleComponent from "@/components/catalog/schedule/ScheduleCatalog";
 import { cookies } from "next/headers";

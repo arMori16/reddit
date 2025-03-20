@@ -1,6 +1,6 @@
 'use server'
 
-import axios from "@/components/api/axios"
+import axios from "@/api/axios"
 import CountDown from "@/components/catalog/item/CountDown";
 import { formatDate } from "@/utils/formattDate";
 import Poster from "@/utils/Images/Posters";
@@ -15,8 +15,6 @@ export default async function Announcements(){
     });
     const announcements = await axios.get('/catalog/items/announcement');
     const remasteredScheduleItems = scheduleItems.data.filter((item:any)=>new Date(item.NextEpisodeTime).getTime() - new Date().getTime() > 0);
-    console.log(`Remastered items: `,remasteredScheduleItems);
-    
     const timeLeft = remasteredScheduleItems.map((item:any)=>intervalToDuration({start:0,end:new Date(item.NextEpisodeTime).getTime() - new Date().getTime()}));
     return(
         <div className="flex w-full custom-1024-max:flex-col  justify-between">
@@ -47,7 +45,7 @@ export default async function Announcements(){
                     <span className="group-hover:w-[9.25rem] w-0 h-[1px] rounded-sm bg-white opacity-0 origin-left transition-all duration-[400ms] ease-out group-hover:opacity-100"></span>
                 </Link>
                 {announcements.data.length > 0 ? announcements.data.map((item:any,index:number)=>(
-                    <Link key={index} href={`/catalog/item/${item.SeriesName}`} className="flex text-white border-b-[1px] border-b-gray-400 w-full h-[2.8rem] items-center hover:shadow-[inset_4px_0px_0px] hover:shadow-green-400 transition-shadow duration-500 ease-in-out" style={{backgroundColor:index % 2 === 1 ? '#2E2E2E' : '#3C3C3C'}}>
+                    <Link key={index} href={`/catalog/item/${item.SeriesName}`} className={`flex text-white border-b-[1px] border-b-gray-400 w-full h-[2.8rem] items-center hover:shadow-[inset_4px_0px_0px] hover:shadow-green-400 transition-shadow duration-500 ease-in-out ${announcements.data.length === index+1 && 'rounded-b-custom-sm'}`} style={{backgroundColor:index % 2 === 1 ? '#2E2E2E' : '#3C3C3C'}}>
                         <p className="break-words h-full flex-shrink-0 max-w-[3.75rem] border-r-[1px] border-r-gray-400 custom-s-200:hidden text-center text-[0.9rem]">{formatDate(item.createdAt)}</p>
                         <div className="flex relative max-w-full w-full h-full items-center">
                             <p className="text-[0.9rem] absolute left-0 overflow-hidden whitespace-nowrap truncated-text w-full font-medium ml-1">{item.SeriesViewName}</p>

@@ -1,5 +1,5 @@
 'use server'
-import axios from '@/components/api/axios';
+import axios from '@/api/axios';
 import Announcements from '@/components/mainPageComponent/announcement/AnnouncementComponent';
 import CarouselWrapper from '@/components/mainPageComponent/carouselWrapper/carouselWrapper';
 import TabsComponent from '@/components/mainPageComponent/tabs-content/tabs';

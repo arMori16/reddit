@@ -1,7 +1,7 @@
 "use client"
 import "@/app/globals.css"
-import axios from "@/components/api/axios";
-import ClientRefreshToken from "@/components/api/clientRefreshToken";
+import axios from "@/api/axios";
+import ClientRefreshToken from "@/api/clientRefreshToken";
 import Avatar from "@/components/navbar-components/avatar/avatar";
 import '@fortawesome/fontawesome-free/css/all.css';
 import Cookies from "js-cookie";

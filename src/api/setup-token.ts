@@ -1,7 +1,7 @@
 'use client'
 import axios  from "./axios";
 import * as jwt_decode from "jwt-decode";
-import {Decoded} from '../api/interfaces/decoded.interface';
+import {Decoded} from './interfaces/decoded.interface';
 import Cookies from "js-cookie";
 import { createContext, useContext, useEffect } from "react";
 

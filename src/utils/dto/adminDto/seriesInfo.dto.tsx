@@ -7,6 +7,7 @@ export interface SeriesInfo{
     Type:string,
     ReleaseYear:string,
     Genre:string[],
+    Shikimori:string | null,
     Studio:string[],
     AmountOfEpisode:number,
     VoiceActing:string[],

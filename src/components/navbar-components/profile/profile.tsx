@@ -3,7 +3,7 @@ import { deleteUserListItem, list, updateUserList } from "@/components/catalog/i
 import useProfileListItems from "@/components/useZustand/profile/zustandProfileUserList";
 import { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
-import axios from "@/components/api/axios";
+import axios from "@/api/axios";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import ClientPoster from "@/utils/Images/ClientPoster";

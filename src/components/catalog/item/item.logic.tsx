@@ -1,4 +1,4 @@
-import axios from "@/components/api/axios";
+import axios from "@/api/axios";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 

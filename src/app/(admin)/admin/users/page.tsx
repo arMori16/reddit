@@ -1,6 +1,6 @@
 'use client'
 import AdminUsers from "@/components/admin/usersComponent";
-import axios from "@/components/api/axios";
+import axios from "@/api/axios";
 import SearchBar from "@/components/navbar-components/search-bar/search-bar";
 import usePageCounter from "@/components/useZustand/zustandPageCounter";
 import { formatDate } from "@/utils/formattDate";

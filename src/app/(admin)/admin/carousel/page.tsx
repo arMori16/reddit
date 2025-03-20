@@ -1,6 +1,6 @@
 "use server"
 
-import axios from "@/components/api/axios";
+import axios from "@/api/axios";
 import AdminCarousel from "@/components/mainPageComponent/carouselWrapper/adminCarousel";
 import { cookies } from "next/headers";
 

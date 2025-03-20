@@ -1,7 +1,7 @@
 "use client"
 import React, { useState,useEffect,useRef } from 'react';
 import '../avatar/avatar.css'
-import axios from '../../api/axios';
+import axios from '../../../api/axios';
 import { useDispatch } from 'react-redux';
 import { logout } from '@/components/redux/userSlice';
 import Cookies from 'js-cookie';

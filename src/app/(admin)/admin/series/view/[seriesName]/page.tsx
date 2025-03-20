@@ -1,6 +1,6 @@
 'use client'
 
-import axios from "@/components/api/axios";
+import axios from "@/api/axios";
 import { getVoicesInfo } from "@/components/player/player.logic";
 import voiceStorage from "@/components/useZustand/player/zustandVoice";
 import menuStorage from "@/components/useZustand/zustandMenu";
@@ -46,6 +46,7 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
             SeriesViewName: data?.SeriesViewName,
             Status: data?.Status,
             Type: data?.Type,
+            Shikimori: data?.Shikimori,
             ReleaseYear: data?.ReleaseYear,
             Genre: data?.Genre,
             Studio: data?.Studio,
@@ -249,7 +250,12 @@ const ViewSeries = ({params}:{params:{seriesName:string}})=>{
                                 </li>
                                 <li className="flex">
                                     <div className='w-[6rem]'>Status:</div>
-                                    <textarea className='ml-5 bg-transparent min-w-[2rem]' defaultValue={data.Status} {...register('Status')}></textarea></li>
+                                    <textarea className='ml-5 bg-transparent min-w-[2rem]' defaultValue={data.Status} {...register('Status')}></textarea>
+                                </li>
+                                <li className="flex">
+                                    <div className='w-[6rem]'>Shikimori:</div>
+                                    <textarea className='ml-5 bg-transparent min-w-[2rem]' defaultValue={data.Shikimori || 'null'} {...register('Shikimori')}></textarea>
+                                </li>
                                 <li className="flex">
                                     <div className='w-[6rem]'>Type:</div> 
                                     <textarea className='ml-5 bg-transparent min-w-[2rem]' defaultValue={data.Type} {...register('Type')}></textarea></li>

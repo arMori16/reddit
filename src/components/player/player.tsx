@@ -11,7 +11,7 @@ import { io, Socket } from 'socket.io-client';
 import useOutsideOne from "@/utils/hooks/useOutsideOne";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
-import { tokenManager } from "../api/setup-token";
+import { tokenManager } from "../../api/setup-token";
 
 
 const Player = ({ seriesViewName,seriesName }: { seriesName: string,seriesViewName: string })=>{

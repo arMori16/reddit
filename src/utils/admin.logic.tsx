@@ -1,5 +1,5 @@
 
-import axios from "@/components/api/axios"
+import axios from "@/api/axios"
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import { SeriesInfo } from "./dto/adminDto/seriesInfo.dto";
@@ -118,6 +118,7 @@ export const getDataView = async(seriesName:string):Promise<SeriesInfo>=>{
             Type:getData.data.Type,
             ReleaseYear:getData.data.ReleaseYear,
             Genre:getData.data.Genre,
+            Shikimori:getData.data.Shikimori,
             Studio:getData.data.Studio,
             AmountOfEpisode:getData.data.AmountOfEpisode,
             VoiceActing:getData.data.VoiceActing,
@@ -136,6 +137,7 @@ export const getDataView = async(seriesName:string):Promise<SeriesInfo>=>{
             ReleaseYear:'',
             Genre:[''],
             Studio:[''],
+            Shikimori:'',
             AmountOfEpisode:0,
             VoiceActing:[''],
             NextEpisodeTime:'',

@@ -1,5 +1,5 @@
 
-import axios from "../api/axios";
+import axios from "../../api/axios";
 import { EnumPlayerQuality } from "./types/player.type";
 
 const useVideo = async(seriesName:any,voice:string,quality:EnumPlayerQuality,episode:number)=>{

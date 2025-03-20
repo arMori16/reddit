@@ -1,6 +1,6 @@
 'use client'
 
-import axios from "@/components/api/axios";
+import axios from "@/api/axios";
 import { formatDate } from "@/utils/formattDate";
 import ClientPoster from "@/utils/Images/ClientPoster";
 import Link from "next/link";

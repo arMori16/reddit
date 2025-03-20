@@ -239,14 +239,14 @@ const Comments = ({seriesName}:{seriesName:string})=>{
                                     {showReplyState[comment.Id] && (
                                         getAllReplies(comment.Id, childComments).map((child:any,index:number)=>(
                                             <div key={index} className="block relative w-full max-w-full pt-2 mb-4 bg-[#3C3C3C] min-h-[7.5rem] pl-2 border-l-2 border-l-green-400">
-                                                <Link href={''} className="float-left w-[6.25rem] h-[6.25rem]  custom-xs:min-w-[2.65rem] custom-xs:mt-[0.33rem] custom-xs:h-[2.65rem] mr-3">
+                                                <Link href={`/users/${child.UserId}`} className="float-left w-[6.25rem] h-[6.25rem]  custom-xs:min-w-[2.65rem] custom-xs:mt-[0.33rem] custom-xs:h-[2.65rem] mr-3">
                                                     <img src={`${process.env.NEXT_PUBLIC_API}/user/avatar/${child.Id}`} className="block object-cover rounded-lg w-full h-full" alt="" />
                                                 </Link>
                                                 <div className="relative justify-between flex">
                                                     <div className="flex flex-col">
-                                                        <span className="text-[#B3DCC5]"> 
+                                                        <Link href={`/users/${child.UserId}`} className="text-[#B3DCC5]"> 
                                                             {child.UserName}
-                                                        </span>
+                                                        </Link>
                                                         <span className="relative flex items-center justify-center bg-[#629377] text-rose-50 rounded-md  min-w-[5rem] w-[5.5rem] max-w-[6rem] h-5 text-[11px] px-1">
                                                             {child.createdAt}
                                                         </span>

@@ -1,6 +1,6 @@
 "use client"
 import { format } from "date-fns";
-import axios from "../api/axios"
+import axios from "../../api/axios"
 import { formatDate } from "@/utils/formattDate";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";

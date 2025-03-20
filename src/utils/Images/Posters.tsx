@@ -1,5 +1,5 @@
 'use server'
-import axios from '@/components/api/axios';
+import axios from '@/api/axios';
 
 
 export default async function Poster({ src, alt ,conteainerClass }:{src:string,alt:string,conteainerClass:string}) {

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { EnumPlayerQuality, HTMLCustomVideoElement } from "./types/player.type";
 import useVideo from "./videoFormatter";
 import Hls from "hls.js";
-import axios from "../api/axios";
+import axios from "../../api/axios";
 import axiosDefault from "axios";
 import playbackPosition from "../useZustand/zustandStorage";
 import numOfEpisodeStorage from "../useZustand/player/zustandNumOfEpisode";

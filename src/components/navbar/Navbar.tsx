@@ -6,15 +6,16 @@ import Avatar from '../navbar-components/avatar/avatar';
 import NavbarLogin from './navbar-login';
 import SearchBar from '../navbar-components/search-bar/search-bar';
 import Link from 'next/link';
-import axios from '../api/axios';
+import axios from '../../api/axios';
 import { Home } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import showProfileZustand from '../useZustand/profile/zustandProfile';
+import { useTranslation } from 'react-i18next';
 
 
 const Navbar = ({user,userFirstName}:{user:any,userFirstName?:any | null}) => {
     const [isFixed, setIsFixed] = useState(false);
-    const {updateIsShowProfile} = showProfileZustand();
+    const { t, i18n } = useTranslation();
     useEffect(() => {
         const handleScroll = () => {
             if (window.scrollY > 274) { // Фиксировать при прокрутке на 50px
@@ -38,14 +39,20 @@ const Navbar = ({user,userFirstName}:{user:any,userFirstName?:any | null}) => {
                     <div className={`flex h-full w-[32%] text-[0.8rem] font-medium text-white`}>
                         <Link href={`/`} className={`flex flex-col h-full w-full relative justify-center items-center rounded-md duration-500 ease-in-out hover:bg-green-400`}>
                             <i className={`fa fa-home mr-1 group-hover:text-green-400`} aria-hidden="true"></i>
-                            <p className={`block`}>Home</p>
+                            <p className={`block`}>{t('home')}</p>
                         </Link>
                     </div>
-                    <div className='flex h-full w-[32%] text-[0.8rem] font-medium text-white'>
-                        <Link href={`/catalog`} className={`flex flex-col h-full w-full rounded-md relative justify-center items-center duration-500 ease-in-out hover:bg-green-400`}>
+                    <div className='flex h-full w-[32%] text-[0.8rem] font-medium text-white relative'>
+                        <Link href={`/catalog`} className={`flex flex-col h-full w-full rounded-md justify-center items-center duration-500 ease-in-out hover:bg-green-400`}>
                             <i className={`fa-solid fa-newspaper pt-[2px] mr-1`} aria-hidden="true"></i>
                             <p className={`block`}>Catalog</p>
                         </Link>
+                        <div className='flex absolute top-full z-50 flex-col px-2 bg-gray-300 text-white h-[5rem]'>
+                            <Link href={'/catalog/top'} className='flex items-center justify-center w-full h-[1.5rem]'>
+                                <i className='fa-solid fa-chart-simple text-[0.75rem]'></i>
+                                <p>TOP-100</p>
+                            </Link>
+                        </div>
                     </div>
                     {user === 'registered' ? (
                         <div className='flex relative w-[32%] h-full items-center font-medium text-white '>
@@ -84,8 +91,17 @@ const Navbar = ({user,userFirstName}:{user:any,userFirstName?:any | null}) => {
                             <p className={`${isFixed && 'hidden'}`}>Home</p>
                         </Link>
                     </div>
-                    <div className='flex h-full mx-2 gap-x-4 items-center text-[1rem] font-medium text-white'>
-                        <Link href={`/catalog`} className={`flex relative group items-center duration-300 ease-in-out ${!isFixed && 'hover:text-green-400 uppercase'}`}>
+                    <div className='flex h-full mx-2 gap-x-4 items-center relative group text-[1rem] font-medium text-white'>
+                        <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-out w-[7rem] rounded-b-sm opacity-100 absolute right-[-0.5rem] top-full z-50 bg-gray-2E text-white">
+                            <div className="overflow-hidden flex flex-col">
+                                <Link href={'/catalog/top'} className="flex border-b border-gray-500 hover:text-green-400 items-center whitespace-nowrap justify-center w-full h-[2rem]">
+                                    <i className="fa-solid fa-chart-simple text-[0.85rem] mr-1"></i>
+                                    <p>TOP-100</p>
+                                </Link>
+                            </div>
+                        </div>
+
+                        <Link href={`/catalog`} className={`flex group items-center relative duration-300 ease-in-out ${!isFixed && 'hover:text-green-400 uppercase'}`}>
                             <i className={`fa-solid ${isFixed && 'group-hover:text-green-400'} fa-newspaper pt-[2px] text-[0.85rem] mr-1`} aria-hidden="true"></i>
                             <p className={`${isFixed && 'hidden'}`}>Catalog</p>
                             {isFixed && (

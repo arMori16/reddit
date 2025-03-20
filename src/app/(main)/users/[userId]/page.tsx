@@ -1,5 +1,5 @@
 'use server'
-import axios from '@/components/api/axios';
+import axios from '@/api/axios';
 import { list } from '@/components/catalog/item/item.logic';
 import ProfileUserList from '@/components/navbar-components/profile/profile';
 import UserAvatar from '@/components/navbar-components/profile/userAvatar';
@@ -38,7 +38,7 @@ const fetchData = async (userId: number) => {
                 <span className='absolute top-0 left-[1rem] text-white font-semibold text-[1.25rem]'>Profile</span>
             </div>
             <div className='flex min-h-[28rem] w-[87%] rounded-b-md bg-gray-2E p-5 custom-xs:flex-wrap'>
-                <UserAvatar initialUserAvatar={`${process.env.NEXT_PUBLIC_API}/user/avatar/${params.userId}`}/>
+                <UserAvatar initialUserAvatar={`${process.env.NEXT_PUBLIC_API}/user/avatar/${params.userId}`} owner={owner}/>
                 <div className='flex flex-col max-w-full min-w-[6rem] custom-xs:ml-0 ml-2 '>
                     <div className='text-white text-[1rem] max-w-full mt-2  font-semibold flex flex-col'>
                         <div className='inline-flex w-fit px-1 bg-green-400 rounded-sm'>
@@ -61,7 +61,7 @@ const fetchData = async (userId: number) => {
                                         <div className='flex text-ellipsis overflow-hidden text-center'>
                                             <p className='text-white font-medium line-clamp-2'>{item.SeriesViewName}</p>
                                             <span className='flex items-center justify-center absolute top-3 after:content-[""] after:absolute after:right-[-0.97rem] after:border-[#F5C543] after:border-t-[0.75rem] after:border-b-[0.75rem] after:border-r-[1rem] after:border-r-transparent text-[1rem] text-white font-medium bg-orange-yellow h-[1.5rem]'>
-                                                <img src={`${process.env.NEXT_PUBLIC_API}/media/star.white.svg/icons`} className="w-[1rem] h-[1rem] ml-1" alt="" />
+                                                <img src={`/icons/star.white.svg`} className="w-[1rem] h-[1rem] ml-1" alt="" />
                                                 <p className='pl-1 pr-2'>{(itemRate ? Number(itemRate.avgValue) : 0).toFixed(2)}</p>
                                                 {/* <span className='h-full border-t-[0.75rem] border-[#F5C543] absolute right-[-0.98rem] border-r-[1rem] border-b-[0.75rem] border-r-transparent bg-orange-yellow'></span> */}
                                             </span>

@@ -1,4 +1,4 @@
-import axios from "@/components/api/axios";
+import axios from "@/api/axios";
 import { SeriesInfo } from "./dto/adminDto/seriesInfo.dto";
 
 const getSeriesInfo = async({page,take,category,skipPage = 16,status}:{page:number,take:number,category?:string,status?:string,skipPage:number})=>{
