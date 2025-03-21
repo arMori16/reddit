@@ -3,10 +3,11 @@ import usePageCounter from "@/components/useZustand/zustandPageCounter";
 import { handleCommentDelete, handleUserCommentsHitory } from "@/utils/admin.logic";
 import { CommentsDto } from "@/utils/dto/adminDto/comments.dto";
 import InfiniteScroll from "@/utils/infiniteScroll";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-const View = ({params}:{params:{userName:string,createdAt:string,commentText:string,seriesName:string}})=>{
+const View = ({params}:{params:{userId:number,userName:string,createdAt:string,commentText:string,seriesName:string}})=>{
     const {page,getPage,setPage} = usePageCounter();
     const divRef = useRef<HTMLDivElement>(null);
     const userName = decodeURIComponent(params.userName);
@@ -55,8 +56,8 @@ const View = ({params}:{params:{userName:string,createdAt:string,commentText:str
     return(
         <div className="flex min-w-full min-h-[10rem] flex-col">
             <div className="block max-w-full min-h-[5rem] bg-gray-300 rounded-md items-center relative text-white p-5">
-                <div className="block float-left w-[5rem] h-[5rem] custom-lg:max-w-[2.65rem] custom-lg:mt-[0.33rem] custom-lg:h-[2.65rem] overflow-hidden rounded-md mr-2">
-                    <img src={`../../../../../../Sweety.jpg`} className="block w-full h-full" alt="" />
+                <div className="block float-left w-[5rem] h-[5rem] relative custom-lg:max-w-[2.65rem] custom-lg:mt-[0.33rem] custom-lg:h-[2.65rem] overflow-hidden rounded-md mr-2">
+                    <Image src={`${process.env.NEXT_PUBLIC_API}/user/avatar/${params.userId}`} fill className="block w-full h-full" alt="" />
                 </div>
                 {/* TODO: Link that sends the admin to user page view,when it was clicked */}
                 <div className="block relative w-full ">
@@ -94,11 +95,11 @@ const View = ({params}:{params:{userName:string,createdAt:string,commentText:str
                         {filteredData.map((item,index)=>(
                             <div key={index} className="flex w-full h-[4rem] border-b-2 border-white text-white">
                             <div className="flex min-w-[8rem] w-[10rem] h-full p-[6px]">
-                                <div className="flex min-w-[2.75rem] w-[2.75rem] overflow-hidden h-full rounded-md custom-xs:min-w-[2.65rem] custom-xs:mt-[0.33rem] custom-xs:h-[2.65rem]">
-                                    <img src={`../../../../../../Sweety.jpg`} alt="" />
+                                <div className="flex min-w-[3rem] relative overflow-hidden h-full rounded-md custom-xs:min-w-[2.65rem] custom-xs:mt-[0.33rem] custom-xs:h-[2.65rem]">
+                                    <Image src={`${process.env.NEXT_PUBLIC_API}/user/avatar/${params.userId}`} fill alt="" />
                                 </div>
                                 <div className="flex flex-col min-w-[7rem] max-w-[10rem] ml-2 h-full">
-                                    <Link href={`http://localhost:3000/admin/comments/view/${encodeURIComponent(item.UserName)}/${encodeURIComponent(String(item.createdAt))}/${encodeURIComponent(item.CommentText)}/${item.SeriesName}`} className={`flex w-full overflow-x-scroll hover:text-[#b5536d]`}>
+                                    <Link href={`http://localhost:3000/admin/comments/view/${item.UserId}/${encodeURIComponent(item.UserName)}/${encodeURIComponent(String(item.createdAt))}/${encodeURIComponent(item.CommentText)}/${item.SeriesName}`} className={`flex w-full overflow-x-scroll hover:text-[#b5536d]`}>
                                         {item.UserName}
                                     </Link>
                                     <div className="flex w-full">

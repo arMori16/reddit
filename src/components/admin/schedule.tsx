@@ -3,7 +3,7 @@
 import InfiniteScroll from "@/utils/infiniteScroll";
 import { useEffect, useRef, useState } from "react";
 import usePageCounter from "../useZustand/zustandPageCounter";
-import ClientPoster from "@/utils/Images/ClientPoster";
+import ClientPoster from "@/Images/ClientPoster";
 import axios from "../../api/axios";
 import { formatToStandard } from "@/utils/formattDate";
 import Link from "next/link";

@@ -4,8 +4,9 @@ import useCommentsCounter from "@/components/useZustand/zustandCommentsCounter";
 import usePageCounter from "@/components/useZustand/zustandPageCounter";
 import { getAllCounts, getCommentsData, getSeries } from "@/utils/admin.logic";
 import { CommentsDto } from "@/utils/dto/adminDto/comments.dto";
-import ClientPoster from "@/utils/Images/ClientPoster";
+import ClientPoster from "@/Images/ClientPoster";
 import InfiniteScroll from "@/utils/infiniteScroll";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -127,8 +128,8 @@ const AdminPage = ()=>{
                             {commentsFilteredData.map((item,index)=>(
                                 <div key={index} className="flex w-full h-[3rem] border-b-2 border-white text-white">
                                 <div className="flex min-w-[4rem] w-[8rem] h-full p-[6px]">
-                                    <div className="flex overflow-hidden rounded-md w-[2.25rem] h-[2.25rem] mr-2">
-                                        <img src={`/Sweety.jpg`} alt="" />
+                                    <div className="flex overflow-hidden rounded-md w-[2.25rem] relative h-[2.25rem] mr-2">
+                                        <Image src={`${process.env.NEXT_PUBLIC_API}/user/avatar/${item.UserId}`} fill alt="" />
                                     </div>
                                     <div className="flex flex-col min-w-[3rem] h-full text-[12px] font-medium">
                                         <Link href={`/admin/comments/view/${encodeURIComponent(item.UserName)}/${encodeURIComponent(String(item.createdAt))}/${encodeURIComponent(item.CommentText)}/${item.SeriesName}`} className={`flex w-full overflow-x-scroll hover:text-[#b5536d]`}>

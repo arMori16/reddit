@@ -1,7 +1,7 @@
 'use server'
 
 import axios from "@/api/axios";
-import Poster from "@/utils/Images/Posters";
+import Poster from "@/Images/Posters";
 import Link from "next/link";
 
 import { notFound } from "next/navigation";
@@ -80,7 +80,7 @@ export default async function SearcPage({searchParams}:{searchParams:{page:numbe
                      <div className="flex flex-col text-center w-full text-white justify-center items-center">
                         <img src="/images/thinking3.png" className="w-[12rem] h-[12rem] rounded-sm" alt="" />
                         <p>Nothing founded!</p>
-                        <p>try to check if it's a valid series name?</p>
+                        <p>try to check if it&apos;s a valid series name?</p>
                      </div>
                 </div>
             )}

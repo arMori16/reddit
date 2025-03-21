@@ -157,7 +157,7 @@ export default function AuthWindow(){
             <div className='flex px-[5rem] custom-xs:px-[2rem] h-full text-white flex-col w-full'>
                 <p className='text-green-400 text-[1.75rem] font-semibold'>{view === 'login'?'Log In' : view === 'signup'?'Sign Up':emailView === true?'Email verification':'Create your username and password'}</p>
                 {view === 'signup-2' ? (
-                    <p className='text-white text-[0.9rem] break-words'>AniMori is anonymous, so your username is what you'll go by here. Choose wisely—because once you get a name, you can't change it.</p>
+                    <p className='text-white text-[0.9rem] break-words'>AniMori is anonymous, so your username is what you&apos;ll go by here. Choose wisely—because once you get a name, you can&apos;t change it.</p>
                 ):(
                     <p className='text-white text-[0.9rem] break-words'>By continuing,you agree to our <a href='/user/agreement' className='a-login'>User Agreement</a> and acknowledge tha you understand the <a href="/policies/privacy-policy" className='a-login'>Privacy Policy</a></p>
                 )}

@@ -5,7 +5,7 @@ import ProfileUserList from '@/components/navbar-components/profile/profile';
 import UserAvatar from '@/components/navbar-components/profile/userAvatar';
 import UserWarn from '@/components/navbar-components/profile/userWarn';
 import { formatDate } from '@/utils/formattDate';
-import Poster from '@/utils/Images/Posters';
+import Poster from '@/Images/Posters';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import React from 'react';

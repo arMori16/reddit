@@ -8,7 +8,7 @@ import UserList from '@/components/catalog/item/userList';
 import Comments from '@/components/comments/comments';
 import MediaPlayerSection from '@/components/player/MediaPlayerSection/MediaPlayerSection';
 import { cookies } from 'next/headers';
-import Poster from '@/utils/Images/Posters';
+import Poster from '@/Images/Posters';
 import { differenceInMilliseconds, intervalToDuration } from 'date-fns';
 import { formatDate, formatToStandard } from '@/utils/formattDate';
 import CountDown from '@/components/catalog/item/CountDown';

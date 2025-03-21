@@ -8,10 +8,9 @@ import { useEffect, useRef, useState } from "react";
 import numOfEpisodeStorage from "../useZustand/player/zustandNumOfEpisode";
 import voiceStorage from "../useZustand/player/zustandVoice";
 import { io, Socket } from 'socket.io-client';
-import useOutsideOne from "@/utils/hooks/useOutsideOne";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
-import { tokenManager } from "../../api/setup-token";
+import useOutsideCommon from "@/hooks/useOutsideCommon";
 
 
 const Player = ({ seriesViewName,seriesName }: { seriesName: string,seriesViewName: string })=>{
@@ -19,13 +18,14 @@ const Player = ({ seriesViewName,seriesName }: { seriesName: string,seriesViewNa
     const {playRef,isLoading,setIsLoading,togglePlayPause,changeQuality,toggleFullScreen,setIsPlaying,quality,isPlaying,isShowPlay,setIsShowPlay,toggleShowPlay,skipTime} = usePlayer(seriesName,seriesViewName);
     const {numOfEpisode,getNumOfEpisode,updateNumOfEpisode} = numOfEpisodeStorage();
     const [isShowYesNo,setIsShowYesNo] = useState(false);
-    const {componentRef,isShowOne,setIsShow} = useOutsideOne(false);
+    const componentRef = useRef<HTMLDivElement>(null);
+    const [isShowOne,setIsShow] = useState(false);
+    useOutsideCommon({refs:[componentRef],onOutsideClick:()=>setIsShow(false)});
     const [roomData,setRoomData] = useState<any>(null);
     const [participantsData,setParticipantsData] = useState<any[] | null>(null);
     const [join,setJoin] = useState(false);
     const [roomCode,setRoomCode] = useState(null);
     const [copy,setCopy] = useState(false);
-    const [multiplayer,setMultiplayer] = useState(false);
     const socketRef = useRef<Socket | null>(null);
     const atToken = Cookies.get('accessToken');
     const {getVoice,getEpisodes,setVoice,episodes} = voiceStorage();
@@ -37,7 +37,6 @@ const Player = ({ seriesViewName,seriesName }: { seriesName: string,seriesViewNa
         volumeLogic();
     }
     useEffect(()=>{
-        tokenManager.setupTokenRefresh();
         if (performance.navigation.type === 1 && Cookies.get("socket")) {
             setIsShowYesNo(true);
         }
@@ -362,7 +361,7 @@ const Player = ({ seriesViewName,seriesName }: { seriesName: string,seriesViewNa
                             {roomData === null && !join? (
                                 <div className="flex flex-col w-full h-full">
                                     <div className="flex w-full h-[2.5rem] rounded-md duration-500 ease-in hover:bg-[rgba(255,255,255,0.4)]">
-                                        <button onClick={()=>{setMultiplayer(true);createRoom()}} className="flex text-white items-center font-medium ml-[21%]">
+                                        <button onClick={()=>{createRoom()}} className="flex text-white items-center font-medium ml-[21%]">
                                             Create a room 
                                             <i className="fa-solid fa-people-group text-[1.5rem] ml-2"></i>
                                         </button>

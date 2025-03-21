@@ -7,6 +7,7 @@ import InfiniteScroll from "@/utils/infiniteScroll";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import useCommentsCounter from "@/components/useZustand/zustandCommentsCounter";
+import Image from "next/image";
 
 const Comments = ()=>{
     const [data,setData] = useState<CommentsDto[]>([]);
@@ -54,11 +55,11 @@ const Comments = ()=>{
                 {filteredData.map((item,index)=>(
                     <div key={index} className="flex w-full h-[4rem] border-b-2 border-white text-white">
                         <div className="flex min-w-[8rem] w-[10rem] h-full p-[6px]">
-                            <div className="flex min-w-[2.75rem] w-[2.75rem] overflow-hidden h-full rounded-md custom-xs:min-w-[2.65rem] custom-xs:mt-[0.33rem] custom-xs:h-[2.65rem]">
-                                <img src={`./../Sweety.jpg`} alt="" />
+                            <div className="flex min-w-[3rem] overflow-hidden relative h-full rounded-md custom-xs:min-w-[2.65rem] custom-xs:mt-[0.33rem] custom-xs:h-[2.65rem]">
+                                <Image src={`${process.env.NEXT_PUBLIC_API}/user/avatar/${item.UserId}`} fill alt="" />
                             </div>
                             <div className="flex flex-col min-w-[7rem] max-w-[10rem] ml-2 h-full">
-                                <Link href={`http://localhost:3000/admin/comments/view/${encodeURIComponent(item.UserName)}/${encodeURIComponent(String(item.createdAt))}/${encodeURIComponent(item.CommentText)}/${item.SeriesName}`} className={`flex w-full overflow-x-scroll hover:text-[#b5536d]`}>
+                                <Link href={`http://localhost:3000/admin/comments/view/${item.UserId}/${encodeURIComponent(item.UserName)}/${encodeURIComponent(String(item.createdAt))}/${encodeURIComponent(item.CommentText)}/${item.SeriesName}`} className={`flex w-full overflow-x-scroll hover:text-[#b5536d]`}>
                                     {item.UserName}
                                 </Link>
                                 <div className="flex w-full">

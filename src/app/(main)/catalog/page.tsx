@@ -3,7 +3,7 @@
 import axios from "@/api/axios";
 import CategoryDropDown from "@/components/catalog/CategoryDropDown";
 import getSeriesInfo, { getPageCount, getSeasonedCatalog } from "@/utils/getSeriesInfo";
-import Poster from "@/utils/Images/Posters";
+import Poster from "@/Images/Posters";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 

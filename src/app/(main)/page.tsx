@@ -1,13 +1,8 @@
 'use server'
-import axios from '@/api/axios';
 import Announcements from '@/components/mainPageComponent/announcement/AnnouncementComponent';
 import CarouselWrapper from '@/components/mainPageComponent/carouselWrapper/carouselWrapper';
 import TabsComponent from '@/components/mainPageComponent/tabs-content/tabs';
-import { xui2 } from '@/components/mainPageComponent/test';
 import SearchBar from '@/components/navbar-components/search-bar/search-bar';
-import usePageCounter from '@/components/useZustand/zustandPageCounter';
-import { SeriesInfo } from '@/utils/dto/adminDto/seriesInfo.dto';
-import { SSeriesDto } from '@/utils/dto/main/SSeriesDto';
 import getSeriesInfo, { getPageCount, getSeasonedCatalog } from '@/utils/getSeriesInfo';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -47,5 +42,4 @@ export default async function Home({searchParams}:{searchParams:{page:number}}) 
         </div>
       </div>
   );
-
 }

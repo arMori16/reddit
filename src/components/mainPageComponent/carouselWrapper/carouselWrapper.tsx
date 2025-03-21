@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, Loader } from 'lucide-react';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react'
-import ClientPoster from '@/utils/Images/ClientPoster';
+import ClientPoster from '@/Images/ClientPoster';
 
 
 
@@ -14,27 +14,17 @@ const CarouselWrapper = ({seasonedAnime}:{ seasonedAnime: {
   SeriesName: string; 
   SeriesViewName: string; 
 }[] | null })=>{
-  /* const currentIndex = useRef(0); */
   const [seriesInfo, setSeriesInfo] = useState<{
     SeriesName: string;
     SeriesViewName: string;
   }[] | null>(seasonedAnime);
   const [isFocused,setIsFocused] = useState(false);
   const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true, // Бесконечный скролл
-    align: 'start', // Элементы выравниваются по левому краю
-    dragFree: false, // Свободное перетаскивание отключено
+    loop: true,
+    align: 'start',
+    dragFree: false, 
     duration: 45,
   });
-
-  /* useEffect(() => {
-    const fetchData = async () => {
-      const data = await getSeasonedCatalog();
-      setSeriesInfo(data.data);
-    };
-    fetchData();
-  }, []); */
-  // Прокрутка назад
   const scrollPrev = useCallback(() => {
     if (emblaApi) {
       const currentIndex = emblaApi.selectedScrollSnap(); // Текущий индекс
@@ -73,14 +63,14 @@ const CarouselWrapper = ({seasonedAnime}:{ seasonedAnime: {
     }
   }, [isFocused]);
 
-  const handleMouseEnter = () => setIsFocused(true); // Фокус на элементе
-  const handleMouseLeave = () => setIsFocused(false); // Снимаем фокус
+  const handleMouseEnter = () => setIsFocused(true); 
+  const handleMouseLeave = () => setIsFocused(false); 
 
   
   return(
       <div className='block h-full w-full relative mt-[3rem] custom-md-lg:mt-5 max-w-[80.469rem] embla'>
         <div className='flex rounded-t-lg justify-center text-[0.95rem] items-center max-w-[80.469rem] h-[2.25rem] bg-gray-1B text-rose-50'>
-            SEASON'S ANIME
+            SEASON&apos;S ANIME
         </div>
         {seriesInfo && seriesInfo.length <= 1? (
            <div className='flex bg-gray-2E w-full items-center justify-center h-[16.25rem]'>

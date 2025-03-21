@@ -3,7 +3,7 @@
 import axios from "@/api/axios"
 import CountDown from "@/components/catalog/item/CountDown";
 import { formatDate } from "@/utils/formattDate";
-import Poster from "@/utils/Images/Posters";
+import Poster from "@/Images/Posters";
 import { intervalToDuration } from "date-fns";
 import Link from "next/link"
 

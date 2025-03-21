@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 import axios from "@/api/axios";
 import Link from "next/link";
 import { toast } from "react-toastify";
-import ClientPoster from "@/utils/Images/ClientPoster";
+import ClientPoster from "@/Images/ClientPoster";
 
 const ProfileUserList = ({userId,isOwner}:{userId:number,isOwner:boolean})=>{
     const {listItem,getUserListItem,setUserListItem} = useProfileListItems();

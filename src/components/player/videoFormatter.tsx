@@ -2,12 +2,9 @@
 import axios from "../../api/axios";
 import { EnumPlayerQuality } from "./types/player.type";
 
-const useVideo = async(seriesName:any,voice:string,quality:EnumPlayerQuality,episode:number)=>{
-    console.log('SERIESNAME: ',seriesName);
-    
+const getVideo = async(seriesName:any,voice:string,quality:EnumPlayerQuality,episode:number)=>{
+
     const videoPath = `${seriesName}/${voice}/${String(episode)}/${quality}.mp4`
-    console.log('Videoformatter videopath: ',videoPath);
-    
     try {
         const videoSrc = await axios.get('/videoFormat/getVideo',{
             params:{
@@ -25,4 +22,4 @@ const useVideo = async(seriesName:any,voice:string,quality:EnumPlayerQuality,epi
         }
     }
 
-export default useVideo;
+export default getVideo;

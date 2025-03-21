@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { EnumPlayerQuality, HTMLCustomVideoElement } from "./types/player.type";
-import useVideo from "./videoFormatter";
 import Hls from "hls.js";
 import axios from "../../api/axios";
 import axiosDefault from "axios";
@@ -8,6 +7,7 @@ import playbackPosition from "../useZustand/zustandStorage";
 import numOfEpisodeStorage from "../useZustand/player/zustandNumOfEpisode";
 import voiceStorage from "../useZustand/player/zustandVoice";
 import Cookies from "js-cookie";
+import getVideo from "./videoFormatter";
 const SKIP_TIME_SECONDS = 10;
 const usePlayer =(seriesName?:string,seriesViewName?:string)=>{   
     const [isPlaying,setIsPlaying] = useState(false);
@@ -205,7 +205,7 @@ const usePlayer =(seriesName?:string,seriesViewName?:string)=>{
         const controls = document.querySelector('.controls') as HTMLDivElement;
         console.log('LOCALSTORAGE: ',currentLocalTime);
         const currentEpisode = localStorage.getItem('episode');
-        useVideo(seriesName,getVoice(),quality,getNumOfEpisode()).then(src => {
+        getVideo(seriesName,getVoice(),quality,getNumOfEpisode()).then(src => {
             if (!src) {console.error('ITs UNDEIFINED');}
             if(!playRef.current) return;
             console.log('ITS SRC: ',src);

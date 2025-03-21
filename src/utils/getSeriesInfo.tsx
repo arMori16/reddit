@@ -25,6 +25,7 @@ export const getPageCount = async({category,divideNumber = 24,status}:{category?
                 status:status || null
             }
         });
+        console.log(`Amount of series: `,reqAmountOfSeries.data);
         const amountOfPages = Math.ceil(reqAmountOfSeries.data / divideNumber);
         return amountOfPages;
     }catch(err){

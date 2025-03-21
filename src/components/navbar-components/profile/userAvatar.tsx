@@ -1,7 +1,6 @@
 'use client'
 
-import useOutsideOne from "@/utils/hooks/useOutsideOne";
-import ReactCrop, { centerCrop, Crop, makeAspectCrop, PixelCrop } from 'react-image-crop'
+import ReactCrop, { Crop, makeAspectCrop, PixelCrop } from 'react-image-crop'
 import { useEffect, useRef, useState } from "react";
 import "react-image-crop/dist/ReactCrop.css";
 import axios from "@/api/axios";
@@ -17,7 +16,7 @@ export default function UserAvatar({initialUserAvatar,owner}:{initialUserAvatar:
     const [currentUserAvatar,setCurrentUserAvatar] = useState<string>(initialUserAvatar);
     const [crop, setCrop] = useState<Crop | undefined>(undefined);
     const [isShow,setIsShow] = useState(false);
-    const [scale, setScale] = useState(1); // Initial scale (normal size)
+    const [scale, setScale] = useState(1); 
     useEffect(()=>{
         const handleClickOutside=(e:MouseEvent)=>{
             if(componentRef.current && e.target instanceof Node && !cropRef.current?.contains(e.target) && !componentRef.current.contains(e.target as Node) && (e.target as HTMLElement).id !== 'file-upload'){

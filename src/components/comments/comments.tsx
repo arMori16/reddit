@@ -7,7 +7,7 @@ import InfiniteScroll from "@/utils/infiniteScroll";
 import usePageCounter from "../useZustand/zustandPageCounter";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
-import { LeafIcon } from "@/utils/Images/Leaf";
+import { LeafIcon } from "@/Images/Leaf";
 
 
 

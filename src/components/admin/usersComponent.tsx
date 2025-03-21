@@ -3,7 +3,7 @@
 import { handleUsersUpdate } from "@/utils/admin.logic";
 import { useState } from "react";
 import { toast } from "react-toastify";
-
+import Image from "next/image";
 
 const AdminUsers = ({initialUsers}:{initialUsers:any[]})=>{
     const [users,setUsers] = useState<any[]>(initialUsers);
@@ -15,7 +15,7 @@ const AdminUsers = ({initialUsers}:{initialUsers:any[]})=>{
             {users.map((item:any,index:number)=>(
                 <div key={index} className="flex w-full h-[2.75rem] border-b-2 p-1 custom-md-2:text-[0.85rem]">
                     <div className="flex h-full ml-3 items-center flex-shrink flex-grow w-[6rem] overflow-hidden">
-                        <img src="/Sweety.jpg" className="w-[1.75rem] rounded-sm h-full mr-2"/>
+                        <Image src={`${process.env.NEXT_PUBLIC_API}/user/avatar/${item.id}`} alt="" width={0} height={0} sizes="100%" className="w-[2rem] object-cover rounded-sm h-full mr-2"/>
                         <p className="truncate">{item.firstName}</p>
                     </div>
                     <div className="flex h-full items-center flex-grow max-w-[10rem] mr-[3rem] overflow-x-scroll scrollbar-hide">

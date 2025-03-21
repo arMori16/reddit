@@ -2,7 +2,7 @@
 
 import axios from "@/api/axios"
 import Rating from "@/components/catalog/item/rating";
-import Poster from "@/utils/Images/Posters";
+import Poster from "@/Images/Posters";
 import Link from "next/link";
 
 export default async function TopPage(){

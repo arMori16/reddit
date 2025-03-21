@@ -2,7 +2,7 @@
 
 import axios from "@/api/axios";
 import { formatDate } from "@/utils/formattDate";
-import ClientPoster from "@/utils/Images/ClientPoster";
+import ClientPoster from "@/Images/ClientPoster";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Rating from "../item/rating";
